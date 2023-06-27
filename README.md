@@ -1,6 +1,6 @@
 # Equalizer
 
-![Equalizer - Chrome extension - API - Related tools](./docs/hero.png){ width="230" height="100" style="display: block; margin: 0 auto" }
+![Equalizer - Chrome extension - API - Related tools](./docs/hero.png)
 
 _Job offer qualifier for sought software engineers_
 

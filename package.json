@@ -1,0 +1,11 @@
+{
+  "name": "@equalizer/extension",
+  "version": "1.0.0",
+  "description": "Google Chrome extension and related tools for Equalizer.dev",
+  "main": "index.js",
+  "repository": "https://github.com/eqrdev/extension.git",
+  "author": "Péter Viola <info@violapeter.hu>",
+  "license": "MIT",
+  "private": true,
+  "packageManager": "yarn@3.6.0"
+}

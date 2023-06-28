@@ -7,5 +7,12 @@
   "author": "Péter Viola <info@violapeter.hu>",
   "license": "MIT",
   "private": true,
-  "packageManager": "yarn@3.6.0"
+  "packageManager": "yarn@3.6.0",
+  "workspaces": [
+    "modules/*"
+  ],
+  "scripts": {
+    "build": "yarn workspace chrome run build",
+    "build:watch": "yarn workspace chrome run build:watch"
+  }
 }

@@ -6,7 +6,7 @@
   "author": "hello@equalizer.dev",
   "default_locale": "en_US",
   "action": {
-    "default_title": "Equalizer open event",
+    "default_title": "__MSG_appDesc__",
     "default_popup": "html/popup.html"
   },
   "options_page": "html/options.html",

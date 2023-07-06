@@ -4,5 +4,71 @@
   },
   "appDesc": {
     "message": "Job offer qualifier for sought software engineers"
+  },
+  "yourProfileLink": {
+    "message": "Your profile link"
+  },
+  "automaticMessage": {
+    "message": "Automatic reply"
+  },
+  "openai": {
+    "message": "OpenAI"
+  },
+  "disabled": {
+    "message": "Disabled"
+  },
+  "enabled": {
+    "message": "Enabled"
+  },
+  "missingUrl": {
+    "message": "Your profile URL is missing. Please open the Settings page and enter your URL. If you don't know the URL, you can find it by visiting your Equalizer profile page."
+  },
+  "save": {
+    "message": "Save"
+  },
+  "settings": {
+    "message": "Settings"
+  },
+  "copied": {
+    "message": "Copied!"
+  },
+  "yourProfileId": {
+    "message": "Your profile ID"
+  },
+  "missingUrlSettingsPage": {
+    "message": "Your profile URL is missing. Please click on the edit icon and enter your URL. If you don't know the URL, you can find it by visiting your Equalizer profile page."
+  },
+  "insertUrlInfo": {
+    "message": "Use #URL# to insert your profile URL."
+  },
+  "autoReply": {
+    "message": "Auto reply LinkedIn messages"
+  },
+  "autoReplyText": {
+    "message": "Nullam risus euismod maecenas sed. Gravida vulputate purus nisi sed. Pharetra faucibus nunc diam eu pellentesque mus at. Vitae et id id elit pellentesque nisi at turpis. Augue non id neque a mattis. Aenean mauris."
+  },
+  "linkedinMessage": {
+    "message": "LinkedIn message"
+  },
+  "linkedinMessageText": {
+    "message": "Blandit ullamcorper vulputate sit viverra lectus scelerisque tortor faucibus elit. Nibh gravida convallis maecenas porttitor cursus a mi enim pellentesque. Nulla purus cum euismod egestas nec scelerisque dictum."
+  },
+  "extensionFeatures": {
+    "message": "Extension features"
+  },
+  "extensionFeaturesText": {
+    "message": "Tempus velit ultricies felis nunc eget. Eleifend hendrerit aliquet malesuada phasellus ac nisl. In ullamcorper sed tincidunt in. A laoreet consequat egestas arcu. Cursus sed facilisi consequat urna odio nisi orci ac eleifend."
+  },
+  "openAi": {
+    "message": "OpenAI"
+  },
+  "openAiDescription": {
+    "message": "Here you can enable OpenAI.....Lorem ipsum dolor sit amet consectetur adipiscing elit, primis tempor ullamcorper himenaeos gravida malesuada."
+  },
+  "apiKeyLabel": {
+    "message": "Enter your OpenAI key"
+  },
+  "apiKeyPlaceholder": {
+    "message": "Your API key"
   }
 }

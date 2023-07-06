@@ -1,0 +1,218 @@
+import { BaseWebComponent } from '../Shared/BaseWebComponent'
+import './OptionsSectionComponent'
+import { OptionsPresenter } from './OptionsPresenter'
+
+export interface OptionsComponentProps {
+  profileUrl?: string
+  profileUrlPart?: string
+  isProfileUrlProvided: boolean
+  automaticMessage: string
+  isOpenAiEnabled: false
+}
+
+window.customElements.define(
+  'eq-options-page',
+  class extends BaseWebComponent {
+    private options: OptionsComponentProps = {
+      isProfileUrlProvided: false,
+      automaticMessage: '',
+      isOpenAiEnabled: false,
+    }
+
+    protected async addListeners() {
+      const optionsPresenter = new OptionsPresenter()
+      await optionsPresenter.load(options => {
+        if (JSON.stringify(this.options) === JSON.stringify(options)) {
+          return
+        }
+
+        this.options = options
+        this.render()
+      })
+    }
+
+    getTemplate() {
+      return `
+      <style>
+        .options {
+          display: flex;
+          flex-direction: column;
+          max-width: 640px;
+          margin: 0 auto 72px;
+          align-self: stretch;
+          gap: 24px;
+        }
+    
+        .options .logo {
+          margin: 24px auto;
+        }
+        
+        .link-editor {
+          align-self: stretch;
+          align-items: center;
+          display: flex;
+          width: 100%;
+          gap: 8px;
+        }
+        
+        .link-editor eq-input {
+          flex: 1;
+        }
+        
+        .options-detail {
+          color: var(--eq-color-n400);
+        }
+        
+        summary {
+          display: inline-flex;
+          align-items: center;
+          cursor: pointer;
+          list-style: none;
+          gap: 4px;
+          border-radius: 4px;
+        }
+        
+        summary::-webkit-details-marker {
+          display: none;
+        }
+        
+        summary:focus {
+          outline: none;
+          box-shadow: 0 0 0 2px rgba(39, 39, 39, 0.4);
+        }
+        
+        .options-detail eq-icon::part(icon) {
+          color: var(--eq-color-n300);
+          transition: rotate .3s ease;
+        }
+        
+        .options-detail[open] eq-icon::part(icon) {
+          rotate: 180deg;
+        }
+        
+        .summary {
+          display: flex;
+          flex-direction: column;
+          gap: 48px;
+          padding: 24px 0;
+        }
+        
+        .summary-section {
+          align-items: center;
+          display: flex;
+          gap: 24px;
+        }
+        
+        .summary-section.right {
+          flex-direction: row-reverse;
+        }
+        
+        .summary .text {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+        
+        .api-key-editor {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          align-self: stretch;
+          flex: 1;
+        }
+      </style>
+      <div class="options">
+        <eq-logo class="logo" inverse size="40"></eq-logo>
+        <eq-header level="2">${this.__('settings')}</eq-header>
+        
+        <eq-options-section
+          title="${this.__('yourProfileLink')}"
+          ${
+            this.options.isProfileUrlProvided
+              ? `copy="${this.getAttribute('profileUrl')}"`
+              : ''
+          }
+          editable>
+          <div slot="content">
+            ${
+              this.options.isProfileUrlProvided
+                ? `<eq-typo>${this.options.profileUrl}</eq-typo>`
+                : `<eq-alert severity="error">${this.__(
+                    'missingUrlSettingsPage'
+                  )}</eq-alert>`
+            }
+          </div>
+          <eq-typo slot="content">${this.options.profileUrl}</eq-typo>
+          <div slot="edit" class="link-editor">
+            <eq-typo>equalizer.dev/me/</eq-typo>
+            <eq-input
+              value="${this.options.profileUrl}"
+              placeholder="${this.__('yourProfileId')}" />
+          </div>
+        </eq-options-section>
+        
+        <eq-options-section
+          title="${this.__('automaticMessage')}"
+          copy="${this.options.automaticMessage}"
+          editable>
+          <eq-typo slot="content">
+            ${this.options.automaticMessage}
+          </eq-typo>
+          <div slot="edit">
+            <eq-textarea
+              value="${this.options.automaticMessage}"
+              info="${this.__('insertUrlInfo')}"
+              maxLength="1000"></eq-textarea>
+          </div>
+          <details slot="info" class="options-detail">
+            <summary>
+              <eq-typo>How does it work?</eq-typo>
+              <eq-icon type="keyboard_arrow_down"></eq-icon>
+            </summary>
+            <div class="summary">
+            
+              <div class="summary-section">
+                <img src="../assets/images/auto-reply.png" alt="${this.__(
+                  'autoReply'
+                )}">
+                <div class="text">
+                  <eq-typo bold>${this.__('autoReply')}</eq-typo>
+                  <eq-typo>${this.__('autoReplyText')}</eq-typo>
+                </div>
+              </div>
+              <div class="summary-section right">
+                <img src="../assets/images/linkedin-message.png" alt="${this.__(
+                  'linkedinMessage'
+                )}">
+                <div class="text">
+                  <eq-typo bold>${this.__('linkedinMessage')}</eq-typo>
+                  <eq-typo>${this.__('linkedinMessageText')}</eq-typo>
+                </div>
+              </div>
+              <div class="summary-section">
+                <img src="../assets/images/extension-features.png" alt="${this.__(
+                  'extensionFeatures'
+                )}">
+                <div class="text">
+                  <eq-typo bold>${this.__('extensionFeatures')}</eq-typo>
+                  <eq-typo>${this.__('extensionFeaturesText')}</eq-typo>
+                </div>
+              </div>
+            </div>
+          </details>
+        </eq-options-section>
+        
+        <eq-options-section title="${this.__('openai')}" data-openai switchable>
+          <eq-typo slot="content-alway-show">
+            ${this.__('openAiDescription')}
+          </eq-typo>
+          <div class="api-key-editor" slot="edit">
+            <eq-typo small bold>${this.__('apiKeyLabel')}</eq-typo>
+            <eq-input placeholder="${this.__('apiKeyPlaceholder')}"></eq-input>
+          </div>
+        </eq-options-section>
+      </div>
+    `
+    }
+  }
+)

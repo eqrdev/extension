@@ -7,10 +7,11 @@ const dist = resolve(__dirname, '../../dist')
 module.exports = {
   mode: 'production',
   entry: {
-    content: resolve(__dirname, './src/content/index.ts'),
-    background: resolve(__dirname, './src/background/index.ts'),
-    options: resolve(__dirname, './src/options/index.ts'),
-    popup: resolve(__dirname, './src/popup/index.ts'),
+    content: resolve(__dirname, './src/LinkedIn/index.ts'),
+    background: resolve(__dirname, './src/Worker/index.ts'),
+    options: resolve(__dirname, './src/Options/OptionsComponent.ts'),
+    popup: resolve(__dirname, './src/Popup/PopupComponent.ts'),
+    components: resolve(__dirname, './src/Shared/Components/index.ts'),
   },
   output: {
     path: resolve(dist, 'js'),
@@ -39,15 +40,14 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: 'template/popup.html',
       filename: resolve(dist, 'html/popup.html'),
-      favicon: 'assets/icons/icon-32.png',
-      chunks: ['popup'],
+      chunks: ['components', 'popup'],
     }),
     new HtmlWebpackPlugin({
       template: 'template/options.html',
       filename: resolve(dist, 'html/options.html'),
       favicon: 'assets/icons/icon-32.png',
-      chunks: ['options'],
-      title: 'Settings',
+      chunks: ['components', 'options'],
+      title: 'Equalizer Settings',
     }),
     new CopyPlugin({
       patterns: [

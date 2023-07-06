@@ -13,6 +13,7 @@
   ],
   "scripts": {
     "build": "yarn workspace chrome run build",
-    "build:watch": "yarn workspace chrome run build:watch"
+    "build:watch": "yarn workspace chrome run build:watch",
+    "lint": "yarn workspace eslint run lint"
   }
 }

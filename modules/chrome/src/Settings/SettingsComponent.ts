@@ -4,10 +4,14 @@ import { SettingsPresenter } from './SettingsPresenter'
 
 export interface SettingsComponentProps {
   profileUrl?: string
-  profileUrlPart?: string
+  profileUrlFull?: string
+  profileName?: string
   isProfileUrlProvided: boolean
   automaticMessage: string
+  rawAutomaticMessage: string
   isOpenAiEnabled: boolean
+  openAiKey?: string
+  onSaveProfileName: (value: string) => void
 }
 
 window.customElements.define(
@@ -16,10 +20,12 @@ window.customElements.define(
     private props: SettingsComponentProps = {
       isProfileUrlProvided: false,
       automaticMessage: '',
+      rawAutomaticMessage: '',
       isOpenAiEnabled: false,
+      onSaveProfileName: null,
     }
 
-    protected async addListeners() {
+    protected async afterRender() {
       const settingsPresenter = new SettingsPresenter()
       await settingsPresenter.load(settings => {
         if (JSON.stringify(this.props) === JSON.stringify(settings)) {
@@ -28,6 +34,11 @@ window.customElements.define(
 
         this.props = settings
         this.render()
+      })
+      this.$ui.profileUrlSection.addEventListener('setting:save', () => {
+        this.props.onSaveProfileName(
+          (this.$ui.profileNameInput as HTMLInputElement).value
+        )
       })
     }
 
@@ -126,10 +137,11 @@ window.customElements.define(
         <eq-header level="2">${this.__('settings')}</eq-header>
         
         <eq-settings-section
+          data-js-control="profileUrlSection"
           title="${this.__('yourProfileLink')}"
           ${
             this.props.isProfileUrlProvided
-              ? `copy="${this.getAttribute('profileUrl')}"`
+              ? `copy="${this.props.profileUrlFull}"`
               : ''
           }
           editable>
@@ -142,11 +154,11 @@ window.customElements.define(
                   )}</eq-alert>`
             }
           </div>
-          <eq-typo slot="content">${this.props.profileUrl}</eq-typo>
           <div slot="edit" class="link-editor">
             <eq-typo>equalizer.dev/me/</eq-typo>
             <eq-input
-              value="${this.props.profileUrl}"
+              data-js-control="profileNameInput"
+              value="${this.props.profileName}"
               placeholder="${this.__('yourProfileId')}" />
           </div>
         </eq-settings-section>
@@ -160,7 +172,7 @@ window.customElements.define(
           </eq-typo>
           <div slot="edit">
             <eq-textarea
-              value="${this.props.automaticMessage}"
+              value="${this.props.rawAutomaticMessage}"
               info="${this.__('insertUrlInfo')}"
               maxLength="1000"></eq-textarea>
           </div>

@@ -1,5 +1,6 @@
 import { EqualizerSettings, SettingsRepository } from './SettingsRepository'
 import { SettingsComponentProps } from './SettingsComponent'
+import { ProfileUrl } from '../Shared/ProfileUrl'
 
 export class SettingsPresenter {
   async load(
@@ -7,24 +8,30 @@ export class SettingsPresenter {
   ): Promise<void> {
     const settingsRepository = new SettingsRepository()
     await settingsRepository.getSettings((settings: EqualizerSettings) => {
+      const profileUrl = new ProfileUrl(settings.profileName)
+
+      const handleProfileNameChange = (value: string): void => {
+        if (typeof value !== 'string') {
+          throw new TypeError('IncorrectTypeError')
+        }
+
+        if (value === '') {
+          throw new Error('EmptyValueError')
+        }
+
+        settingsRepository.set('profileName', value)
+      }
+
       callback({
         isOpenAiEnabled: settings.isOpenAiEnabled,
-        profileUrl: this.getFullProfileUrl(settings.profileName),
-        profileUrlPart: settings.profileName,
-        automaticMessage: this.getTextWithUrl(
-          settings.automaticMessage,
-          this.getFullProfileUrl(settings.profileName)
-        ),
+        profileUrl: profileUrl.base,
+        profileUrlFull: profileUrl.full,
+        profileName: profileUrl.name,
+        automaticMessage: profileUrl.replaceInText(settings.automaticMessage),
+        rawAutomaticMessage: settings.automaticMessage,
         isProfileUrlProvided: Boolean(settings.profileName),
+        onSaveProfileName: handleProfileNameChange,
       })
     })
-  }
-
-  private getFullProfileUrl(urlPart: string): string {
-    return urlPart ? `https://equalizer.dev/me/${urlPart}` : ''
-  }
-
-  private getTextWithUrl(rawText: string, url: string): string {
-    return rawText.replaceAll(/#URL#/g, url)
   }
 }

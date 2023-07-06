@@ -4,30 +4,23 @@ import {
   SettingsRepository,
 } from '../Settings/SettingsRepository'
 import { PopupComponentProps } from './PopupComponent'
+import { ProfileUrl } from '../Shared/ProfileUrl'
 
 export class PopupPresenter {
   async load(callback: (settings: PopupComponentProps) => void): Promise<void> {
     const settingsRepository = new SettingsRepository()
     const popupRepository = new PopupRepository()
     await settingsRepository.getSettings((settings: EqualizerSettings) => {
+      const profileUrl = new ProfileUrl(settings.profileName)
+
       callback({
         isOpenAiEnabled: settings.isOpenAiEnabled,
-        profileUrl: this.getFullProfileUrl(settings.profileName),
-        automaticMessage: this.getTextWithUrl(
-          settings.automaticMessage,
-          this.getFullProfileUrl(settings.profileName)
-        ),
+        profileUrl: profileUrl.base,
+        profileUrlFull: profileUrl.full,
+        automaticMessage: profileUrl.replaceInText(settings.automaticMessage),
         isProfileUrlProvided: Boolean(settings.profileName),
-        onClickSettings: () => popupRepository.openSettings(),
+        onClickSettings: popupRepository.openSettings,
       })
     })
-  }
-
-  private getFullProfileUrl(urlPart: string): string {
-    return urlPart ? `https://equalizer.dev/me/${urlPart}` : ''
-  }
-
-  private getTextWithUrl(rawText: string, url: string): string {
-    return rawText.replaceAll(/#URL#/g, url)
   }
 }

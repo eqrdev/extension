@@ -1,6 +1,8 @@
 export abstract class BaseWebComponent extends HTMLElement {
   templateElement: HTMLTemplateElement
 
+  private isListenersAdded = false
+
   abstract getTemplate(): string
 
   constructor() {
@@ -30,10 +32,15 @@ export abstract class BaseWebComponent extends HTMLElement {
 
   protected addListeners?(): void
 
+  protected afterRender?(): void
+
   protected render() {
     this.templateElement.innerHTML = this.getTemplate()
     const mounting = this.shadowRoot ?? this
     mounting.replaceChildren(this.templateElement.content.cloneNode(true))
+    this.afterRender?.()
+    if (this.isListenersAdded) return
     this.addListeners?.()
+    this.isListenersAdded = true
   }
 }

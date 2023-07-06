@@ -11,7 +11,7 @@ export class ChromeStorageGateway<T> {
     return (await this.getAll())[key]
   }
 
-  async set(data: T): Promise<void> {
+  async set(data: Partial<T> | T): Promise<void> {
     await chrome.storage.sync.set(data)
   }
 }

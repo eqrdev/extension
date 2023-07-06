@@ -2,11 +2,19 @@ customElements.define(
   'eq-input',
   class extends HTMLElement {
     static get observedAttributes() {
-      return ['icon', 'placeholder']
+      return ['icon', 'placeholder', 'value']
     }
 
     get icon(): string {
       return this.getAttribute('icon')
+    }
+
+    get value() {
+      return this.shadowRoot.querySelector('input').value
+    }
+
+    set value(value: string) {
+      this.shadowRoot.querySelector('input').value = value
     }
 
     focus() {
@@ -39,9 +47,9 @@ customElements.define(
         </style>
         <div class="wrapper">
           ${this.icon ? `<eq-icon type="${this.icon}"></eq-icon>` : ''}
-          <input type="text" placeholder="${this.getAttribute(
-            'placeholder'
-          )}" />
+          <input type="text" value="${this.getAttribute(
+            'value'
+          )}" placeholder="${this.getAttribute('placeholder')}" />
         </div>
       `
       this.shadowRoot.appendChild(template.content.cloneNode(true))

@@ -27,6 +27,11 @@ export class SettingsRepository {
     await this.loadSettings()
   }
 
+  async set(settingKey: keyof EqualizerSettings, value: string) {
+    await this.chromeStorageGateway.set({ [settingKey]: value })
+    await this.loadSettings()
+  }
+
   async setDefaultSettings() {
     await this.chromeStorageGateway.set({
       automaticMessage: DEFAULT_AUTO_REPLY_TEXT,

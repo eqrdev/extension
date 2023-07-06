@@ -3,6 +3,7 @@ import { PopupPresenter } from './PopupPresenter'
 
 export interface PopupComponentProps {
   profileUrl?: string
+  profileUrlFull?: string
   isProfileUrlProvided: boolean
   automaticMessage: string
   isOpenAiEnabled: boolean
@@ -22,7 +23,7 @@ customElements.define(
       return ['isProfileUrlEditing']
     }
 
-    protected async addListeners() {
+    protected async afterRender() {
       const popupPresenter = new PopupPresenter()
       await popupPresenter.load(props => {
         if (JSON.stringify(this.props) === JSON.stringify(props)) {
@@ -32,7 +33,6 @@ customElements.define(
         this.props = props
         this.render()
       })
-
       this.$ui.settings.addEventListener('click', this.props.onClickSettings)
     }
 
@@ -106,7 +106,9 @@ customElements.define(
           <eq-typo bold>${this.__('yourProfileLink')}</eq-typo>
           ${
             this.props.isProfileUrlProvided
-              ? `<eq-button icon="content_copy"></eq-button>`
+              ? `<eq-copy-button text="${
+                  this.props.profileUrl
+                }" copied-message="${this.__('copied')}"></eq-copy-button>`
               : ''
           }
         

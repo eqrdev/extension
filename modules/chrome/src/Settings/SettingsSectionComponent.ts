@@ -20,6 +20,7 @@ customElements.define(
       })
       section.querySelector('[data-save]')?.addEventListener('click', () => {
         section.toggleAttribute('data-editing', false)
+        this.dispatchEvent(new CustomEvent('setting:save'))
       })
       section
         .querySelector('[data-switch]')

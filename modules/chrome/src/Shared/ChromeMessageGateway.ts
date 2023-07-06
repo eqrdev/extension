@@ -1,6 +1,6 @@
 export const MessageType = {
-  OpenOptions: 'OPEN_OPTIONS',
-  SetDefaultOptions: 'SET_DEFAULT_OPTIONS',
+  OpenSettings: 'OPEN_SETTINGS',
+  SetDefaultSettings: 'SET_DEFAULT_SETTINGS',
 }
 
 type MessageKey = keyof typeof MessageType

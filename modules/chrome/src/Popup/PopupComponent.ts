@@ -5,8 +5,8 @@ export interface PopupComponentProps {
   profileUrl?: string
   isProfileUrlProvided: boolean
   automaticMessage: string
-  isOpenAiEnabled: false
-  onClickOptions?: () => void
+  isOpenAiEnabled: boolean
+  onClickSettings?: () => void
 }
 
 customElements.define(
@@ -33,7 +33,7 @@ customElements.define(
         this.render()
       })
 
-      this.$ui.settings.addEventListener('click', this.props.onClickOptions)
+      this.$ui.settings.addEventListener('click', this.props.onClickSettings)
     }
 
     getTemplate() {

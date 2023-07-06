@@ -11,6 +11,7 @@ export class Observable<T> {
 
   set value(newValue: T) {
     this.#value = newValue
+    this.notify()
   }
 
   get value() {
@@ -19,7 +20,6 @@ export class Observable<T> {
 
   subscribe(callback: CallbackFunction<T>) {
     this.observers.push(callback)
-    this.notify()
   }
 
   notify() {

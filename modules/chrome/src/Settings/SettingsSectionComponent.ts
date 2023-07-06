@@ -1,7 +1,7 @@
 import { BaseWebComponent } from '../Shared/BaseWebComponent'
 
 customElements.define(
-  'eq-options-section',
+  'eq-settings-section',
   class extends BaseWebComponent {
     static get observedAttributes() {
       return ['editing']
@@ -13,7 +13,7 @@ customElements.define(
     }
 
     protected addListeners() {
-      const section = this.shadowRoot.querySelector('.options-section')
+      const section = this.shadowRoot.querySelector('.settings-section')
       section.querySelector('[data-edit]')?.addEventListener('click', () => {
         section.toggleAttribute('data-editing', true)
         this.focusInput()
@@ -43,7 +43,7 @@ customElements.define(
     getTemplate(): string {
       return `
       <style>
-        .options-section {
+        .settings-section {
           border-radius: 4px;
           background: var(--eq-color-n100);
           display: flex;
@@ -56,7 +56,7 @@ customElements.define(
           position: relative;
         }
     
-        .options-header {
+        .settings-header {
           display: flex;
           align-items: center;
           align-self: stretch;
@@ -64,51 +64,51 @@ customElements.define(
           height: 40px;
         }
         
-        .options-edit {
+        .settings-edit {
           display: flex;
         }
     
-        .options-actions {
+        .settings-actions {
           display: flex;
           justify-self: stretch;
           gap: 4px;
         }
         
-        .options-content {
+        .settings-content {
           align-self: stretch;
         }
         
-        .options-save {
+        .settings-save {
           display: flex;
           justify-content: flex-end;
         }
         
         /** hidden states */
         
-        [data-editing] .options-content,
-        [data-editing] .options-actions,
-        .options-edit,
-        .options-save {
+        [data-editing] .settings-content,
+        [data-editing] .settings-actions,
+        .settings-edit,
+        .settings-save {
           visibility: hidden;
           height: 0;
           position: fixed;
           opacity: 0;
         }
         
-        [data-editing] .options-save,
-        [data-editing] .options-edit {
+        [data-editing] .settings-save,
+        [data-editing] .settings-edit {
           visibility: visible;
           height: auto;
           position: static;
           opacity: 1;
         }
       </style>
-      <div class="options-section" ${
+      <div class="settings-section" ${
         this.hasAttribute('editing') ? 'data-editing' : ''
       }>
-        <div class="options-header">
+        <div class="settings-header">
           <eq-typo bold>${this.getAttribute('title')}</eq-typo>
-          <div class="options-actions">
+          <div class="settings-actions">
             <slot name="actions"></slot>
             ${
               this.hasAttribute('copy')
@@ -131,16 +131,16 @@ customElements.define(
               : ''
           }
         </div>
-        <div class="options-content-alway-show">
+        <div class="settings-content-alway-show">
           <slot name="content-alway-show"></slot>
         </div>
-        <div class="options-content">
+        <div class="settings-content">
           <slot name="content"></slot>
         </div>
-        <div class="options-edit">
+        <div class="settings-edit">
           <slot name="edit" id="edit"></slot>
         </div>
-        <div class="options-save">
+        <div class="settings-save">
           <eq-button icon="save" data-save>${this.__('save')}</eq-button>
         </div>
         <slot name="info"></slot>

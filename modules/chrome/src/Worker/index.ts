@@ -1,15 +1,18 @@
-import { OptionsRepository } from '../Options/OptionsRepository'
 import {
   ChromeMessageGateway,
   MessageType,
 } from '../Shared/ChromeMessageGateway'
+import { SettingsRepository } from '../Settings/SettingsRepository'
 
-const optionsRepository = new OptionsRepository()
 const chromeMessageGateway = new ChromeMessageGateway()
 
 chromeMessageGateway.onMessage(
-  MessageType.OpenOptions,
+  MessageType.OpenSettings,
   chrome.runtime.openOptionsPage
 )
 
-optionsRepository.setDefault()
+chrome.runtime.onInstalled.addListener(async () => {
+  console.log('oninstalled')
+  const settingsRepository = new SettingsRepository()
+  await settingsRepository.setDefaultSettings()
+})

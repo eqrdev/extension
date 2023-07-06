@@ -1,24 +1,21 @@
-import { PopupRepository } from './PopupRepository'
-import {
-  EqualizerSettings,
-  SettingsRepository,
-} from '../Settings/SettingsRepository'
-import { PopupComponentProps } from './PopupComponent'
+import { EqualizerSettings, SettingsRepository } from './SettingsRepository'
+import { SettingsComponentProps } from './SettingsComponent'
 
-export class PopupPresenter {
-  async load(callback: (settings: PopupComponentProps) => void): Promise<void> {
+export class SettingsPresenter {
+  async load(
+    callback: (settings: SettingsComponentProps) => void
+  ): Promise<void> {
     const settingsRepository = new SettingsRepository()
-    const popupRepository = new PopupRepository()
     await settingsRepository.getSettings((settings: EqualizerSettings) => {
       callback({
         isOpenAiEnabled: settings.isOpenAiEnabled,
         profileUrl: this.getFullProfileUrl(settings.profileName),
+        profileUrlPart: settings.profileName,
         automaticMessage: this.getTextWithUrl(
           settings.automaticMessage,
           this.getFullProfileUrl(settings.profileName)
         ),
         isProfileUrlProvided: Boolean(settings.profileName),
-        onClickSettings: () => popupRepository.openSettings(),
       })
     })
   }

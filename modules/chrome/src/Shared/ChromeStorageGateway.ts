@@ -1,5 +1,5 @@
 export class ChromeStorageGateway<T> {
-  async get(): Promise<T> {
+  async getAll(): Promise<T> {
     return new Promise(resolve => {
       chrome.storage.sync.get(data => {
         resolve(data as T)
@@ -7,13 +7,11 @@ export class ChromeStorageGateway<T> {
     })
   }
 
-  async set(data: T): Promise<void> {
-    await chrome.storage.sync.set(data)
+  async get(key: keyof T): Promise<T[keyof T]> {
+    return (await this.getAll())[key]
   }
 
-  async setDefault(defaultData: Partial<T>): Promise<void> {
-    chrome.storage.sync.get(defaultData, async data => {
-      await chrome.storage.sync.set(data)
-    })
+  async set(data: T): Promise<void> {
+    await chrome.storage.sync.set(data)
   }
 }

@@ -1,32 +1,32 @@
 import { BaseWebComponent } from '../Shared/BaseWebComponent'
-import './OptionsSectionComponent'
-import { OptionsPresenter } from './OptionsPresenter'
+import './SettingsSectionComponent'
+import { SettingsPresenter } from './SettingsPresenter'
 
-export interface OptionsComponentProps {
+export interface SettingsComponentProps {
   profileUrl?: string
   profileUrlPart?: string
   isProfileUrlProvided: boolean
   automaticMessage: string
-  isOpenAiEnabled: false
+  isOpenAiEnabled: boolean
 }
 
 window.customElements.define(
-  'eq-options-page',
+  'eq-settings-page',
   class extends BaseWebComponent {
-    private options: OptionsComponentProps = {
+    private props: SettingsComponentProps = {
       isProfileUrlProvided: false,
       automaticMessage: '',
       isOpenAiEnabled: false,
     }
 
     protected async addListeners() {
-      const optionsPresenter = new OptionsPresenter()
-      await optionsPresenter.load(options => {
-        if (JSON.stringify(this.options) === JSON.stringify(options)) {
+      const settingsPresenter = new SettingsPresenter()
+      await settingsPresenter.load(settings => {
+        if (JSON.stringify(this.props) === JSON.stringify(settings)) {
           return
         }
 
-        this.options = options
+        this.props = settings
         this.render()
       })
     }
@@ -34,7 +34,7 @@ window.customElements.define(
     getTemplate() {
       return `
       <style>
-        .options {
+        .settings {
           display: flex;
           flex-direction: column;
           max-width: 640px;
@@ -43,7 +43,7 @@ window.customElements.define(
           gap: 24px;
         }
     
-        .options .logo {
+        .settings .logo {
           margin: 24px auto;
         }
         
@@ -59,7 +59,7 @@ window.customElements.define(
           flex: 1;
         }
         
-        .options-detail {
+        .settings-detail {
           color: var(--eq-color-n400);
         }
         
@@ -81,12 +81,12 @@ window.customElements.define(
           box-shadow: 0 0 0 2px rgba(39, 39, 39, 0.4);
         }
         
-        .options-detail eq-icon::part(icon) {
+        .settings-detail eq-icon::part(icon) {
           color: var(--eq-color-n300);
           transition: rotate .3s ease;
         }
         
-        .options-detail[open] eq-icon::part(icon) {
+        .settings-detail[open] eq-icon::part(icon) {
           rotate: 180deg;
         }
         
@@ -121,50 +121,50 @@ window.customElements.define(
           flex: 1;
         }
       </style>
-      <div class="options">
+      <div class="settings">
         <eq-logo class="logo" inverse size="40"></eq-logo>
         <eq-header level="2">${this.__('settings')}</eq-header>
         
-        <eq-options-section
+        <eq-settings-section
           title="${this.__('yourProfileLink')}"
           ${
-            this.options.isProfileUrlProvided
+            this.props.isProfileUrlProvided
               ? `copy="${this.getAttribute('profileUrl')}"`
               : ''
           }
           editable>
           <div slot="content">
             ${
-              this.options.isProfileUrlProvided
-                ? `<eq-typo>${this.options.profileUrl}</eq-typo>`
+              this.props.isProfileUrlProvided
+                ? `<eq-typo>${this.props.profileUrl}</eq-typo>`
                 : `<eq-alert severity="error">${this.__(
                     'missingUrlSettingsPage'
                   )}</eq-alert>`
             }
           </div>
-          <eq-typo slot="content">${this.options.profileUrl}</eq-typo>
+          <eq-typo slot="content">${this.props.profileUrl}</eq-typo>
           <div slot="edit" class="link-editor">
             <eq-typo>equalizer.dev/me/</eq-typo>
             <eq-input
-              value="${this.options.profileUrl}"
+              value="${this.props.profileUrl}"
               placeholder="${this.__('yourProfileId')}" />
           </div>
-        </eq-options-section>
+        </eq-settings-section>
         
-        <eq-options-section
+        <eq-settings-section
           title="${this.__('automaticMessage')}"
-          copy="${this.options.automaticMessage}"
+          copy="${this.props.automaticMessage}"
           editable>
           <eq-typo slot="content">
-            ${this.options.automaticMessage}
+            ${this.props.automaticMessage}
           </eq-typo>
           <div slot="edit">
             <eq-textarea
-              value="${this.options.automaticMessage}"
+              value="${this.props.automaticMessage}"
               info="${this.__('insertUrlInfo')}"
               maxLength="1000"></eq-textarea>
           </div>
-          <details slot="info" class="options-detail">
+          <details slot="info" class="settings-detail">
             <summary>
               <eq-typo>How does it work?</eq-typo>
               <eq-icon type="keyboard_arrow_down"></eq-icon>
@@ -200,9 +200,11 @@ window.customElements.define(
               </div>
             </div>
           </details>
-        </eq-options-section>
+        </eq-settings-section>
         
-        <eq-options-section title="${this.__('openai')}" data-openai switchable>
+        <eq-settings-section title="${this.__(
+          'openai'
+        )}" data-openai switchable>
           <eq-typo slot="content-alway-show">
             ${this.__('openAiDescription')}
           </eq-typo>
@@ -210,7 +212,7 @@ window.customElements.define(
             <eq-typo small bold>${this.__('apiKeyLabel')}</eq-typo>
             <eq-input placeholder="${this.__('apiKeyPlaceholder')}"></eq-input>
           </div>
-        </eq-options-section>
+        </eq-settings-section>
       </div>
     `
     }

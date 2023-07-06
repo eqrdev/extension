@@ -9,7 +9,7 @@
     "default_title": "__MSG_appDesc__",
     "default_popup": "html/popup.html"
   },
-  "options_page": "html/options.html",
+  "options_page": "html/settings.html",
   "icons": {
     "16": "assets/icons/icon-16.png",
     "32": "assets/icons/icon-32.png",

@@ -9,7 +9,7 @@ module.exports = {
   entry: {
     content: resolve(__dirname, './src/LinkedIn/index.ts'),
     background: resolve(__dirname, './src/Worker/index.ts'),
-    options: resolve(__dirname, './src/Options/OptionsComponent.ts'),
+    settings: resolve(__dirname, './src/Settings/SettingsComponent.ts'),
     popup: resolve(__dirname, './src/Popup/PopupComponent.ts'),
     components: resolve(__dirname, './src/Shared/Components/index.ts'),
   },
@@ -43,10 +43,9 @@ module.exports = {
       chunks: ['components', 'popup'],
     }),
     new HtmlWebpackPlugin({
-      template: 'template/options.html',
-      filename: resolve(dist, 'html/options.html'),
-      favicon: 'assets/icons/icon-32.png',
-      chunks: ['components', 'options'],
+      template: 'template/settings.html',
+      filename: resolve(dist, 'html/settings.html'),
+      chunks: ['components', 'settings'],
       title: 'Equalizer Settings',
     }),
     new CopyPlugin({

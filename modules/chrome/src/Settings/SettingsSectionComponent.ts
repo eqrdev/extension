@@ -1,48 +1,63 @@
 import { BaseWebComponent } from '../Shared/BaseWebComponent'
 
-customElements.define(
-  'eq-settings-section',
-  class extends BaseWebComponent {
-    static get observedAttributes() {
-      return ['editing']
-    }
+const EDITING_ATTRIBUTE = 'editing'
 
-    constructor() {
-      super()
-      this.attachShadow({ mode: 'open' })
-    }
+export class SettingsSection extends BaseWebComponent {
+  static get observedAttributes() {
+    return [EDITING_ATTRIBUTE]
+  }
 
-    protected addListeners() {
-      const section = this.shadowRoot.querySelector('.settings-section')
-      section.querySelector('[data-edit]')?.addEventListener('click', () => {
-        section.toggleAttribute('data-editing', true)
-        this.focusInput()
-      })
-      section.querySelector('[data-save]')?.addEventListener('click', () => {
-        section.toggleAttribute('data-editing', false)
-        this.dispatchEvent(new CustomEvent('setting:save'))
-      })
-      section
-        .querySelector('[data-switch]')
-        ?.addEventListener(
-          'switch:checked',
-          ({ detail: { checked } }: CustomEvent) => {
-            section.toggleAttribute('data-editing', checked)
-            if (checked) this.focusInput()
-          }
-        )
-    }
+  constructor() {
+    super()
+    this.attachShadow({ mode: 'open' })
+  }
 
-    focusInput() {
-      this.shadowRoot
-        .querySelector<HTMLSlotElement>('#edit')
-        .assignedElements({ flatten: true })[0]
-        .querySelector<HTMLInputElement>('eq-input, eq-textarea')
-        ?.focus()
-    }
+  set editing(isEditing: boolean) {
+    this.setAttribute(EDITING_ATTRIBUTE, isEditing ? 'true' : 'false')
+  }
 
-    getTemplate(): string {
-      return `
+  get editing(): string {
+    return this.getAttribute(EDITING_ATTRIBUTE)
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === EDITING_ATTRIBUTE) {
+      this.$ui.section.toggleAttribute('data-editing', newValue === 'true')
+    }
+  }
+
+  protected addListeners() {
+    const { section, edit, save } = this.$ui
+
+    edit?.addEventListener('click', () => {
+      this.dispatchEvent(new CustomEvent('setting:edit'))
+    })
+
+    save?.addEventListener('click', () => {
+      this.dispatchEvent(new CustomEvent('setting:save'))
+    })
+
+    // section
+    //   .querySelector('[data-switch]')
+    //   ?.addEventListener(
+    //     'switch:checked',
+    //     ({ detail: { checked } }: CustomEvent) => {
+    //       section.toggleAttribute('data-editing', checked)
+    //       if (checked) this.focusInput()
+    //     }
+    //   )
+  }
+
+  focusInput() {
+    this.shadowRoot
+      .querySelector<HTMLSlotElement>('#edit')
+      .assignedElements({ flatten: true })[0]
+      .querySelector<HTMLInputElement>('eq-input, eq-textarea')
+      ?.focus()
+  }
+
+  getTemplate(): string {
+    return `
       <style>
         .settings-section {
           border-radius: 4px;
@@ -104,9 +119,7 @@ customElements.define(
           opacity: 1;
         }
       </style>
-      <div class="settings-section" ${
-        this.hasAttribute('editing') ? 'data-editing' : ''
-      }>
+      <section class="settings-section" data-js-control="section">
         <div class="settings-header">
           <eq-typo bold>${this.getAttribute('title')}</eq-typo>
           <div class="settings-actions">
@@ -120,7 +133,7 @@ customElements.define(
             }
             ${
               this.hasAttribute('editable')
-                ? `<eq-icon-button data-edit icon="edit"></eq-icon-button>`
+                ? `<eq-icon-button data-js-control="edit" icon="edit"></eq-icon-button>`
                 : ''
             }
           </div>
@@ -142,10 +155,13 @@ customElements.define(
           <slot name="edit" id="edit"></slot>
         </div>
         <div class="settings-save">
-          <eq-button icon="save" data-save>${this.__('save')}</eq-button>
+          <eq-button icon="save" data-js-control="save">${this.__(
+            'save'
+          )}</eq-button>
         </div>
         <slot name="info"></slot>
-      </div>`
-    }
+      </section>`
   }
-)
+}
+
+customElements.define('eq-settings-section', SettingsSection)

@@ -11,7 +11,7 @@ module.exports = {
     background: resolve(__dirname, './src/Worker/index.ts'),
     settings: resolve(__dirname, './src/Settings/SettingsComponent.ts'),
     popup: resolve(__dirname, './src/Popup/PopupComponent.ts'),
-    components: resolve(__dirname, './src/Shared/Components/index.ts'),
+    components: resolve(__dirname, './src/Shared/UILibraryConnector.ts'),
   },
   output: {
     path: resolve(dist, 'js'),

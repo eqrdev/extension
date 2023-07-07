@@ -884,6 +884,7 @@ __metadata:
     html-webpack-plugin: ^5.5.3
     ts-loader: ^9.4.4
     typescript: ^5.1.6
+    ui-library: "workspace:^"
     webpack: ^5.88.1
     webpack-cli: ^5.1.4
   languageName: unknown
@@ -3147,6 +3148,12 @@ __metadata:
   checksum: f53bfe97f7c8b2b6d23cf572750d4e7d1e0c5fff1c36d859d0ec84556a827b8785077bc27676bf7e71fae538e517c3ecc0f37e7f593be913d884805d931bc8be
   languageName: node
   linkType: hard
+
+"ui-library@workspace:^, ui-library@workspace:modules/ui-library":
+  version: 0.0.0-use.local
+  resolution: "ui-library@workspace:modules/ui-library"
+  languageName: unknown
+  linkType: soft
 
 "unbox-primitive@npm:^1.0.2":
   version: 1.0.2

@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "lib": ["es2021", "dom"],
+    "target": "es6",
+    "skipLibCheck": true
+  }
+}

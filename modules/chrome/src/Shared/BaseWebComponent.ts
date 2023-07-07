@@ -14,9 +14,11 @@ export abstract class BaseWebComponent extends HTMLElement {
     return chrome.i18n.getMessage(message)
   }
 
-  protected get $ui(): Record<string, Element> {
+  protected get $ui(): Record<string, Element & { click(): void }> {
     return Array.from(
-      this.querySelectorAll<HTMLElement>('[data-js-control]')
+      (this.shadowRoot ?? this).querySelectorAll<HTMLElement>(
+        '[data-js-control]'
+      )
     ).reduce(
       (map, element) => ({
         ...map,

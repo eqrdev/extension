@@ -1,6 +1,7 @@
 import { BaseWebComponent } from '../Shared/BaseWebComponent'
 import './SettingsSectionComponent'
 import { SettingsPresenter } from './SettingsPresenter'
+import { SettingsSection } from './SettingsSectionComponent'
 
 export interface SettingsComponentProps {
   profileUrl?: string
@@ -35,7 +36,11 @@ window.customElements.define(
         this.props = settings
         this.render()
       })
+      this.$ui.profileUrlSection.addEventListener('setting:edit', () => {
+        ;(<SettingsSection>this.$ui.profileUrlSection).editing = true
+      })
       this.$ui.profileUrlSection.addEventListener('setting:save', () => {
+        ;(<SettingsSection>this.$ui.profileUrlSection).editing = false
         this.props.onSaveProfileName(
           (this.$ui.profileNameInput as HTMLInputElement).value
         )

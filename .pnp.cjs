@@ -34,6 +34,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       {\
         "name": "scraper",\
         "reference": "workspace:modules/scraper"\
+      },\
+      {\
+        "name": "ui-library",\
+        "reference": "workspace:modules/ui-library"\
       }\
     ],\
     "enableTopLevelFallback": true,\
@@ -44,7 +48,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       ["eslint", ["workspace:modules/eslint"]],\
       ["linkedin", ["workspace:modules/linkedin"]],\
       ["openai", ["workspace:modules/openai"]],\
-      ["scraper", ["workspace:modules/scraper"]]\
+      ["scraper", ["workspace:modules/scraper"]],\
+      ["ui-library", ["workspace:modules/ui-library"]]\
     ],\
     "fallbackPool": [\
     ],\
@@ -1236,6 +1241,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["html-webpack-plugin", "virtual:5786f16169769c8a1b4ad49978d8d449da06ad07bc2a16370536aad8c7277da52f87dd9371f16487fb285be3764e4aaaa02f2c80e6f3b899db0f5be24cc713f0#npm:5.5.3"],\
             ["ts-loader", "virtual:5786f16169769c8a1b4ad49978d8d449da06ad07bc2a16370536aad8c7277da52f87dd9371f16487fb285be3764e4aaaa02f2c80e6f3b899db0f5be24cc713f0#npm:9.4.4"],\
             ["typescript", "patch:typescript@npm%3A5.1.6#~builtin<compat/typescript>::version=5.1.6&hash=5da071"],\
+            ["ui-library", "workspace:modules/ui-library"],\
             ["webpack", "virtual:5786f16169769c8a1b4ad49978d8d449da06ad07bc2a16370536aad8c7277da52f87dd9371f16487fb285be3764e4aaaa02f2c80e6f3b899db0f5be24cc713f0#npm:5.88.1"],\
             ["webpack-cli", "virtual:5786f16169769c8a1b4ad49978d8d449da06ad07bc2a16370536aad8c7277da52f87dd9371f16487fb285be3764e4aaaa02f2c80e6f3b899db0f5be24cc713f0#npm:5.1.4"]\
           ],\
@@ -3926,6 +3932,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["typescript", "patch:typescript@npm%3A5.1.6#~builtin<compat/typescript>::version=5.1.6&hash=5da071"]\
           ],\
           "linkType": "HARD"\
+        }]\
+      ]],\
+      ["ui-library", [\
+        ["workspace:modules/ui-library", {\
+          "packageLocation": "./modules/ui-library/",\
+          "packageDependencies": [\
+            ["ui-library", "workspace:modules/ui-library"]\
+          ],\
+          "linkType": "SOFT"\
         }]\
       ]],\
       ["unbox-primitive", [\

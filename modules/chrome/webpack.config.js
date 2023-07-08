@@ -5,13 +5,13 @@ const CopyPlugin = require('copy-webpack-plugin')
 const dist = resolve(__dirname, '../../dist')
 
 module.exports = {
-  mode: 'production',
+  mode: 'development',
+  devtool: 'cheap-module-source-map',
   entry: {
     content: resolve(__dirname, './src/LinkedIn/index.ts'),
     background: resolve(__dirname, './src/Worker/index.ts'),
-    settings: resolve(__dirname, './src/Settings/SettingsComponent.ts'),
-    popup: resolve(__dirname, './src/Popup/PopupComponent.ts'),
-    components: resolve(__dirname, './src/Shared/UILibraryConnector.ts'),
+    settings: resolve(__dirname, './src/Settings/index.tsx'),
+    popup: resolve(__dirname, './src/Popup/index.tsx'),
   },
   output: {
     path: resolve(dist, 'js'),
@@ -22,6 +22,7 @@ module.exports = {
     rules: [
       {
         test: /\.[jt]sx?$/,
+        exclude: /node_modules\/(?!ui-library)/,
         use: {
           loader: 'ts-loader',
         },
@@ -40,12 +41,12 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: 'template/popup.html',
       filename: resolve(dist, 'html/popup.html'),
-      chunks: ['components', 'popup'],
+      chunks: ['popup'],
     }),
     new HtmlWebpackPlugin({
       template: 'template/settings.html',
       filename: resolve(dist, 'html/settings.html'),
-      chunks: ['components', 'settings'],
+      chunks: ['settings'],
       title: 'Equalizer Settings',
     }),
     new CopyPlugin({

@@ -12,7 +12,6 @@ chromeMessageGateway.onMessage(
 )
 
 chrome.runtime.onInstalled.addListener(async () => {
-  console.log('oninstalled')
   const settingsRepository = new SettingsRepository()
   await settingsRepository.setDefaultSettings()
 })

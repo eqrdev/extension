@@ -11,9 +11,6 @@
   "automaticMessage": {
     "message": "Automatic reply"
   },
-  "openai": {
-    "message": "OpenAI"
-  },
   "disabled": {
     "message": "Disabled"
   },
@@ -70,5 +67,8 @@
   },
   "apiKeyPlaceholder": {
     "message": "Your API key"
+  },
+  "emptyProfileUrlError": {
+    "message": "The profile URL cannot be empty!"
   }
 }

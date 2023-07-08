@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
+    "moduleResolution": "node",
     "lib": ["es2021", "dom"],
     "target": "es6",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "jsx": "react-jsx"
   }
 }

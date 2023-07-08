@@ -1,16 +1,25 @@
 import { EqualizerSettings, SettingsRepository } from './SettingsRepository'
-import { SettingsComponentProps } from './SettingsComponent'
 import { ProfileUrl } from '../Shared/ProfileUrl'
 
+export interface SettingsModel {
+  profileUrl?: string
+  profileUrlFull?: string
+  profileName?: string
+  isProfileUrlProvided: boolean
+  automaticMessage: string
+  rawAutomaticMessage: string
+  isOpenAiEnabled: boolean
+  openAiKey?: string
+  onSaveProfileName: (value: string) => Promise<void>
+}
+
 export class SettingsPresenter {
-  async load(
-    callback: (settings: SettingsComponentProps) => void
-  ): Promise<void> {
+  async load(callback: (settings: SettingsModel) => void): Promise<void> {
     const settingsRepository = new SettingsRepository()
     await settingsRepository.getSettings((settings: EqualizerSettings) => {
       const profileUrl = new ProfileUrl(settings.profileName)
 
-      const handleProfileNameChange = (value: string): void => {
+      const handleProfileNameChange = async (value: string): Promise<void> => {
         if (typeof value !== 'string') {
           throw new TypeError('IncorrectTypeError')
         }
@@ -19,7 +28,7 @@ export class SettingsPresenter {
           throw new Error('EmptyValueError')
         }
 
-        settingsRepository.set('profileName', value)
+        await settingsRepository.set('profileName', value)
       }
 
       callback({

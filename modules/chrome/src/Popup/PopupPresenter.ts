@@ -3,11 +3,19 @@ import {
   EqualizerSettings,
   SettingsRepository,
 } from '../Settings/SettingsRepository'
-import { PopupComponentProps } from './PopupComponent'
 import { ProfileUrl } from '../Shared/ProfileUrl'
 
+export interface PopupModel {
+  profileUrl?: string
+  profileUrlFull?: string
+  isProfileUrlProvided: boolean
+  automaticMessage: string
+  isOpenAiEnabled: boolean
+  onClickSettings?: () => void
+}
+
 export class PopupPresenter {
-  async load(callback: (settings: PopupComponentProps) => void): Promise<void> {
+  async load(callback: (settings: PopupModel) => void): Promise<void> {
     const settingsRepository = new SettingsRepository()
     const popupRepository = new PopupRepository()
     await settingsRepository.getSettings((settings: EqualizerSettings) => {

@@ -29,7 +29,9 @@ const Styled = {
 
 export const Settings = (): ReactElement => {
   const { $i18n } = useContext(I18nContext)
-  const inputRef = useRef(null)
+  const profileNameInput = useRef(null)
+  const messageInput = useRef(null)
+  const apiKeyInput = useRef(null)
 
   const [editMessage, setEditMessage] = useState(false)
   const [messageError, setMessageError] = useState('')
@@ -55,7 +57,7 @@ export const Settings = (): ReactElement => {
   const handleSaveClick = async () => {
     try {
       setLinkError('')
-      await data.onSaveProfileName(inputRef.current.value)
+      await data.onSaveProfileName(profileNameInput.current.value)
       setEditLink(false)
     } catch (error) {
       if (error.message === 'EmptyValueError') {
@@ -65,14 +67,40 @@ export const Settings = (): ReactElement => {
   }
 
   const handleMessageSave = async () => {
-    setEditMessage(false)
+    try {
+      setMessageError('')
+      await data.onSaveMessage(messageInput.current.value)
+      setEditMessage(false)
+    } catch (error) {
+      if (error.message === 'EmptyValueError') {
+        setMessageError($i18n('emptyMessageError'))
+      }
+    }
+  }
+
+  const handleProfileNameKeydown = async event => {
+    if ([' ', 'Enter'].includes(event.key)) {
+      await handleSaveClick()
+    }
   }
 
   const handleApiKeySave = async () => {
-    setEditApiKey(false)
+    try {
+      setApiKeyError('')
+      await data.onSaveApiKey(apiKeyInput.current.value)
+      setEditApiKey(false)
+    } catch (error) {
+      if (error.message === 'EmptyValueError') {
+        setApiKeyError($i18n('emptyApiKeyError'))
+      }
+    }
   }
 
   const handleSwitchApiKey = async (checked: boolean) => {
+    if (!checked) {
+      await data.disableOpenAi()
+    }
+
     setEditApiKey(checked)
   }
 
@@ -93,10 +121,11 @@ export const Settings = (): ReactElement => {
           <Styled.LinkEditor>
             <EqTypo>equalizer.dev/me/</EqTypo>
             <EqInput
-              ref={inputRef}
+              ref={profileNameInput}
               autoFocus
               defaultValue={data.profileName}
               placeholder={$i18n('yourProfileId')}
+              onKeyDown={handleProfileNameKeydown}
             />
           </Styled.LinkEditor>
         ) : (
@@ -116,6 +145,7 @@ export const Settings = (): ReactElement => {
         {editMessage ? (
           <>
             <EqTextarea
+              ref={messageInput}
               autoFocus
               value={data.rawAutomaticMessage}
               info={$i18n('insertUrlInfo')}
@@ -140,7 +170,7 @@ export const Settings = (): ReactElement => {
           <>
             <EqTypo>{$i18n('apiKeyLabel')}</EqTypo>
             <EqInput
-              ref={inputRef}
+              ref={apiKeyInput}
               autoFocus
               defaultValue={data.openAiKey}
               placeholder={$i18n('apiKeyPlaceholder')}

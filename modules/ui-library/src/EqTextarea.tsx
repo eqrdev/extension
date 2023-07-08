@@ -1,13 +1,16 @@
+import { mergeRefs } from 'react-merge-refs'
 import styled from '@emotion/styled'
 import { EqTypo } from './EqTypo'
 import {
   ChangeEventHandler,
+  forwardRef,
   TextareaHTMLAttributes,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from 'react'
+import { merge } from '@emotion/css'
 
 export interface EqTextareaProps {
   maxLength?: number
@@ -47,13 +50,10 @@ const Styled = {
   CharCount: styled(EqTypo)({}),
 }
 
-export const EqTextarea = ({
-  value,
-  info,
-  maxLength,
-  characterCount,
-  ...props
-}: EqTextareaProps & TextareaHTMLAttributes<HTMLTextAreaElement>) => {
+export const EqTextarea = forwardRef<
+  HTMLTextAreaElement,
+  EqTextareaProps & TextareaHTMLAttributes<HTMLTextAreaElement>
+>(({ value, info, maxLength, characterCount, ...props }, ref) => {
   const inputRef = useRef(null)
   const [currentValue, setCurrentValue] = useState(value)
 
@@ -81,7 +81,7 @@ export const EqTextarea = ({
         maxLength={maxLength}
         defaultValue={value}
         onChange={handleInput}
-        ref={inputRef}
+        ref={mergeRefs([inputRef, ref])}
         {...props}
       />
       <Styled.Meta>
@@ -92,4 +92,4 @@ export const EqTextarea = ({
       </Styled.Meta>
     </Styled.Wrapper>
   )
-}
+})

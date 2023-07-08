@@ -3,7 +3,6 @@ import { Observable } from '../Shared/Observable'
 
 export interface EqualizerSettings {
   automaticMessage: string
-  isOpenAiEnabled: boolean
   openAiKey?: string
   profileName?: string
 }
@@ -13,7 +12,7 @@ Please check out my Equalizer Profile page and answer a few questions about the 
 Please follow this link: #URL#`
 
 export class SettingsRepository {
-  private chromeStorageGateway: ChromeStorageGateway<EqualizerSettings>
+  private readonly chromeStorageGateway: ChromeStorageGateway<EqualizerSettings>
   private programmersModel: Observable<EqualizerSettings>
 
   constructor() {
@@ -31,10 +30,13 @@ export class SettingsRepository {
     await this.loadSettings()
   }
 
+  async remove(settingKey: keyof EqualizerSettings) {
+    await this.chromeStorageGateway.remove(settingKey)
+  }
+
   async setDefaultSettings() {
     await this.chromeStorageGateway.set({
       automaticMessage: DEFAULT_AUTO_REPLY_TEXT,
-      isOpenAiEnabled: false,
     })
     await this.loadSettings()
   }

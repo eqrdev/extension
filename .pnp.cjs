@@ -3899,6 +3899,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["react-merge-refs", [\
+        ["npm:2.0.2", {\
+          "packageLocation": "./.yarn/cache/react-merge-refs-npm-2.0.2-3d1c97ea4a-64758870d7.zip/node_modules/react-merge-refs/",\
+          "packageDependencies": [\
+            ["react-merge-refs", "npm:2.0.2"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["rechoir", [\
         ["npm:0.8.0", {\
           "packageLocation": "./.yarn/cache/rechoir-npm-0.8.0-fb660b3bc8-ad3caed8af.zip/node_modules/rechoir/",\
@@ -4548,6 +4557,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/react-dom", "npm:18.2.6"],\
             ["react", "npm:18.2.0"],\
             ["react-dom", "virtual:a0d22ec436e964902391a14217aecc37630745a2186499b495f45945e82635a36c541e98650e60fa93ebd796f09f04e16e9c32468c11e418ff6ee556c3ef5b90#npm:18.2.0"],\
+            ["react-merge-refs", "npm:2.0.2"],\
             ["typescript", "patch:typescript@npm%3A5.1.6#~builtin<compat/typescript>::version=5.1.6&hash=5da071"]\
           ],\
           "linkType": "SOFT"\

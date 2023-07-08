@@ -10,7 +10,10 @@ export interface SettingsModel {
   rawAutomaticMessage: string
   isOpenAiEnabled: boolean
   openAiKey?: string
-  onSaveProfileName: (value: string) => Promise<void>
+  onSaveProfileName(value: string): Promise<void>
+  onSaveMessage(value: string): Promise<void>
+  onSaveApiKey(value: string): Promise<void>
+  disableOpenAi(): Promise<void>
 }
 
 export class SettingsPresenter {
@@ -19,7 +22,10 @@ export class SettingsPresenter {
     await settingsRepository.getSettings((settings: EqualizerSettings) => {
       const profileUrl = new ProfileUrl(settings.profileName)
 
-      const handleProfileNameChange = async (value: string): Promise<void> => {
+      const handleSimpleText = async (
+        key: keyof EqualizerSettings,
+        value: string
+      ): Promise<void> => {
         if (typeof value !== 'string') {
           throw new TypeError('IncorrectTypeError')
         }
@@ -28,11 +34,24 @@ export class SettingsPresenter {
           throw new Error('EmptyValueError')
         }
 
-        await settingsRepository.set('profileName', value)
+        await settingsRepository.set(key, value)
       }
 
+      const handleProfileNameChange = async (value: string): Promise<void> =>
+        handleSimpleText('profileName', value)
+
+      const handleMessageChange = async (value: string): Promise<void> =>
+        handleSimpleText('automaticMessage', value)
+
+      const handleApiKeyChange = async (value: string): Promise<void> =>
+        handleSimpleText('openAiKey', value)
+
+      const handleDisabledOpenAi = async () =>
+        settingsRepository.remove('openAiKey')
+
       callback({
-        isOpenAiEnabled: settings.isOpenAiEnabled,
+        isOpenAiEnabled: !!settings.openAiKey,
+        openAiKey: settings.openAiKey,
         profileUrl: profileUrl.base,
         profileUrlFull: profileUrl.full,
         profileName: profileUrl.name,
@@ -40,6 +59,9 @@ export class SettingsPresenter {
         rawAutomaticMessage: settings.automaticMessage,
         isProfileUrlProvided: Boolean(settings.profileName),
         onSaveProfileName: handleProfileNameChange,
+        onSaveMessage: handleMessageChange,
+        onSaveApiKey: handleApiKeyChange,
+        disableOpenAi: handleDisabledOpenAi,
       })
     })
   }

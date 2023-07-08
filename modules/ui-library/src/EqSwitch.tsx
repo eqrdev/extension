@@ -1,8 +1,9 @@
-import { HTMLAttributes, ReactElement, useState } from 'react'
+import { HTMLAttributes, ReactElement, useEffect, useState } from 'react'
 import styled from '@emotion/styled'
 
 export interface EqSwitchProps {
   label: string
+  enabledLabel?: string
   checked: boolean
   onSwitch?: (checked: boolean) => void
 }
@@ -57,8 +58,13 @@ export const EqSwitch = ({
   label,
   checked,
   onSwitch,
+  enabledLabel,
 }: EqSwitchProps & HTMLAttributes<HTMLInputElement>): ReactElement => {
   const [isChecked, setIsChecked] = useState(checked)
+
+  useEffect(() => {
+    setIsChecked(checked)
+  }, [checked])
 
   const handleClick = () => {
     setIsChecked(!isChecked)
@@ -74,7 +80,9 @@ export const EqSwitch = ({
 
   return (
     <Styled.Wrapper>
-      <Styled.Label>{label}</Styled.Label>
+      <Styled.Label>
+        {isChecked && enabledLabel ? enabledLabel : label}
+      </Styled.Label>
       <Styled.Track
         checked={isChecked}
         tabIndex={0}

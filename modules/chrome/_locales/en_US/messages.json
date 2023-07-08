@@ -70,5 +70,11 @@
   },
   "emptyProfileUrlError": {
     "message": "The profile URL cannot be empty!"
+  },
+  "emptyMessageError": {
+    "message": "The automatic reply cannot be empty!"
+  },
+  "emptyApiKeyError": {
+    "message": "The OpenAI API key cannot be empty!"
   }
 }

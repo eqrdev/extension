@@ -82,7 +82,8 @@ export const SettingsSection = ({
         {switchable && (
           <EqSwitch
             checked={switched}
-            label={$i18n(switched ? 'enabled' : 'disabled')}
+            enabledLabel={$i18n('enabled')}
+            label={$i18n('disabled')}
             onSwitch={onSwitch}
           />
         )}

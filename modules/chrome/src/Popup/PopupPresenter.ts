@@ -22,7 +22,7 @@ export class PopupPresenter {
       const profileUrl = new ProfileUrl(settings.profileName)
 
       callback({
-        isOpenAiEnabled: settings.isOpenAiEnabled,
+        isOpenAiEnabled: !!settings.openAiKey,
         profileUrl: profileUrl.base,
         profileUrlFull: profileUrl.full,
         automaticMessage: profileUrl.replaceInText(settings.automaticMessage),

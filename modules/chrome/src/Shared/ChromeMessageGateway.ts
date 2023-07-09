@@ -1,19 +1,30 @@
-export const MessageType = {
-  OpenSettings: 'OPEN_SETTINGS',
-  SetDefaultSettings: 'SET_DEFAULT_SETTINGS',
-}
+const MessageTypes = [
+  'OpenSettings',
+  'SetDefaultSettings',
+  'ChangeUrl',
+  'Load',
+] as const
 
-type MessageKey = keyof typeof MessageType
-export type MessageTypeValue = (typeof MessageType)[MessageKey]
+export type MessageType = (typeof MessageTypes)[number]
 
 export class ChromeMessageGateway {
-  async sendMessage(message: MessageTypeValue) {
-    return chrome.runtime.sendMessage(message)
+  private isBackground = false
+
+  constructor(isBackground?: boolean) {
+    this.isBackground = isBackground
   }
 
-  async onMessage(message: MessageTypeValue, callback: () => unknown) {
-    return chrome.runtime.onMessage.addListener(messageName => {
-      if (message === messageName) callback()
+  async send(messageType: MessageType, tabId?: number) {
+    if (this.isBackground) {
+      await chrome.tabs.sendMessage(tabId, messageType)
+    } else {
+      await chrome.runtime.sendMessage(messageType)
+    }
+  }
+
+  async on(messageType: MessageType, callback: () => unknown) {
+    return chrome.runtime.onMessage.addListener(type => {
+      if (messageType === type) callback()
     })
   }
 }

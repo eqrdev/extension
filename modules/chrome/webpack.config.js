@@ -39,15 +39,18 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: 'template/popup.html',
       filename: resolve(dist, 'html/popup.html'),
       chunks: ['popup'],
+      templateContent: '<div id="root"></div>',
     }),
     new HtmlWebpackPlugin({
-      template: 'template/settings.html',
       filename: resolve(dist, 'html/settings.html'),
       chunks: ['settings'],
       title: 'Equalizer Settings',
+      templateContent: `
+        <link rel="icon" type="image/x-icon" href="../assets/icons/icon-32.png" />
+        <title>Equalizer Settings</title>
+        <div id="root"></div>`,
     }),
     new CopyPlugin({
       patterns: [

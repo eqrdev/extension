@@ -1,17 +1,26 @@
-import {
-  ChromeMessageGateway,
-  MessageType,
-} from '../Shared/ChromeMessageGateway'
+import { ChromeMessageGateway } from '../Shared/ChromeMessageGateway'
 import { SettingsRepository } from '../Settings/SettingsRepository'
+import { LinkedInUrl } from '../LinkedIn/LinkedInUrl'
 
-const chromeMessageGateway = new ChromeMessageGateway()
+const chromeMessageGateway = new ChromeMessageGateway(true)
 
-chromeMessageGateway.onMessage(
-  MessageType.OpenSettings,
-  chrome.runtime.openOptionsPage
-)
+chromeMessageGateway.on('OpenSettings', chrome.runtime.openOptionsPage)
 
 chrome.runtime.onInstalled.addListener(async () => {
   const settingsRepository = new SettingsRepository()
   await settingsRepository.setDefaultSettings()
 })
+
+chrome.webNavigation.onHistoryStateUpdated.addListener(
+  async ({ tabId }) => {
+    await chromeMessageGateway.send('ChangeUrl', tabId)
+  },
+  { url: [{ urlPrefix: new LinkedInUrl().getFullUrl('Messaging') }] }
+)
+
+chrome.webNavigation.onHistoryStateUpdated.addListener(
+  async ({ tabId }) => {
+    await chromeMessageGateway.send('Load', tabId)
+  },
+  { url: [{ urlPrefix: new LinkedInUrl().getFullUrl('Messaging') }] }
+)

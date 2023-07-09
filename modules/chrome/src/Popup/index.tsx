@@ -11,4 +11,4 @@ const App = () => (
   </I18nProvider>
 )
 
-createRoot(document.getElementById('app')).render(<App />)
+createRoot(document.getElementById('root')).render(<App />)

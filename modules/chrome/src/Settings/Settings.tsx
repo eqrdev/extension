@@ -1,6 +1,13 @@
 import { ReactElement, useContext, useEffect, useRef, useState } from 'react'
 import styled from '@emotion/styled'
-import { EqHeader, EqInput, EqLogo, EqTextarea, EqTypo } from 'ui-library'
+import {
+  EqAlert,
+  EqHeader,
+  EqInput,
+  EqLogo,
+  EqTextarea,
+  EqTypo,
+} from 'ui-library'
 import { I18nContext } from '../Shared/I18nProvider'
 import { SettingsSection } from './SettingsSection'
 import { SettingsModel, SettingsPresenter } from './SettingsPresenter'
@@ -128,8 +135,10 @@ export const Settings = (): ReactElement => {
               onKeyDown={handleProfileNameKeydown}
             />
           </Styled.LinkEditor>
-        ) : (
+        ) : data.isProfileUrlProvided ? (
           <EqTypo>{data.profileUrl}</EqTypo>
+        ) : (
+          <EqAlert severity="error">{$i18n('missingUrlSettingsPage')}</EqAlert>
         )}
       </SettingsSection>
       <SettingsSection
@@ -166,16 +175,21 @@ export const Settings = (): ReactElement => {
         error={apiKeyError}
         switched={data.isOpenAiEnabled}
       >
-        {editApiKey && (
-          <>
-            <EqTypo>{$i18n('apiKeyLabel')}</EqTypo>
-            <EqInput
-              ref={apiKeyInput}
-              autoFocus
-              defaultValue={data.openAiKey}
-              placeholder={$i18n('apiKeyPlaceholder')}
-            />
-          </>
+        <EqTypo>{$i18n('openAiDescription')}</EqTypo>
+        {(data.openAiKey || editApiKey) && (
+          <EqTypo bold small>
+            {$i18n('apiKeyLabel')}
+          </EqTypo>
+        )}
+        {editApiKey ? (
+          <EqInput
+            ref={apiKeyInput}
+            autoFocus
+            defaultValue={data.openAiKey}
+            placeholder={$i18n('apiKeyPlaceholder')}
+          />
+        ) : (
+          data.openAiKey && <EqTypo>{data.openAiKey}</EqTypo>
         )}
       </SettingsSection>
     </Styled.Wrapper>

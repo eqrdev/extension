@@ -17,10 +17,3 @@ chrome.webNavigation.onHistoryStateUpdated.addListener(
   },
   { url: [{ urlPrefix: new LinkedInUrl().getFullUrl('Messaging') }] }
 )
-
-chrome.webNavigation.onHistoryStateUpdated.addListener(
-  async ({ tabId }) => {
-    await chromeMessageGateway.send('Load', tabId)
-  },
-  { url: [{ urlPrefix: new LinkedInUrl().getFullUrl('Messaging') }] }
-)

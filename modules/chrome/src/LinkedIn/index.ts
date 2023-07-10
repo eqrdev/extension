@@ -1,28 +1,33 @@
-import { ChromeMessageGateway } from '../Shared/ChromeMessageGateway'
 import { createTextInsertButton } from './createTextInsertButton'
 import { pasteTextToElement } from './pasteTextToElement'
 import { LinkedInPresenter } from './LinnkedInPresenter'
+import { DomInjector } from './DomInjector'
+import { ChromeMessageGateway } from '../Shared/ChromeMessageGateway'
 
-const chromeMessageGateway = new ChromeMessageGateway()
 const linkedInPresenter = new LinkedInPresenter()
+const button = createTextInsertButton()
 
-const installTextInsertButton = async () => {
-  await linkedInPresenter.load(({ isProfileUrlProvided, automaticMessage }) => {
+linkedInPresenter
+  .load(({ isProfileUrlProvided, automaticMessage }) => {
     if (!isProfileUrlProvided) {
       return
     }
 
-    const button = createTextInsertButton()
-    const wrapper = document.querySelector('.msg-form__left-actions')
-    wrapper.appendChild(button)
-    button.addEventListener('click', () => {
-      pasteTextToElement(
-        automaticMessage,
-        document.querySelector('.msg-form__contenteditable')
-      )
+    new DomInjector({
+      element: button,
+      parentSelector: '.msg-form__left-actions',
+      routeName: 'Messaging',
+      messageType: 'ChangeUrl',
+      callback: element => {
+        element.addEventListener('click', () => {
+          pasteTextToElement(
+            automaticMessage,
+            document.querySelector('.msg-form__contenteditable')
+          )
+        })
+      },
     })
   })
-}
-
-chromeMessageGateway.on('ChangeUrl', installTextInsertButton)
-chromeMessageGateway.on('Load', installTextInsertButton)
+  .then(async () => {
+    await new ChromeMessageGateway().send('Load')
+  })

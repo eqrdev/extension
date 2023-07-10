@@ -32,6 +32,7 @@ export class SettingsRepository {
 
   async remove(settingKey: keyof EqualizerSettings) {
     await this.chromeStorageGateway.remove(settingKey)
+    await this.loadSettings()
   }
 
   async setDefaultSettings() {

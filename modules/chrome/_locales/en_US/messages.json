@@ -76,5 +76,11 @@
   },
   "emptyApiKeyError": {
     "message": "The OpenAI API key cannot be empty!"
+  },
+  "checkMessages": {
+    "message": "Check messages"
+  },
+  "lastCheck": {
+    "message": "last check"
   }
 }

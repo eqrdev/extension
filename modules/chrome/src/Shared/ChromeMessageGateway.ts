@@ -8,7 +8,7 @@ const MessageTypes = [
 export type MessageType = (typeof MessageTypes)[number]
 
 export class ChromeMessageGateway {
-  private isBackground = false
+  private readonly isBackground: boolean = false
 
   constructor(isBackground?: boolean) {
     this.isBackground = isBackground

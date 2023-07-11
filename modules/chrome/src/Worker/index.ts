@@ -1,6 +1,6 @@
 import { ChromeMessageGateway } from '../Shared/ChromeMessageGateway'
 import { SettingsRepository } from '../Settings/SettingsRepository'
-import { LinkedInUrl } from '../LinkedIn/LinkedInUrl'
+import { LinkedInUrl } from '../LinkedIn/Shared/LinkedInUrl'
 
 const chromeMessageGateway = new ChromeMessageGateway(true)
 

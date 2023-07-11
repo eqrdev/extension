@@ -1,33 +1,31 @@
-import { createTextInsertButton } from './createTextInsertButton'
-import { pasteTextToElement } from './pasteTextToElement'
-import { LinkedInPresenter } from './LinnkedInPresenter'
-import { DomInjector } from './DomInjector'
+import { LinkedInUrl } from './Shared/LinkedInUrl'
+import { waitForLinkedinLoad } from './Shared/waitForLinkedin'
 import { ChromeMessageGateway } from '../Shared/ChromeMessageGateway'
+import { ReplyButton } from './Messaging/ReplyButton/ReplyButton'
+import { MessageChecker } from './Messaging/MessageChecker/MessageChecker'
 
-const linkedInPresenter = new LinkedInPresenter()
-const button = createTextInsertButton()
+const linkedInUrl = new LinkedInUrl()
+const isOnMessagingPage = () => linkedInUrl.isOnRoute('Messaging')
+const replyButton = new ReplyButton()
+const messageChecker = new MessageChecker()
 
-linkedInPresenter
-  .load(({ isProfileUrlProvided, automaticMessage }) => {
-    if (!isProfileUrlProvided) {
-      return
-    }
+const inject = () => {
+  replyButton.inject()
+  messageChecker.inject()
+}
 
-    new DomInjector({
-      element: button,
-      parentSelector: '.msg-form__left-actions',
-      routeName: 'Messaging',
-      messageType: 'ChangeUrl',
-      callback: element => {
-        element.addEventListener('click', () => {
-          pasteTextToElement(
-            automaticMessage,
-            document.querySelector('.msg-form__contenteditable')
-          )
-        })
-      },
-    })
+if (isOnMessagingPage()) {
+  waitForLinkedinLoad().then(() => {
+    inject()
   })
-  .then(async () => {
-    await new ChromeMessageGateway().send('Load')
-  })
+}
+
+const handleChangeUrl = () => {
+  if (!isOnMessagingPage()) {
+    return
+  }
+
+  inject()
+}
+
+new ChromeMessageGateway().on('ChangeUrl', handleChangeUrl)

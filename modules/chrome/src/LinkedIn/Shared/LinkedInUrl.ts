@@ -27,7 +27,7 @@ export class LinkedInUrl {
     return this.prefixes[routeName]
   }
 
-  isOnRoute(routeName: RouteName) {
-    document.location.pathname.startsWith(`/${this.getRoute(routeName)}`)
+  isOnRoute(routeName: RouteName): boolean {
+    return document.location.pathname.startsWith(`/${this.getRoute(routeName)}`)
   }
 }

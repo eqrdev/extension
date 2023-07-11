@@ -6,7 +6,7 @@ const dist = resolve(__dirname, '../../dist')
 
 module.exports = {
   mode: 'development',
-  devtool: 'cheap-module-source-map',
+  devtool: 'inline-source-map',
   entry: {
     content: resolve(__dirname, './src/LinkedIn/index.ts'),
     background: resolve(__dirname, './src/Worker/index.ts'),

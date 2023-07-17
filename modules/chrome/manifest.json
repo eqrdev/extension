@@ -27,6 +27,11 @@
   ],
   "permissions": [
     "storage",
-    "webNavigation"
+    "webNavigation",
+    "webRequest",
+    "cookies"
+  ],
+  "host_permissions": [
+    "https://www.linkedin.com/*"
   ]
 }

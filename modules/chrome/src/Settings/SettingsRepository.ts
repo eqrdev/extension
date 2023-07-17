@@ -1,5 +1,6 @@
 import { ChromeStorageGateway } from '../Shared/ChromeStorageGateway'
 import { Observable } from '../Shared/Observable'
+import { ChromeMessageGateway } from '../Shared/ChromeMessageGateway'
 
 export interface EqualizerSettings {
   automaticMessage: string
@@ -26,6 +27,17 @@ export class SettingsRepository {
   }
 
   async set(settingKey: keyof EqualizerSettings, value: string) {
+    if (typeof value !== 'string') {
+      throw new TypeError('IncorrectTypeError')
+    }
+
+    if (value === '') {
+      throw new Error('EmptyValueError')
+    }
+
+    if (settingKey === 'profileName') {
+      await new ChromeMessageGateway().send({ type: 'AddProfileName' })
+    }
     await this.chromeStorageGateway.set({ [settingKey]: value })
     await this.loadSettings()
   }

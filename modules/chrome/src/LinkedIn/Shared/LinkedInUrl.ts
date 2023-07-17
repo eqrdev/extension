@@ -8,26 +8,32 @@ const ROUTE_NAMES = [
 
 export type RouteName = (typeof ROUTE_NAMES)[number]
 
+const LINKEDIN_BASE_URL = 'https://www.linkedin.com/'
+
+const ROUTE_PREFIXES: Record<RouteName, string> = {
+  Feed: 'feed',
+  MyNetwork: 'mynetwork',
+  Jobs: 'jobs',
+  Messaging: 'messaging',
+  Notifications: 'notifications',
+}
+
 export class LinkedInUrl {
-  static BaseUrl = 'https://www.linkedin.com/'
-
-  private prefixes: Record<RouteName, string> = {
-    Feed: 'feed',
-    MyNetwork: 'mynetwork',
-    Jobs: 'jobs',
-    Messaging: 'messaging',
-    Notifications: 'notifications',
+  static getBase() {
+    return LINKEDIN_BASE_URL
   }
 
-  getFullUrl(routeName: RouteName) {
-    return LinkedInUrl.BaseUrl + this.getRoute(routeName) + '/'
+  static getByRouteName(routeName: RouteName) {
+    return LINKEDIN_BASE_URL + LinkedInUrl.getPrefix(routeName) + '/'
   }
 
-  getRoute(routeName: RouteName) {
-    return this.prefixes[routeName]
+  static getPrefix(routeName: RouteName) {
+    return ROUTE_PREFIXES[routeName]
   }
 
-  isOnRoute(routeName: RouteName): boolean {
-    return document.location.pathname.startsWith(`/${this.getRoute(routeName)}`)
+  static isOnRoute(routeName: RouteName): boolean {
+    return document.location.pathname.startsWith(
+      `/${LinkedInUrl.getPrefix(routeName)}`
+    )
   }
 }

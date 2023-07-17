@@ -22,29 +22,14 @@ export class SettingsPresenter {
     await settingsRepository.getSettings((settings: EqualizerSettings) => {
       const profileUrl = new ProfileUrl(settings.profileName)
 
-      const handleSimpleText = async (
-        key: keyof EqualizerSettings,
-        value: string
-      ): Promise<void> => {
-        if (typeof value !== 'string') {
-          throw new TypeError('IncorrectTypeError')
-        }
-
-        if (value === '') {
-          throw new Error('EmptyValueError')
-        }
-
-        await settingsRepository.set(key, value)
-      }
-
       const handleProfileNameChange = async (value: string): Promise<void> =>
-        handleSimpleText('profileName', value)
+        settingsRepository.set('profileName', value)
 
       const handleMessageChange = async (value: string): Promise<void> =>
-        handleSimpleText('automaticMessage', value)
+        settingsRepository.set('automaticMessage', value)
 
       const handleApiKeyChange = async (value: string): Promise<void> =>
-        handleSimpleText('openAiKey', value)
+        settingsRepository.set('openAiKey', value)
 
       const handleDisabledOpenAi = async () =>
         settingsRepository.remove('openAiKey')

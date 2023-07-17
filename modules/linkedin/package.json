@@ -1,4 +1,10 @@
 {
   "name": "linkedin",
-  "version": "1.0.0"
+  "version": "1.0.0",
+  "dependencies": {
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/uuid": "^9"
+  }
 }

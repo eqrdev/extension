@@ -32,10 +32,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "reference": "workspace:modules/openai"\
       },\
       {\
-        "name": "scraper",\
-        "reference": "workspace:modules/scraper"\
-      },\
-      {\
         "name": "ui-library",\
         "reference": "workspace:modules/ui-library"\
       }\
@@ -48,7 +44,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       ["eslint", ["workspace:modules/eslint"]],\
       ["linkedin", ["workspace:modules/linkedin"]],\
       ["openai", ["workspace:modules/openai"]],\
-      ["scraper", ["workspace:modules/scraper"]],\
       ["ui-library", ["workspace:modules/ui-library"]]\
     ],\
     "fallbackPool": [\
@@ -719,6 +714,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/@types-semver-npm-7.5.0-4823ff34be-0a64b9b9c7.zip/node_modules/@types/semver/",\
           "packageDependencies": [\
             ["@types/semver", "npm:7.5.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["@types/uuid", [\
+        ["npm:9.0.2", {\
+          "packageLocation": "./.yarn/cache/@types-uuid-npm-9.0.2-f2a5f65979-1754bcf344.zip/node_modules/@types/uuid/",\
+          "packageDependencies": [\
+            ["@types/uuid", "npm:9.0.2"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -1604,6 +1608,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/react-dom", "npm:18.2.6"],\
             ["copy-webpack-plugin", "virtual:5786f16169769c8a1b4ad49978d8d449da06ad07bc2a16370536aad8c7277da52f87dd9371f16487fb285be3764e4aaaa02f2c80e6f3b899db0f5be24cc713f0#npm:11.0.0"],\
             ["html-webpack-plugin", "virtual:5786f16169769c8a1b4ad49978d8d449da06ad07bc2a16370536aad8c7277da52f87dd9371f16487fb285be3764e4aaaa02f2c80e6f3b899db0f5be24cc713f0#npm:5.5.3"],\
+            ["linkedin", "workspace:modules/linkedin"],\
+            ["openai", "workspace:modules/openai"],\
             ["react", "npm:18.2.0"],\
             ["react-dom", "virtual:a0d22ec436e964902391a14217aecc37630745a2186499b495f45945e82635a36c541e98650e60fa93ebd796f09f04e16e9c32468c11e418ff6ee556c3ef5b90#npm:18.2.0"],\
             ["ts-loader", "virtual:5786f16169769c8a1b4ad49978d8d449da06ad07bc2a16370536aad8c7277da52f87dd9371f16487fb285be3764e4aaaa02f2c80e6f3b899db0f5be24cc713f0#npm:9.4.4"],\
@@ -3320,7 +3326,9 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         ["workspace:modules/linkedin", {\
           "packageLocation": "./modules/linkedin/",\
           "packageDependencies": [\
-            ["linkedin", "workspace:modules/linkedin"]\
+            ["linkedin", "workspace:modules/linkedin"],\
+            ["@types/uuid", "npm:9.0.2"],\
+            ["uuid", "npm:9.0.0"]\
           ],\
           "linkType": "SOFT"\
         }]\
@@ -4092,15 +4100,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
-      ["scraper", [\
-        ["workspace:modules/scraper", {\
-          "packageLocation": "./modules/scraper/",\
-          "packageDependencies": [\
-            ["scraper", "workspace:modules/scraper"]\
-          ],\
-          "linkType": "SOFT"\
-        }]\
-      ]],\
       ["semver", [\
         ["npm:6.3.0", {\
           "packageLocation": "./.yarn/cache/semver-npm-6.3.0-b3eace8bfd-1b26ecf6db.zip/node_modules/semver/",\
@@ -4615,6 +4614,15 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/utila-npm-0.4.0-27b344403b-97ffd3bd2b.zip/node_modules/utila/",\
           "packageDependencies": [\
             ["utila", "npm:0.4.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["uuid", [\
+        ["npm:9.0.0", {\
+          "packageLocation": "./.yarn/cache/uuid-npm-9.0.0-46c41e3e43-8dd2c83c43.zip/node_modules/uuid/",\
+          "packageDependencies": [\
+            ["uuid", "npm:9.0.0"]\
           ],\
           "linkType": "HARD"\
         }]\

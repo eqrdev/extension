@@ -64,7 +64,7 @@ export const Popup = (): ReactElement => {
   return (
     <Styled.Popup>
       <Styled.Title>
-        <EqLogo />
+        <EqLogo size={32} />
         <EqTypo bold>Equalizer</EqTypo>
         <Styled.SettingsIcon onClick={data.onClickSettings} icon="settings" />
       </Styled.Title>

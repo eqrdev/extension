@@ -1,5 +1,5 @@
 import { ContentElement } from '../../Shared/ContentElement'
-import { MessagingPresenter } from '../MessagingPresenter'
+import { ReplyButtonPresenter } from './ReplyButtonPresenter'
 
 export class ReplyButton extends ContentElement<HTMLButtonElement> {
   id = 'eq-reply-button'
@@ -31,7 +31,7 @@ export class ReplyButton extends ContentElement<HTMLButtonElement> {
   }
 
   async injectorMethod(element): Promise<void> {
-    const presenter = new MessagingPresenter()
+    const presenter = new ReplyButtonPresenter()
     const injectionPoint = document.querySelector('.msg-form__left-actions')
 
     await presenter.load(({ automaticMessage, isProfileUrlProvided }) => {
@@ -53,17 +53,19 @@ export class ReplyButton extends ContentElement<HTMLButtonElement> {
   }
 
   private pasteTextToElement(text: string, element: HTMLElement): void {
-    const dataTransfer = new DataTransfer()
-    dataTransfer.setData('text/plain', text)
+    setTimeout(() => {
+      const dataTransfer = new DataTransfer()
+      dataTransfer.setData('text/plain', text)
 
-    element.dispatchEvent(
-      new ClipboardEvent('paste', {
-        clipboardData: dataTransfer,
-        bubbles: true,
-        cancelable: true,
-      })
-    )
+      element.dispatchEvent(
+        new ClipboardEvent('paste', {
+          clipboardData: dataTransfer,
+          bubbles: true,
+          cancelable: true,
+        })
+      )
 
-    dataTransfer.clearData()
+      dataTransfer.clearData()
+    }, 150)
   }
 }

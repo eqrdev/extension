@@ -1,7 +1,17 @@
 import { ContentElement } from '../../Shared/ContentElement'
+import { MessageCheckerPresenter } from './MessageCheckerPresenter'
+import { i18n } from '../../../Shared/i18n'
 
 export class MessageChecker extends ContentElement<HTMLDivElement> {
   id = 'eq-message-checker'
+  clickHandler: () => Promise<void>
+
+  private presenter: MessageCheckerPresenter
+
+  constructor() {
+    super()
+    this.presenter = new MessageCheckerPresenter()
+  }
 
   create(): HTMLDivElement {
     const div = document.createElement('div')
@@ -12,8 +22,8 @@ export class MessageChecker extends ContentElement<HTMLDivElement> {
       </svg>
       <span>Equalizer</span>
     </div>
-    <button>${chrome.i18n.getMessage('checkMessages')}</button>
-    <div class="last-checked">${chrome.i18n.getMessage('lastChecked')}</div>`
+    <button>${i18n('checkMessages')}</button>
+    <div class="last-checked"></div>`
 
     div.style.cssText = `
       display: flex;
@@ -44,12 +54,26 @@ export class MessageChecker extends ContentElement<HTMLDivElement> {
       margin: 8px 0;`
 
     div.querySelector<HTMLDivElement>('.last-checked').style.cssText = `
+      font-size: 11px;
+      text-align: center;
       color: #9A9C9E;`
 
     return div
   }
 
   injectorMethod(element: HTMLDivElement): void {
+    this.presenter.load(({ lastChecked, onClickMessages }) => {
+      this.clickHandler = onClickMessages
+
+      if (!lastChecked) {
+        return
+      }
+
+      element.querySelector<HTMLDivElement>('.last-checked').innerText = i18n(
+        'lastCheck',
+        [lastChecked]
+      )
+    })
     const title = document.querySelector(
       '.msg-conversations-container__title-row'
     )
@@ -59,12 +83,8 @@ export class MessageChecker extends ContentElement<HTMLDivElement> {
 
   injectedCallback(element: HTMLDivElement): void {
     const button = element.querySelector('button')
-    button.addEventListener('click', () => {
-      this.checkMessages()
+    button.addEventListener('click', async () => {
+      await this.clickHandler()
     })
-  }
-
-  private checkMessages() {
-    console.log('We check the messages')
   }
 }

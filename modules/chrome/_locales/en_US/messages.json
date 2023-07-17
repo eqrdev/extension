@@ -81,6 +81,12 @@
     "message": "Check messages"
   },
   "lastCheck": {
-    "message": "last check"
+    "message": "last check: $lastCheckedDate$",
+    "placeholders": {
+      "lastCheckedDate": {
+        "content": "$1",
+        "example": "last check: May 14, 2023"
+      }
+    }
   }
 }

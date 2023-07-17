@@ -536,6 +536,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/uuid@npm:^9":
+  version: 9.0.2
+  resolution: "@types/uuid@npm:9.0.2"
+  checksum: 1754bcf3444e1e3aeadd6e774fc328eb53bc956665e2e8fb6ec127aa8e1f43d9a224c3d22a9a6233dca8dd81a12dc7fed4d84b8876dd5ec82d40f574f7ff8b68
+  languageName: node
+  linkType: hard
+
 "@typescript-eslint/eslint-plugin@npm:^5.61.0":
   version: 5.61.0
   resolution: "@typescript-eslint/eslint-plugin@npm:5.61.0"
@@ -1180,6 +1187,8 @@ __metadata:
     "@types/react-dom": ^18
     copy-webpack-plugin: ^11.0.0
     html-webpack-plugin: ^5.5.3
+    linkedin: "workspace:^"
+    openai: "workspace:^"
     react: ^18.2.0
     react-dom: ^18.2.0
     ts-loader: ^9.4.4
@@ -2606,9 +2615,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"linkedin@workspace:modules/linkedin":
+"linkedin@workspace:^, linkedin@workspace:modules/linkedin":
   version: 0.0.0-use.local
   resolution: "linkedin@workspace:modules/linkedin"
+  dependencies:
+    "@types/uuid": ^9
+    uuid: ^9.0.0
   languageName: unknown
   linkType: soft
 
@@ -2850,7 +2862,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"openai@workspace:modules/openai":
+"openai@workspace:^, openai@workspace:modules/openai":
   version: 0.0.0-use.local
   resolution: "openai@workspace:modules/openai"
   languageName: unknown
@@ -3285,12 +3297,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"scraper@workspace:modules/scraper":
-  version: 0.0.0-use.local
-  resolution: "scraper@workspace:modules/scraper"
-  languageName: unknown
-  linkType: soft
-
 "semver@npm:^6.3.0":
   version: 6.3.0
   resolution: "semver@npm:6.3.0"
@@ -3711,6 +3717,15 @@ __metadata:
   version: 0.4.0
   resolution: "utila@npm:0.4.0"
   checksum: 97ffd3bd2bb80c773429d3fb8396469115cd190dded1e733f190d8b602bd0a1bcd6216b7ce3c4395ee3c79e3c879c19d268dbaae3093564cb169ad1212d436f4
+  languageName: node
+  linkType: hard
+
+"uuid@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "uuid@npm:9.0.0"
+  bin:
+    uuid: dist/bin/uuid
+  checksum: 8dd2c83c43ddc7e1c71e36b60aea40030a6505139af6bee0f382ebcd1a56f6cd3028f7f06ffb07f8cf6ced320b76aea275284b224b002b289f89fe89c389b028
   languageName: node
   linkType: hard
 

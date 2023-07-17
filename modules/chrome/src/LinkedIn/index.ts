@@ -4,10 +4,10 @@ import { ChromeMessageGateway } from '../Shared/ChromeMessageGateway'
 import { ReplyButton } from './Messaging/ReplyButton/ReplyButton'
 import { MessageChecker } from './Messaging/MessageChecker/MessageChecker'
 
-const linkedInUrl = new LinkedInUrl()
-const isOnMessagingPage = () => linkedInUrl.isOnRoute('Messaging')
+const isOnMessagingPage = () => LinkedInUrl.isOnRoute('Messaging')
 const replyButton = new ReplyButton()
 const messageChecker = new MessageChecker()
+const messageGateway = new ChromeMessageGateway()
 
 const inject = () => {
   replyButton.inject()
@@ -28,4 +28,9 @@ const handleChangeUrl = () => {
   inject()
 }
 
-new ChromeMessageGateway().on('ChangeUrl', handleChangeUrl)
+messageGateway.on('NavigateToMessaging', handleChangeUrl)
+
+// messageGateway.on('LinkedInApiCall', ({ csrfToken, pageInstanceHeader }) => {
+//   sessionStorage.setItem('linkedInCsrfToken', csrfToken)
+//   sessionStorage.setItem('linkedInPageInstanceHeader', pageInstanceHeader)
+// })

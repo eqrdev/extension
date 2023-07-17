@@ -41,7 +41,15 @@ module.exports = {
     new HtmlWebpackPlugin({
       filename: resolve(dist, 'html/popup.html'),
       chunks: ['popup'],
-      templateContent: '<div id="root"></div>',
+      templateContent: `
+        <link rel="stylesheet" href="../assets/popup.css" />
+        <body class="loading">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 -960 960 960">
+            <path d="M160-160v-320h140v320H160Zm250 0v-640h140v640H410Zm250 0v-440h140v440H660Z"></path>
+          </svg>
+          <div id="root"></div>
+        </body>
+      `,
     }),
     new HtmlWebpackPlugin({
       filename: resolve(dist, 'html/settings.html'),

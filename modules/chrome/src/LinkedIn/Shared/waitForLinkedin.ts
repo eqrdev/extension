@@ -27,6 +27,7 @@ export const waitForLinkedinLoad = async (): Promise<void> =>
         if (node.classList.contains(BODY_LOADED_CLASS)) {
           clearTimeout(rejectTimeout)
           resolve()
+          observer.disconnect()
         }
       })
     }

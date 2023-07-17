@@ -2,6 +2,7 @@ import { ChromeMessageGateway } from '../Shared/ChromeMessageGateway'
 import { ActionBadge } from './ActionBadge'
 import { SettingsRepository } from '../Settings/SettingsRepository'
 import { LinkedInHeaders } from './LinkedInHeaders'
+import { LinkedInUrl, RouteName } from '../LinkedIn/Shared/LinkedInUrl'
 
 export class ExtensionBackend {
   messages: ChromeMessageGateway
@@ -29,13 +30,26 @@ export class ExtensionBackend {
       await this.settingsRepository.setDefaultSettings()
     })
 
-    await this.messages.on('NavigateToMessaging', async ({ tabId }) => {
-      await this.messages.send({ type: 'NavigateToMessaging', tabId })
-    })
+    this.onNavigateTo('Messaging')
+    this.onNavigateTo('MyNetwork')
 
     await this.setActionBadgeIfNeeded()
 
     await LinkedInHeaders.setListener()
+  }
+
+  onNavigateTo(route: RouteName) {
+    return chrome.webNavigation.onHistoryStateUpdated.addListener(
+      async ({ tabId }) => {
+        await chrome.tabs.sendMessage(tabId, {
+          type: 'Navigate',
+          route,
+        })
+
+        await this.messages.send({ type: 'Navigate', tabId })
+      },
+      { url: [{ urlPrefix: LinkedInUrl.getByRouteName(route) }] }
+    )
   }
 
   async setActionBadgeIfNeeded() {

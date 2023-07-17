@@ -14,7 +14,13 @@ export interface MessageCheckerData {
 export class MessageCheckerPresenter {
   async load(callback: (settings: MessageCheckerData) => void): Promise<void> {
     const messageCheckerRepository = new MessageCheckerRepository()
-    const formatter = new Intl.DateTimeFormat(chrome.i18n.getUILanguage(), {
+
+    /**
+     * Currently we only support english
+     * when we'll have multiple languages, we need
+     * `chrome.i18n.getUILanguage()` here.
+     */
+    const formatter = new Intl.DateTimeFormat('en-US', {
       month: 'long',
       day: 'numeric',
       year: 'numeric',

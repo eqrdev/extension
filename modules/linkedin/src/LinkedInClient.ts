@@ -2,6 +2,7 @@ import { generateTrackingIdAsCharString } from './generateTrackingIdAsCharString
 
 import { v4 as uuid } from 'uuid'
 import { Message, MessengerConversation } from './types'
+import { LinkedInInvitationView } from './InvitationType'
 
 export interface LinkedInClientOptions {
   csrfToken: string
@@ -90,5 +91,29 @@ export class LinkedInClient {
         `(mailboxUrn:urn%3Ali%3Afsd_profile%3A${mailboxUrnId})`
       )
     ).data.messengerConversationsBySyncToken.elements
+  }
+
+  public async getInvites(): Promise<LinkedInInvitationView[]> {
+    return (
+      await this.requestGraphQL(
+        'voyagerRelationshipsDashInvitationViews.92f52706ef5898d18d9f60d184f01de9',
+        `(invitationTypes:List(),filterCriteria:List(),includeInsights:true,start:0,count:3)`
+      )
+    ).data.relationshipsDashInvitationViewsByReceived.elements
+  }
+
+  public async acceptInvitation(
+    invitationId: string,
+    sharedSecret: string
+  ): Promise<void> {
+    await this.post(
+      `voyagerRelationshipsDashInvitations/urn%3Ali%3Afsd_invitation%3A${invitationId}?action=accept`,
+      {
+        body: JSON.stringify({
+          invitationType: 'CONNECTION',
+          sharedSecret,
+        }),
+      }
+    )
   }
 }

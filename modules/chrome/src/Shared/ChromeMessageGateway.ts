@@ -6,6 +6,7 @@ const MessageTypes = [
   'AddProfileName',
   'LinkedInApiCall',
   'Install',
+  'Navigate',
   'NavigateToMessaging',
   'GetHeaders',
 ] as const
@@ -44,15 +45,6 @@ export class ChromeMessageGateway {
       return chrome.runtime.onInstalled.addListener(() => {
         callback()
       })
-    }
-
-    if (messageType === 'NavigateToMessaging' && this.isBackground) {
-      return chrome.webNavigation.onHistoryStateUpdated.addListener(
-        async ({ tabId }) => {
-          callback({ tabId } as Message<T>)
-        },
-        { url: [{ urlPrefix: LinkedInUrl.getByRouteName('Messaging') }] }
-      )
     }
 
     return chrome.runtime.onMessage.addListener((message: Message<T>) => {

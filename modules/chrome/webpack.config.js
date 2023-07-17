@@ -8,6 +8,10 @@ module.exports = {
   mode: 'development',
   devtool: 'inline-source-map',
   entry: {
+    invitations: resolve(
+      __dirname,
+      './src/LinkedIn/Invitations/InvitationChecker/index.tsx'
+    ),
     content: resolve(__dirname, './src/LinkedIn/index.ts'),
     background: resolve(__dirname, './src/Worker/index.ts'),
     settings: resolve(__dirname, './src/Settings/index.tsx'),

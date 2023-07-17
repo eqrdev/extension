@@ -45,18 +45,24 @@ export class MessageCheckerRepository {
     const mailBoxUrn = (await chrome.storage.session.get()).mailboxUrn
     const conversations = await client.getConversations(mailBoxUrn)
 
-    const conversationsToProcess = conversations.filter(
-      conversation => !conversation.read
-    )
+    const conversationsToProcess = conversations.filter(conversation => {
+      return (
+        conversation.conversationParticipants.length === 2 &&
+        conversation.lastActivityAt > this.programmersModel.value.lastChecked
+      )
+    })
     const conversationUrnIds = conversationsToProcess.map(conversation =>
       ConversationProcessor.getUrnId(conversation)
     )
 
     for (const urnId of conversationUrnIds) {
       const fullConversation = await client.getConversation(urnId)
+      const notReplied =
+        new Set([...fullConversation.map(message => message.sender.entityUrn)])
+          .size === 1
       const conversationText = ConversationProcessor.getText(fullConversation)
       const hasOpenAiKey = !!this.programmersModel.value.openAiKey
-      const shouldReply = hasOpenAiKey
+      const isOpenAiValidated = hasOpenAiKey
         ? (
             await analyzeMessage(
               conversationText,
@@ -64,6 +70,8 @@ export class MessageCheckerRepository {
             )
           ).is_recruiter_message
         : true
+
+      const shouldReply = notReplied && isOpenAiValidated
 
       if (shouldReply) {
         await client.sendMessage(

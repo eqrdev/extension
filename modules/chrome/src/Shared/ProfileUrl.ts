@@ -26,7 +26,7 @@ export class ProfileUrl {
 
   replaceInText(text: string): string {
     return typeof text === 'string'
-      ? text.replaceAll(this.URL_REGEX, this.base)
+      ? text.replaceAll(this.URL_REGEX, this.full)
       : ''
   }
 }

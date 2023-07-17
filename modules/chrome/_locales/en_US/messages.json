@@ -80,6 +80,9 @@
   "checkMessages": {
     "message": "Check messages"
   },
+  "checkInvitations": {
+    "message": "Check invitations"
+  },
   "lastCheck": {
     "message": "last check: $lastCheckedDate$",
     "placeholders": {

@@ -1,13 +1,13 @@
 import { ContentElement } from '../../Shared/ContentElement'
 import { ReplyButtonPresenter } from './ReplyButtonPresenter'
 
-export class ReplyButton extends ContentElement<HTMLButtonElement> {
+export class ReplyButton extends ContentElement<HTMLDivElement> {
   id = 'eq-reply-button'
 
   private text: string
 
-  create(): HTMLButtonElement {
-    const button = document.createElement('button')
+  create(): HTMLDivElement {
+    const button = document.createElement('div')
     const linkedinCSSClasses = [
       'artdeco-button',
       'artdeco-button--circle',
@@ -43,7 +43,7 @@ export class ReplyButton extends ContentElement<HTMLButtonElement> {
     })
   }
 
-  injectedCallback(element: HTMLButtonElement): void {
+  injectedCallback(element: HTMLDivElement): void {
     element.addEventListener('click', () => {
       this.pasteTextToElement(
         this.text,
@@ -52,8 +52,29 @@ export class ReplyButton extends ContentElement<HTMLButtonElement> {
     })
   }
 
+  private emptyTextarea(element: HTMLElement): void {
+    const range = document.createRange()
+    range.selectNodeContents(element)
+
+    const selection = window.getSelection()
+    selection.removeAllRanges()
+    selection.addRange(range)
+
+    if (selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0)
+      range.deleteContents()
+    }
+
+    selection.removeAllRanges()
+    selection.deleteFromDocument()
+    element.blur()
+  }
+
   private pasteTextToElement(text: string, element: HTMLElement): void {
+    this.emptyTextarea(element)
+
     setTimeout(() => {
+      element.focus()
       const dataTransfer = new DataTransfer()
       dataTransfer.setData('text/plain', text)
 
@@ -66,6 +87,6 @@ export class ReplyButton extends ContentElement<HTMLButtonElement> {
       )
 
       dataTransfer.clearData()
-    }, 150)
+    }, 1000)
   }
 }

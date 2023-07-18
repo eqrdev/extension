@@ -10,7 +10,6 @@ import {
   useRef,
   useState,
 } from 'react'
-import { merge } from '@emotion/css'
 
 export interface EqTextareaProps {
   maxLength?: number

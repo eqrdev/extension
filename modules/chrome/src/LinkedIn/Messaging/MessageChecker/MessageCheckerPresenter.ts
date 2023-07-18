@@ -1,8 +1,8 @@
-import {
-  MessageCheckerRepository,
-  MessagingData,
-} from './MessageCheckerRepository'
 import { ProfileUrl } from '../../../Shared/ProfileUrl'
+import {
+  EqualizerModel,
+  EqualizerRepository,
+} from '../../../Equalizer/EqualizerRepository'
 
 export interface MessageCheckerData {
   lastChecked: string
@@ -13,7 +13,7 @@ export interface MessageCheckerData {
 
 export class MessageCheckerPresenter {
   async load(callback: (settings: MessageCheckerData) => void): Promise<void> {
-    const messageCheckerRepository = new MessageCheckerRepository()
+    const repository = new EqualizerRepository()
 
     /**
      * Currently we only support english
@@ -26,18 +26,21 @@ export class MessageCheckerPresenter {
       year: 'numeric',
     })
 
-    await messageCheckerRepository.getData(
-      ({ lastChecked, profileName, automaticMessage }: MessagingData) => {
-        const profileUrl = new ProfileUrl(profileName)
+    await repository.load(
+      ({
+        messagesLastCheckedDate,
+        profileName,
+        automaticMessage,
+      }: EqualizerModel) => {
         callback({
           isProfileUrlProvided: !!profileName,
-          automaticMessage: profileUrl.replaceInText(automaticMessage),
-          lastChecked: lastChecked
-            ? formatter.format(new Date(lastChecked))
+          automaticMessage: new ProfileUrl(profileName).replaceInText(
+            automaticMessage
+          ),
+          lastChecked: messagesLastCheckedDate
+            ? formatter.format(new Date(messagesLastCheckedDate))
             : undefined,
-          onClickMessages: async () => {
-            await messageCheckerRepository.checkMessages()
-          },
+          onClickMessages: repository.checkMessages,
         })
       }
     )

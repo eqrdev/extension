@@ -1,4 +1,4 @@
-import { InvitationCheckerRepository } from './InvitationCheckerRepository'
+import { EqualizerRepository } from '../../../Equalizer/EqualizerRepository'
 
 export interface InvitationModel {
   lastCheck: string
@@ -7,15 +7,21 @@ export interface InvitationModel {
 
 export class InvitationCheckerPresenter {
   async load(callback: (settings: InvitationModel) => void): Promise<void> {
-    const repository = new InvitationCheckerRepository()
+    const repository = new EqualizerRepository()
+
+    /**
+     * Currently we only support english
+     * when we'll have multiple languages, we need
+     * `chrome.i18n.getUILanguage()` here.
+     */
     const formatter = new Intl.DateTimeFormat('en-US', {
       month: 'long',
       day: 'numeric',
       year: 'numeric',
     })
-    await repository.getData(({ lastCheck }) => {
+    await repository.load(({ invitationsLastCheckedDate }) => {
       callback({
-        lastCheck: formatter.format(lastCheck),
+        lastCheck: formatter.format(invitationsLastCheckedDate),
         onClickButton: repository.checkInvitations,
       })
     })

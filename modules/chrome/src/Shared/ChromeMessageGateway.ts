@@ -1,5 +1,4 @@
 import { AdditionalOptions } from 'copy-webpack-plugin'
-import { LinkedInUrl } from '../LinkedIn/Shared/LinkedInUrl'
 
 const MessageTypes = [
   'OpenSettings',

@@ -23,10 +23,6 @@
     {
       "matches": ["*://*.linkedin.com/*"],
       "js": ["js/content.min.js"]
-    },
-    {
-      "matches": ["*://*.linkedin.com/mynetwork/"],
-      "js": ["js/invitations.min.js"]
     }
   ],
   "permissions": [

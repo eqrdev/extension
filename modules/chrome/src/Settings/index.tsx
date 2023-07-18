@@ -5,7 +5,7 @@ import { EqGlobal } from 'ui-library/src/EqGlobal'
 
 const App = () => (
   <I18nProvider>
-    <EqGlobal>
+    <EqGlobal cacheId="eq-linkedin">
       <Settings />
     </EqGlobal>
   </I18nProvider>

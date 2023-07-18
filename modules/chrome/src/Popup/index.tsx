@@ -7,7 +7,7 @@ document.body.classList.remove('loading')
 
 const App = () => (
   <I18nProvider>
-    <EqGlobal>
+    <EqGlobal cacheId="eq-linkedin">
       <Popup />
     </EqGlobal>
   </I18nProvider>

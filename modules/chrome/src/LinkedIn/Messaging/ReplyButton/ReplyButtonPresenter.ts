@@ -1,8 +1,8 @@
-import {
-  EqualizerSettings,
-  SettingsRepository,
-} from '../../../Settings/SettingsRepository'
 import { ProfileUrl } from '../../../Shared/ProfileUrl'
+import {
+  EqualizerModel,
+  EqualizerRepository,
+} from '../../../Equalizer/EqualizerRepository'
 
 export interface LinkedInModel {
   isProfileUrlProvided: boolean
@@ -11,15 +11,17 @@ export interface LinkedInModel {
 
 export class ReplyButtonPresenter {
   async load(callback: (settings: LinkedInModel) => void): Promise<void> {
-    const settingsRepository = new SettingsRepository()
+    const repository = new EqualizerRepository()
 
-    await settingsRepository.getSettings((settings: EqualizerSettings) => {
-      const profileUrl = new ProfileUrl(settings.profileName)
+    await repository.load(
+      ({ profileName, automaticMessage }: EqualizerModel) => {
+        const profileUrl = new ProfileUrl(profileName)
 
-      callback({
-        automaticMessage: profileUrl.replaceInText(settings.automaticMessage),
-        isProfileUrlProvided: Boolean(settings.profileName),
-      })
-    })
+        callback({
+          automaticMessage: profileUrl.replaceInText(automaticMessage),
+          isProfileUrlProvided: Boolean(profileName),
+        })
+      }
+    )
   }
 }

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.ts",
   "dependencies": {
+    "@emotion/cache": "^11.11.0",
     "@emotion/css": "^11.11.2",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
@@ -12,7 +13,7 @@
     "typescript": "^5.1.6"
   },
   "devDependencies": {
-    "@types/react": "^18",
-    "@types/react-dom": "^18"
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7"
   }
 }

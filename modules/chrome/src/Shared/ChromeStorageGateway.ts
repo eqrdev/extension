@@ -1,7 +1,19 @@
 export class ChromeStorageGateway<T> {
+  sessionOnly: boolean = false
+
+  constructor(
+    { sessionOnly }: { sessionOnly?: boolean } = { sessionOnly: false }
+  ) {
+    this.sessionOnly = sessionOnly
+  }
+
+  private get storage(): chrome.storage.StorageArea {
+    return chrome.storage[this.sessionOnly ? 'session' : 'sync']
+  }
+
   async getAll(): Promise<T> {
     return new Promise(resolve => {
-      chrome.storage.sync.get(data => {
+      this.storage.get(data => {
         resolve(data as T)
       })
     })
@@ -12,10 +24,10 @@ export class ChromeStorageGateway<T> {
   }
 
   async set(data: Partial<T> | T): Promise<void> {
-    await chrome.storage.sync.set(data)
+    await this.storage.set(data)
   }
 
   async remove(key: Extract<keyof T, string>): Promise<void> {
-    await chrome.storage.sync.remove(key)
+    await this.storage.remove(key)
   }
 }

@@ -8,7 +8,7 @@ export interface MessengerConversation {
   shortHeadlineText: string
   createdAt: number
   lastReadAt: number
-  hostConversationActions: Array<any>
+  hostConversationActions: Array<unknown>
   entityUrn: string
   categories: Array<string>
   state: string
@@ -16,7 +16,7 @@ export interface MessengerConversation {
   creator: MessagingParticipant
   read: boolean
   groupChat: boolean
-  contentMetadata: any
+  contentMetadata: unknown
   conversationUrl: string
   headlineText: string
   incompleteRetriableData: boolean
@@ -48,15 +48,15 @@ interface MemberParticipantInfo {
 
 interface AttributedText {
   text: string
-  attributes: Array<any>
+  attributes: Array<unknown>
 }
 
 interface VectorImage {
-  digitalmediaAsset: any
+  digitalmediaAsset: unknown
   _type: string
-  attribution: any
+  attribution: unknown
   _recipeType: string
-  focalPoint: any
+  focalPoint: unknown
   artifacts: Array<Artifact>
 }
 
@@ -76,11 +76,11 @@ interface ConversationDisabledFeature {
 }
 
 export interface Message {
-  reactionSummaries: Array<any>
-  footer: any
+  reactionSummaries: Array<unknown>
+  footer: unknown
   subject: string
   _type: string
-  inlineWarning: any
+  inlineWarning: unknown
   body: AttributedText
   originToken: string
   _recipeType: string
@@ -92,6 +92,6 @@ export interface Message {
   backendConversationUrn: string
   incompleteRetriableData: boolean
   messageBodyRenderFormat: string
-  renderContent: Array<any>
+  renderContent: Array<unknown>
   conversation: MessengerConversation
 }

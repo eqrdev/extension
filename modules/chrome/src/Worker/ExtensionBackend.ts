@@ -1,16 +1,16 @@
 import { ChromeMessageGateway } from '../Shared/ChromeMessageGateway'
 import { ActionBadge } from './ActionBadge'
-import { SettingsRepository } from '../Settings/SettingsRepository'
-import { LinkedInHeaders } from './LinkedInHeaders'
 import { LinkedInUrl, RouteName } from '../LinkedIn/Shared/LinkedInUrl'
+import { EqualizerRepository } from '../Equalizer/EqualizerRepository'
+import { LinkedInClient } from 'linkedin'
 
 export class ExtensionBackend {
   messages: ChromeMessageGateway
-  settingsRepository: SettingsRepository
+  repository: EqualizerRepository
 
   constructor() {
     this.messages = new ChromeMessageGateway({ isBackground: true })
-    this.settingsRepository = new SettingsRepository()
+    this.repository = new EqualizerRepository()
   }
 
   async load() {
@@ -27,7 +27,7 @@ export class ExtensionBackend {
     })
 
     await this.messages.on('Install', async () => {
-      await this.settingsRepository.setDefaultSettings()
+      await this.repository.setDefaultSettings()
     })
 
     this.onNavigateTo('Messaging')
@@ -35,7 +35,7 @@ export class ExtensionBackend {
 
     await this.setActionBadgeIfNeeded()
 
-    await LinkedInHeaders.setListener()
+    await this.onWebRequest()
   }
 
   onNavigateTo(route: RouteName) {
@@ -52,8 +52,38 @@ export class ExtensionBackend {
     )
   }
 
+  async onWebRequest() {
+    const listener = ({
+      url,
+      requestHeaders,
+    }: chrome.webRequest.WebRequestHeadersDetails) => {
+      const csrfToken = requestHeaders?.find(
+        ({ name }) => name === 'csrf-token'
+      )?.value
+
+      if (EqualizerRepository.isMessagesUrl(url)) {
+        if (csrfToken) {
+          this.repository.setSession('csrfToken', csrfToken)
+        }
+
+        this.repository.setSession(
+          'mailboxUrn',
+          EqualizerRepository.getMailBoxUrnFromUrl(url)
+        )
+      }
+    }
+
+    await chrome.webRequest.onBeforeSendHeaders.addListener(
+      listener,
+      {
+        urls: [`${LinkedInClient.apiBaseUrl}*`],
+      },
+      ['requestHeaders']
+    )
+  }
+
   async setActionBadgeIfNeeded() {
-    await this.settingsRepository.getSettings(async ({ profileName }) => {
+    await this.repository.load(async ({ profileName }) => {
       if (profileName) {
         return
       }

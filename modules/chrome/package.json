@@ -16,13 +16,13 @@
     "ui-library": "workspace:^"
   },
   "devDependencies": {
-    "@types/chrome": "^0.0.240",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "@types/chrome": "^0.0.241",
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
     "copy-webpack-plugin": "^11.0.0",
     "html-webpack-plugin": "^5.5.3",
     "ts-loader": "^9.4.4",
-    "webpack": "^5.88.1",
+    "webpack": "^5.88.2",
     "webpack-cli": "^5.1.4"
   }
 }

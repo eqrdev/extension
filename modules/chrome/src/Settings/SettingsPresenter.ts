@@ -1,5 +1,8 @@
-import { EqualizerSettings, SettingsRepository } from './SettingsRepository'
 import { ProfileUrl } from '../Shared/ProfileUrl'
+import {
+  EqualizerModel,
+  EqualizerRepository,
+} from '../Equalizer/EqualizerRepository'
 
 export interface SettingsModel {
   profileUrl?: string
@@ -18,36 +21,37 @@ export interface SettingsModel {
 
 export class SettingsPresenter {
   async load(callback: (settings: SettingsModel) => void): Promise<void> {
-    const settingsRepository = new SettingsRepository()
-    await settingsRepository.getSettings((settings: EqualizerSettings) => {
-      const profileUrl = new ProfileUrl(settings.profileName)
+    const repository = new EqualizerRepository()
+    await repository.load(
+      ({ profileName, openAiKey, automaticMessage }: EqualizerModel) => {
+        const profileUrl = new ProfileUrl(profileName)
 
-      const handleProfileNameChange = async (value: string): Promise<void> =>
-        settingsRepository.set('profileName', value)
+        const handleProfileNameChange = async (value: string): Promise<void> =>
+          repository.set('profileName', value)
 
-      const handleMessageChange = async (value: string): Promise<void> =>
-        settingsRepository.set('automaticMessage', value)
+        const handleMessageChange = async (value: string): Promise<void> =>
+          repository.set('automaticMessage', value)
 
-      const handleApiKeyChange = async (value: string): Promise<void> =>
-        settingsRepository.set('openAiKey', value)
+        const handleApiKeyChange = async (value: string): Promise<void> =>
+          repository.set('openAiKey', value)
 
-      const handleDisabledOpenAi = async () =>
-        settingsRepository.remove('openAiKey')
+        const handleDisabledOpenAi = async () => repository.remove('openAiKey')
 
-      callback({
-        isOpenAiEnabled: !!settings.openAiKey,
-        openAiKey: settings.openAiKey,
-        profileUrl: profileUrl.base,
-        profileUrlFull: profileUrl.full,
-        profileName: profileUrl.name,
-        automaticMessage: profileUrl.replaceInText(settings.automaticMessage),
-        rawAutomaticMessage: settings.automaticMessage,
-        isProfileUrlProvided: Boolean(settings.profileName),
-        onSaveProfileName: handleProfileNameChange,
-        onSaveMessage: handleMessageChange,
-        onSaveApiKey: handleApiKeyChange,
-        disableOpenAi: handleDisabledOpenAi,
-      })
-    })
+        callback({
+          isOpenAiEnabled: !!openAiKey,
+          openAiKey: openAiKey,
+          profileUrl: profileUrl.base,
+          profileUrlFull: profileUrl.full,
+          profileName: profileUrl.name,
+          automaticMessage: profileUrl.replaceInText(automaticMessage),
+          rawAutomaticMessage: automaticMessage,
+          isProfileUrlProvided: Boolean(profileName),
+          onSaveProfileName: handleProfileNameChange,
+          onSaveMessage: handleMessageChange,
+          onSaveApiKey: handleApiKeyChange,
+          disableOpenAi: handleDisabledOpenAi,
+        })
+      }
+    )
   }
 }

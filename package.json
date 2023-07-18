@@ -14,6 +14,7 @@
   "scripts": {
     "build": "yarn workspace chrome run build",
     "dev": "yarn workspace chrome run dev",
-    "lint": "yarn workspace eslint run lint"
+    "lint": "yarn workspace eslint run lint",
+    "test": "yarn workspace tests run test"
   }
 }

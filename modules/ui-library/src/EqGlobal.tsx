@@ -1,6 +1,7 @@
 import type { ReactElement, ReactNode } from 'react'
 import { createContext } from 'react'
-import { Global, css } from '@emotion/react'
+import { Global, css, CacheProvider } from '@emotion/react'
+import createCache from '@emotion/cache'
 
 export const GlobalStyleContext = createContext({})
 
@@ -42,11 +43,21 @@ body {
 
 export const EqGlobal = ({
   children,
+  cacheId,
 }: {
   children: ReactNode
-}): ReactElement => (
-  <GlobalStyleContext.Provider value={{}}>
-    <Global styles={css(globalStyles)} />
-    {children}
-  </GlobalStyleContext.Provider>
-)
+  cacheId: string
+}): ReactElement => {
+  const emotionCache = createCache({
+    key: cacheId,
+  })
+
+  return (
+    <CacheProvider value={emotionCache}>
+      <GlobalStyleContext.Provider value={{}}>
+        <Global styles={css(globalStyles)} />
+        {children}
+      </GlobalStyleContext.Provider>
+    </CacheProvider>
+  )
+}

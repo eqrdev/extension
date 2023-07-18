@@ -60,12 +60,10 @@ export class ExtensionBackend {
       const csrfToken = requestHeaders?.find(
         ({ name }) => name === 'csrf-token'
       )?.value
-
+      if (csrfToken) {
+        this.repository.setSession('csrfToken', csrfToken)
+      }
       if (EqualizerRepository.isMessagesUrl(url)) {
-        if (csrfToken) {
-          this.repository.setSession('csrfToken', csrfToken)
-        }
-
         this.repository.setSession(
           'mailboxUrn',
           EqualizerRepository.getMailBoxUrnFromUrl(url)

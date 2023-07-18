@@ -19,11 +19,13 @@ export class InvitationCheckerPresenter {
       day: 'numeric',
       year: 'numeric',
     })
-    await repository.load(({ invitationsLastCheckedDate }) => {
-      callback({
-        lastCheck: formatter.format(invitationsLastCheckedDate),
-        onClickButton: repository.checkInvitations,
-      })
-    })
+    await repository.load(
+      ({ invitationsLastCheckedDate, checkInvitations }) => {
+        callback({
+          lastCheck: formatter.format(invitationsLastCheckedDate),
+          onClickButton: checkInvitations,
+        })
+      }
+    )
   }
 }

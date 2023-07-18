@@ -10,7 +10,9 @@ export interface EqualizerModel {
   profileName?: string
   invitationsLastCheckedDate?: number
   messagesLastCheckedDate?: number
-  openSettings: () => void
+  openSettings: () => Promise<void>
+  checkMessages: () => Promise<void>
+  checkInvitations: () => Promise<void>
 }
 
 export interface EqualizerSessionData {
@@ -26,7 +28,7 @@ export class EqualizerRepository {
   private readonly syncStorage: ChromeStorageGateway<EqualizerModel>
   private readonly sessionStorage: ChromeStorageGateway<EqualizerSessionData>
   private readonly messageGateway: ChromeMessageGateway
-  private programmersModel: Observable<EqualizerModel>
+  private programmersModel: Observable<EqualizerModel & EqualizerSessionData>
 
   constructor() {
     this.sessionStorage = new ChromeStorageGateway<EqualizerSessionData>({
@@ -34,12 +36,14 @@ export class EqualizerRepository {
     })
     this.syncStorage = new ChromeStorageGateway<EqualizerModel>()
     this.messageGateway = new ChromeMessageGateway({ isBackground: false })
-    this.programmersModel = new Observable<EqualizerModel>(null)
+    this.programmersModel = new Observable<
+      EqualizerModel & EqualizerSessionData
+    >(null)
   }
 
   async load(callback: (model: EqualizerModel) => void) {
     this.programmersModel.subscribe(callback)
-    await this.loadSettings()
+    await this.updateModel()
   }
 
   async set(settingKey: keyof EqualizerModel, value: string) {
@@ -55,34 +59,40 @@ export class EqualizerRepository {
       await this.messageGateway.send({ type: 'AddProfileName' })
     }
     await this.syncStorage.set({ [settingKey]: value })
-    await this.loadSettings()
+    await this.updateModel()
   }
 
   async remove(settingKey: keyof EqualizerModel) {
     await this.syncStorage.remove(settingKey)
-    await this.loadSettings()
+    await this.updateModel()
   }
 
   async setDefaultSettings() {
     await this.syncStorage.set({
       automaticMessage: DEFAULT_AUTO_REPLY_TEXT,
     })
-    await this.loadSettings()
+    await this.updateModel()
   }
 
-  async openSettings() {
+  private async openSettings() {
     return this.messageGateway.send({ type: 'OpenSettings' })
   }
 
-  private async loadSettings() {
-    this.programmersModel.value = await this.syncStorage.getAll()
+  private async updateModel() {
+    this.programmersModel.value = {
+      ...(await this.syncStorage.getAll()),
+      ...(await this.sessionStorage.getAll()),
+      openSettings: this.openSettings.bind(this),
+      checkMessages: this.checkMessages.bind(this),
+      checkInvitations: this.checkInvitations.bind(this),
+    }
   }
 
   private async setDate(date: Date) {
     await this.syncStorage.set({
       messagesLastCheckedDate: date.getTime(),
     })
-    await this.loadSettings()
+    await this.updateModel()
   }
 
   static isMessagesUrl(url: string): boolean {
@@ -99,32 +109,33 @@ export class EqualizerRepository {
     await this.sessionStorage.set({
       [key]: value,
     })
+    await this.updateModel()
   }
 
-  async checkInvitations() {
-    const client = new LinkedInClient({
-      csrfToken: await this.sessionStorage.get('csrfToken'),
+  private get client() {
+    return new LinkedInClient({
+      csrfToken: this.programmersModel.value.csrfToken,
     })
-    const invites = await client.getInvites()
+  }
+
+  private async checkInvitations() {
+    const invites = await this.client.getInvites()
 
     for (const invite of invites) {
       const { invitationId, sharedSecret } = invite.invitation
 
-      await client.acceptInvitation(invitationId.toString(), sharedSecret)
+      await this.client.acceptInvitation(invitationId.toString(), sharedSecret)
     }
   }
 
-  async checkMessages() {
+  private async checkMessages() {
     await this.replyMessages()
     await this.setDate(new Date())
   }
 
   private async replyMessages() {
-    const client = new LinkedInClient({
-      csrfToken: await this.sessionStorage.get('csrfToken'),
-    })
-    const mailBoxUrn = (await chrome.storage.session.get()).mailboxUrn
-    const conversations = await client.getConversations(mailBoxUrn)
+    const mailBoxUrn = this.programmersModel.value.mailboxUrn
+    const conversations = await this.client.getConversations(mailBoxUrn)
 
     const conversationsToProcess = conversations.filter(conversation => {
       return (
@@ -138,7 +149,7 @@ export class EqualizerRepository {
     )
 
     for (const urnId of conversationUrnIds) {
-      const fullConversation = await client.getConversation(urnId)
+      const fullConversation = await this.client.getConversation(urnId)
       const notReplied =
         new Set([...fullConversation.map(message => message.sender.entityUrn)])
           .size === 1
@@ -156,7 +167,7 @@ export class EqualizerRepository {
       const shouldReply = notReplied && isOpenAiValidated
 
       if (shouldReply) {
-        await client.sendMessage(
+        await this.client.sendMessage(
           urnId,
           mailBoxUrn,
           this.programmersModel.value.automaticMessage

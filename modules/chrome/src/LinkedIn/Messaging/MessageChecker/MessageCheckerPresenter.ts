@@ -31,6 +31,7 @@ export class MessageCheckerPresenter {
         messagesLastCheckedDate,
         profileName,
         automaticMessage,
+        checkMessages,
       }: EqualizerModel) => {
         callback({
           isProfileUrlProvided: !!profileName,
@@ -40,7 +41,7 @@ export class MessageCheckerPresenter {
           lastChecked: messagesLastCheckedDate
             ? formatter.format(new Date(messagesLastCheckedDate))
             : undefined,
-          onClickMessages: repository.checkMessages,
+          onClickMessages: checkMessages,
         })
       }
     )

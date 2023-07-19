@@ -47,7 +47,7 @@ export const InvitationChecker = (): ReactElement => {
         </EqTypo>
       </Styled.Logo>
       <Styled.LastCheck small>
-        {$i18n('lastCheck', ['július 17'])}
+        {$i18n('lastCheck', [data.lastCheck])}
       </Styled.LastCheck>
       <EqButton outline onClick={data.onClickButton}>
         {$i18n('checkInvitations')}

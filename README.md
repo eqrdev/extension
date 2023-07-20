@@ -2,7 +2,7 @@
   <a href="https://equalizer.dev/">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="https://user-images.githubusercontent.com/10433384/254391392-8fb55c77-8212-4f7b-8fc8-2debe9a83a48.png">
-      <img src="https://user-images.githubusercontent.com/10433384/254391724-cddee5fb-cca8-4c50-9501-3dbfe435f49e.png" alt="Equalizer" width="400" />
+      <img src="https://user-images.githubusercontent.com/10433384/254391724-cddee5fb-cca8-4c50-9501-3dbfe435f49e.png" alt="Equalizer" width="200" />
     </picture>
   </a>
 </p>

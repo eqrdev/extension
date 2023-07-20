@@ -1,7 +1,7 @@
 import { ProfileUrl } from '../../../Shared/ProfileUrl'
 import {
   EqualizerModel,
-  EqualizerRepository,
+  equalizerRepository,
 } from '../../../Equalizer/EqualizerRepository'
 
 export interface MessageCheckerData {
@@ -13,8 +13,6 @@ export interface MessageCheckerData {
 
 export class MessageCheckerPresenter {
   async load(callback: (settings: MessageCheckerData) => void): Promise<void> {
-    const repository = new EqualizerRepository()
-
     /**
      * Currently we only support english
      * when we'll have multiple languages, we need
@@ -26,7 +24,7 @@ export class MessageCheckerPresenter {
       year: 'numeric',
     })
 
-    await repository.load(
+    await equalizerRepository.load(
       ({
         messagesLastCheckedDate,
         profileName,

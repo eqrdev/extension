@@ -1,4 +1,4 @@
-import { EqualizerRepository } from '../../../Equalizer/EqualizerRepository'
+import { equalizerRepository } from '../../../Equalizer/EqualizerRepository'
 
 export interface InvitationModel {
   lastCheck: string
@@ -7,8 +7,6 @@ export interface InvitationModel {
 
 export class InvitationCheckerPresenter {
   async load(callback: (settings: InvitationModel) => void): Promise<void> {
-    const repository = new EqualizerRepository()
-
     /**
      * Currently we only support english
      * when we'll have multiple languages, we need
@@ -19,7 +17,7 @@ export class InvitationCheckerPresenter {
       day: 'numeric',
       year: 'numeric',
     })
-    await repository.load(
+    await equalizerRepository.load(
       ({ invitationsLastCheckedDate, checkInvitations }) => {
         callback({
           lastCheck: formatter.format(invitationsLastCheckedDate),

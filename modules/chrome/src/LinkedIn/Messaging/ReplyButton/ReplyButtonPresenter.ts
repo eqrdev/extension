@@ -1,7 +1,7 @@
 import { ProfileUrl } from '../../../Shared/ProfileUrl'
 import {
   EqualizerModel,
-  EqualizerRepository,
+  equalizerRepository,
 } from '../../../Equalizer/EqualizerRepository'
 
 export interface LinkedInModel {
@@ -11,9 +11,7 @@ export interface LinkedInModel {
 
 export class ReplyButtonPresenter {
   async load(callback: (settings: LinkedInModel) => void): Promise<void> {
-    const repository = new EqualizerRepository()
-
-    await repository.load(
+    await equalizerRepository.load(
       ({ profileName, automaticMessage }: EqualizerModel) => {
         const profileUrl = new ProfileUrl(profileName)
 

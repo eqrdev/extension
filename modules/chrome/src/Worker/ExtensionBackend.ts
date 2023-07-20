@@ -1,16 +1,17 @@
 import { ChromeMessageGateway } from '../Shared/ChromeMessageGateway'
 import { ActionBadge } from './ActionBadge'
 import { LinkedInUrl, RouteName } from '../LinkedIn/Shared/LinkedInUrl'
-import { EqualizerRepository } from '../Equalizer/EqualizerRepository'
+import {
+  EqualizerRepository,
+  equalizerRepository,
+} from '../Equalizer/EqualizerRepository'
 import { LinkedInClient } from 'linkedin'
 
 export class ExtensionBackend {
   messages: ChromeMessageGateway
-  repository: EqualizerRepository
 
   constructor() {
     this.messages = new ChromeMessageGateway({ isBackground: true })
-    this.repository = new EqualizerRepository()
   }
 
   async load() {
@@ -27,7 +28,7 @@ export class ExtensionBackend {
     })
 
     await this.messages.on('Install', async () => {
-      await this.repository.setDefaultSettings()
+      await equalizerRepository.setDefaultSettings()
     })
 
     this.onNavigateTo('Messaging')
@@ -61,10 +62,10 @@ export class ExtensionBackend {
         ({ name }) => name === 'csrf-token'
       )?.value
       if (csrfToken) {
-        this.repository.setSession('csrfToken', csrfToken)
+        equalizerRepository.setSession('csrfToken', csrfToken)
       }
       if (EqualizerRepository.isMessagesUrl(url)) {
-        this.repository.setSession(
+        equalizerRepository.setSession(
           'mailboxUrn',
           EqualizerRepository.getMailBoxUrnFromUrl(url)
         )
@@ -81,7 +82,7 @@ export class ExtensionBackend {
   }
 
   async setActionBadgeIfNeeded() {
-    await this.repository.load(async ({ profileName }) => {
+    await equalizerRepository.load(async ({ profileName }) => {
       if (profileName) {
         return
       }

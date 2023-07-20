@@ -79,7 +79,7 @@ export const EqCopyButton = ({
     toggleMessage(true)
 
     setCurrentTimeout(
-      setTimeout(() => {
+      window.setTimeout(() => {
         toggleMessage(false)
       }, COPIED_MESSAGE_HIDE_TIMEOUT)
     )

@@ -1,7 +1,7 @@
 import { ProfileUrl } from '../Shared/ProfileUrl'
 import {
   EqualizerModel,
-  EqualizerRepository,
+  equalizerRepository,
 } from '../Equalizer/EqualizerRepository'
 
 export interface PopupModel {
@@ -15,8 +15,7 @@ export interface PopupModel {
 
 export class PopupPresenter {
   async load(callback: (settings: PopupModel) => void): Promise<void> {
-    const repository = new EqualizerRepository()
-    await repository.load(
+    await equalizerRepository.load(
       ({
         profileName,
         openAiKey,

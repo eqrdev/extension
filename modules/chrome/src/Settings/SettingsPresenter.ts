@@ -1,7 +1,7 @@
 import { ProfileUrl } from '../Shared/ProfileUrl'
 import {
   EqualizerModel,
-  EqualizerRepository,
+  equalizerRepository,
 } from '../Equalizer/EqualizerRepository'
 
 export interface SettingsModel {
@@ -21,21 +21,21 @@ export interface SettingsModel {
 
 export class SettingsPresenter {
   async load(callback: (settings: SettingsModel) => void): Promise<void> {
-    const repository = new EqualizerRepository()
-    await repository.load(
+    await equalizerRepository.load(
       ({ profileName, openAiKey, automaticMessage }: EqualizerModel) => {
         const profileUrl = new ProfileUrl(profileName)
 
         const handleProfileNameChange = async (value: string): Promise<void> =>
-          repository.set('profileName', value)
+          equalizerRepository.set('profileName', value)
 
         const handleMessageChange = async (value: string): Promise<void> =>
-          repository.set('automaticMessage', value)
+          equalizerRepository.set('automaticMessage', value)
 
         const handleApiKeyChange = async (value: string): Promise<void> =>
-          repository.set('openAiKey', value)
+          equalizerRepository.set('openAiKey', value)
 
-        const handleDisabledOpenAi = async () => repository.remove('openAiKey')
+        const handleDisabledOpenAi = async () =>
+          equalizerRepository.remove('openAiKey')
 
         callback({
           isOpenAiEnabled: !!openAiKey,

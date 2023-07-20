@@ -25,9 +25,9 @@ Please check out my Equalizer Profile page and answer a few questions about the 
 Please follow this link: #URL#`
 
 export class EqualizerRepository {
-  private readonly syncStorage: ChromeStorageGateway<EqualizerModel>
-  private readonly sessionStorage: ChromeStorageGateway<EqualizerSessionData>
-  private readonly messageGateway: ChromeMessageGateway
+  syncStorage: ChromeStorageGateway<EqualizerModel>
+  sessionStorage: ChromeStorageGateway<EqualizerSessionData>
+  messageGateway: ChromeMessageGateway
   private programmersModel: Observable<EqualizerModel & EqualizerSessionData>
 
   constructor() {
@@ -47,15 +47,19 @@ export class EqualizerRepository {
   }
 
   async set(settingKey: keyof EqualizerModel, value: string) {
-    if (typeof value !== 'string') {
-      throw new TypeError('IncorrectTypeError')
-    }
-
     if (value === '') {
       throw new Error('EmptyValueError')
     }
 
+    if (typeof value !== 'string') {
+      throw new TypeError('IncorrectTypeError')
+    }
+
     if (settingKey === 'profileName') {
+      if (!/^[^\s/]+$/i.test(value)) {
+        throw new Error('IncorrectFormatError')
+      }
+
       await this.messageGateway.send({ type: 'AddProfileName' })
     }
     await this.syncStorage.set({ [settingKey]: value })
@@ -112,13 +116,13 @@ export class EqualizerRepository {
     await this.updateModel()
   }
 
-  private get client() {
+  get client() {
     return new LinkedInClient({
       csrfToken: this.programmersModel.value.csrfToken,
     })
   }
 
-  private async checkInvitations() {
+  async checkInvitations() {
     const invites = await this.client.getInvites()
 
     for (const invite of invites) {
@@ -176,3 +180,7 @@ export class EqualizerRepository {
     }
   }
 }
+
+const equalizerRepository = new EqualizerRepository()
+
+export { equalizerRepository }

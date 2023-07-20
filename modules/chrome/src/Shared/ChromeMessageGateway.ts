@@ -3,11 +3,8 @@ import { AdditionalOptions } from 'copy-webpack-plugin'
 const MessageTypes = [
   'OpenSettings',
   'AddProfileName',
-  'LinkedInApiCall',
   'Install',
   'Navigate',
-  'NavigateToMessaging',
-  'GetHeaders',
 ] as const
 
 export type MessageType = (typeof MessageTypes)[number]

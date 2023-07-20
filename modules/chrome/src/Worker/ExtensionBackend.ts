@@ -31,25 +31,19 @@ export class ExtensionBackend {
       await equalizerRepository.setDefaultSettings()
     })
 
-    this.onNavigateTo('Messaging')
-    this.onNavigateTo('MyNetwork')
+    await this.onNavigate()
 
     await this.setActionBadgeIfNeeded()
 
     await this.onWebRequest()
   }
 
-  onNavigateTo(route: RouteName) {
-    return chrome.webNavigation.onHistoryStateUpdated.addListener(
+  async onNavigate() {
+    await chrome.webNavigation.onHistoryStateUpdated.addListener(
       async ({ tabId }) => {
-        await chrome.tabs.sendMessage(tabId, {
-          type: 'Navigate',
-          route,
-        })
-
         await this.messages.send({ type: 'Navigate', tabId })
       },
-      { url: [{ urlPrefix: LinkedInUrl.getByRouteName(route) }] }
+      { url: [{ urlPrefix: LinkedInUrl.getBase() }] }
     )
   }
 

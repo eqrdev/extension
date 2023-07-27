@@ -1,8 +1,12 @@
 import { generateTrackingIdAsCharString } from './generateTrackingIdAsCharString'
 
 import { v4 as uuid } from 'uuid'
-import { Message, MessengerConversation } from './types'
 import { LinkedInInvitationView } from './InvitationType'
+import {
+  ConversationMessagesResponse,
+  ConversationsResponse,
+} from './types/conversations'
+import { MessengerConversation, Message } from './types/entities'
 
 export interface LinkedInClientOptions {
   csrfToken: string
@@ -72,25 +76,23 @@ export class LinkedInClient {
   }
 
   public async getConversation(conversationUrnId: string): Promise<Message[]> {
-    return (
-      await this.requestGraphQL(
-        'messengerMessages.8d15783c080e392b337ba57fc576ad21',
-        `(conversationUrn:urn%3Ali%3Amsg_conversation%3A%28urn%3Ali%3Afsd_profile%3A${encodeURIComponent(
-          conversationUrnId
-        )}%29)`
-      )
-    ).data.messengerMessagesBySyncToken.elements
+    const response: ConversationMessagesResponse = await this.requestGraphQL(
+      'messengerMessages.8d15783c080e392b337ba57fc576ad21',
+      `(conversationUrn:urn%3Ali%3Amsg_conversation%3A%28urn%3Ali%3Afsd_profile%3A${encodeURIComponent(
+        conversationUrnId
+      )}%29)`
+    )
+    return response.data.messengerMessagesBySyncToken.elements
   }
 
   public async getConversations(
     mailboxUrnId: string
   ): Promise<MessengerConversation[]> {
-    return (
-      await this.requestGraphQL(
-        'messengerConversations.a5975e28c61274a917663e133c323f0f',
-        `(mailboxUrn:urn%3Ali%3Afsd_profile%3A${mailboxUrnId})`
-      )
-    ).data.messengerConversationsBySyncToken.elements
+    const response: ConversationsResponse = await this.requestGraphQL(
+      'messengerConversations.a5975e28c61274a917663e133c323f0f',
+      `(mailboxUrn:urn%3Ali%3Afsd_profile%3A${mailboxUrnId})`
+    )
+    return response.data.messengerConversationsBySyncToken.elements
   }
 
   public async getInvites(): Promise<LinkedInInvitationView[]> {

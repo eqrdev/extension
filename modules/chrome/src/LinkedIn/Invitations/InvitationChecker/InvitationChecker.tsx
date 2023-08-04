@@ -1,5 +1,5 @@
 import { ReactElement, useContext, useEffect, useState } from 'react'
-import { EqButton, EqLogo, EqTypo } from 'ui-library'
+import { EqAlert, EqButton, EqLogo, EqTypo } from 'ui-library'
 import { I18nContext } from '../../../Shared/I18nProvider'
 import styled from '@emotion/styled'
 import {
@@ -21,6 +21,10 @@ const Styled = {
   }),
   LastCheck: styled(EqTypo)({
     color: 'var(--eq-color-n300)',
+    margin: '0 16px 0 auto',
+  }),
+  Alert: styled(EqAlert)({
+    maxWidth: '304px',
     margin: '0 16px 0 auto',
   }),
 }
@@ -53,12 +57,25 @@ export const InvitationChecker = (): ReactElement => {
           Equalizer
         </EqTypo>
       </Styled.Logo>
-      <Styled.LastCheck small>
-        {$i18n('lastCheck', [data.lastCheck])}
-      </Styled.LastCheck>
-      <EqButton outline onClick={handleClick} loading={loading}>
-        {$i18n('checkInvitations')}
-      </EqButton>
+      {data.isProfileNameProvided ? (
+        <>
+          <Styled.LastCheck small>
+            {$i18n('lastCheck', [data.lastCheck])}
+          </Styled.LastCheck>
+          <EqButton outline onClick={handleClick} loading={loading}>
+            {$i18n('checkInvitations')}
+          </EqButton>
+        </>
+      ) : (
+        <>
+          <Styled.Alert severity="error" small>
+            {$i18n('missingUrlMessageChecker')}
+          </Styled.Alert>
+          <EqButton size="small" outline onClick={data.onClickSettings}>
+            {$i18n('openSettings')}
+          </EqButton>
+        </>
+      )}
     </Styled.Wrapper>
   )
 }

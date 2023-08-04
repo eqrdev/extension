@@ -3,6 +3,8 @@ import { equalizerRepository } from '../../../Equalizer/EqualizerRepository'
 export interface InvitationModel {
   lastCheck: string
   onClickButton: () => void
+  onClickSettings: () => void
+  isProfileNameProvided: boolean
 }
 
 export class InvitationCheckerPresenter {
@@ -18,10 +20,19 @@ export class InvitationCheckerPresenter {
       year: 'numeric',
     })
     await equalizerRepository.load(
-      ({ invitationsLastCheckedDate, checkInvitations }) => {
+      ({
+        invitationsLastCheckedDate,
+        checkInvitations,
+        profileName,
+        openSettings,
+      }) => {
         callback({
-          lastCheck: formatter.format(invitationsLastCheckedDate),
+          lastCheck: invitationsLastCheckedDate
+            ? formatter.format(invitationsLastCheckedDate)
+            : null,
+          isProfileNameProvided: Boolean(profileName),
           onClickButton: checkInvitations,
+          onClickSettings: openSettings,
         })
       }
     )

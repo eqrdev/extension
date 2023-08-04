@@ -9,6 +9,7 @@ export interface MessageCheckerData {
   isProfileUrlProvided: boolean
   automaticMessage: string
   onClickMessages: () => Promise<void>
+  onClickSettings: () => Promise<void>
 }
 
 export class MessageCheckerPresenter {
@@ -30,6 +31,7 @@ export class MessageCheckerPresenter {
         profileName,
         automaticMessage,
         checkMessages,
+        openSettings,
       }: EqualizerModel) => {
         callback({
           isProfileUrlProvided: !!profileName,
@@ -40,6 +42,7 @@ export class MessageCheckerPresenter {
             ? formatter.format(new Date(messagesLastCheckedDate))
             : undefined,
           onClickMessages: checkMessages,
+          onClickSettings: openSettings,
         })
       }
     )

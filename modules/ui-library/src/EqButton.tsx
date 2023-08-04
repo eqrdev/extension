@@ -26,7 +26,6 @@ const Styled = {
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      alignSelf: 'stretch',
       whiteSpace: 'nowrap',
       outline: 0,
       gap: 12,

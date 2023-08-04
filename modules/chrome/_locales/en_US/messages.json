@@ -20,11 +20,17 @@
   "missingUrl": {
     "message": "Your profile URL is missing. Please open the Settings page and enter your URL. If you don't know the URL, you can find it by visiting your Equalizer profile page."
   },
+  "missingUrlMessageChecker": {
+    "message": "Your profile URL is missing. Please enter your URL on the settings page."
+  },
   "save": {
     "message": "Save"
   },
   "settings": {
     "message": "Settings"
+  },
+  "openSettings": {
+    "message": "Open Settings"
   },
   "copied": {
     "message": "Copied!"

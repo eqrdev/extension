@@ -1,7 +1,7 @@
 import { ReactElement, useContext, useEffect, useState } from 'react'
 import { I18nContext } from '../../../Shared/I18nProvider'
 import styled from '@emotion/styled'
-import { EqButton, EqLogo, EqTypo } from 'ui-library'
+import { EqAlert, EqButton, EqLogo, EqTypo } from 'ui-library'
 import {
   MessageCheckerData,
   MessageCheckerPresenter,
@@ -23,6 +23,14 @@ const Styled = {
     color: 'var(--eq-color-white)',
     fontSize: 12,
     gap: 6,
+
+    '> div': {
+      position: 'relative',
+      top: -4,
+    },
+  }),
+  Feedback: styled(EqAlert)({
+    margin: '8px 0',
   }),
   Button: styled(EqButton)({
     background: 'white',
@@ -64,18 +72,36 @@ export const MessageChecker = (): ReactElement => {
         <EqLogo size={24} />
         <span>Equalizer</span>
       </Styled.Logo>
-      <Styled.Button
-        outline
-        size="small"
-        onClick={handleClick}
-        loading={loading}
-      >
-        {$i18n('checkMessages')}
-      </Styled.Button>
-      {data.lastChecked && (
-        <Styled.LastChecked>
-          {$i18n('lastCheck', [data.lastChecked])}
-        </Styled.LastChecked>
+      {data.isProfileUrlProvided ? (
+        <>
+          <Styled.Button
+            outline
+            size="small"
+            onClick={handleClick}
+            loading={loading}
+          >
+            {$i18n('checkMessages')}
+          </Styled.Button>
+          {data.lastChecked && (
+            <Styled.LastChecked>
+              {$i18n('lastCheck', [data.lastChecked])}
+            </Styled.LastChecked>
+          )}
+        </>
+      ) : (
+        <>
+          <Styled.Feedback severity="error" small>
+            {$i18n('missingUrlMessageChecker')}
+          </Styled.Feedback>
+          <Styled.Button
+            outline
+            size="small"
+            onClick={data.onClickSettings}
+            loading={loading}
+          >
+            {$i18n('openSettings')}
+          </Styled.Button>
+        </>
       )}
     </Styled.Wrapper>
   )

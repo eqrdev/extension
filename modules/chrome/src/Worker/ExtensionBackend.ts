@@ -44,7 +44,7 @@ export class ExtensionBackend {
     )
     await chrome.webNavigation.onHistoryStateUpdated.addListener(
       async ({ tabId }) => {
-        await this.messages.send({ type: 'Navigate', tabId })
+        // await this.messages.send({ type: 'Navigate', tabId })
       },
       { url: [{ urlPrefix: LinkedInUrl.getBase() }] }
     )

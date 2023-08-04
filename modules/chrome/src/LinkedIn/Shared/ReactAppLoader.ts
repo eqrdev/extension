@@ -14,20 +14,24 @@ export class ReactAppLoader {
   rootGetter: () => HTMLElement
   element: ReactElement
   root: Root
+  private messageGateway: ChromeMessageGateway
 
-  /** @const This is a class that the body receives when LinkedIn is loaded. */
+  /**
+   * @const BODY_LOADED_CLASS {string} This is a class that the body receives when LinkedIn is loaded.
+   */
   private static readonly BODY_LOADED_CLASS = 'boot-complete'
 
-  /** @const The element we observe for a change */
+  /** @const OBSERVED_ELEMENT {HTMLBodyElement} The element we observe for a change */
   private static readonly OBSERVED_ELEMENT = document.body
 
-  /** @const We throw an error after this timeout */
+  /** @const REJECT_AFTER_DELAY {number} We throw an error after this timeout */
   private static readonly REJECT_AFTER_DELAY = 3000
 
   constructor({ rootGetter, element, routeName }: ReactLoaderOptions) {
     this.routeName = routeName
     this.rootGetter = rootGetter
     this.element = element
+    this.messageGateway = new ChromeMessageGateway()
   }
 
   renderApp() {
@@ -43,7 +47,7 @@ export class ReactAppLoader {
       this.renderApp()
     }
 
-    await new ChromeMessageGateway().on('Navigate', () => {
+    await this.messageGateway.on('Navigate', () => {
       if (LinkedInUrl.isOnRoute(this.routeName)) {
         this.renderApp()
         return

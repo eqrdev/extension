@@ -6,16 +6,17 @@ export interface EqAlertProps {
   severity?: string
   closable?: boolean
   children: string
+  small?: boolean
 }
 
 const Styled = {
-  Wrapper: styled.div<Pick<EqAlertProps, 'severity'>>(
-    {
+  Wrapper: styled.div<Pick<EqAlertProps, 'severity' | 'small'>>(
+    ({ small }) => ({
       borderRadius: 4,
-      padding: 16,
+      padding: small ? 8 : 16,
       display: 'flex',
       gap: 12,
-    },
+    }),
     ({ severity }) =>
       severity === 'error' && {
         background: 'var(--eq-color-e300)',
@@ -32,18 +33,20 @@ const Styled = {
         color: 'var(--eq-color-n400)',
       }
   ),
-  Content: styled.div({
-    fontSize: '15px',
+  Content: styled.div<{ small: boolean }>(({ small }) => ({
+    fontSize: small ? '13px' : '15px',
     lineHeight: '21px',
-  }),
+  })),
 }
 
 export const EqAlert = ({
   severity,
   closable,
   children,
+  small = false,
+  ...props
 }: EqAlertProps): ReactElement => (
-  <Styled.Wrapper severity={severity}>
+  <Styled.Wrapper severity={severity} small={small} {...props}>
     <EqIcon
       type={
         {
@@ -53,7 +56,7 @@ export const EqAlert = ({
         }[severity]
       }
     />
-    <Styled.Content>{children}</Styled.Content>
+    <Styled.Content small={small}>{children}</Styled.Content>
     {closable && <EqIcon type="close" />}
   </Styled.Wrapper>
 )

@@ -9,7 +9,7 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "linkedin": "workspace:^",
-    "openai": "workspace:^",
+    "openai-analyzer": "workspace:^",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "typescript": "^5.1.6",

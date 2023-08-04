@@ -28,8 +28,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "reference": "workspace:modules/linkedin"\
       },\
       {\
-        "name": "openai",\
-        "reference": "workspace:modules/openai"\
+        "name": "openai-analyzer",\
+        "reference": "workspace:modules/openai-analyzer"\
       },\
       {\
         "name": "tests",\
@@ -47,7 +47,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       ["chrome", ["workspace:modules/chrome"]],\
       ["eslint", ["workspace:modules/eslint"]],\
       ["linkedin", ["workspace:modules/linkedin"]],\
-      ["openai", ["workspace:modules/openai"]],\
+      ["openai-analyzer", ["workspace:modules/openai-analyzer"]],\
       ["tests", ["workspace:modules/tests"]],\
       ["ui-library", ["workspace:modules/ui-library"]]\
     ],\
@@ -3246,7 +3246,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["copy-webpack-plugin", "virtual:5786f16169769c8a1b4ad49978d8d449da06ad07bc2a16370536aad8c7277da52f87dd9371f16487fb285be3764e4aaaa02f2c80e6f3b899db0f5be24cc713f0#npm:11.0.0"],\
             ["html-webpack-plugin", "virtual:5786f16169769c8a1b4ad49978d8d449da06ad07bc2a16370536aad8c7277da52f87dd9371f16487fb285be3764e4aaaa02f2c80e6f3b899db0f5be24cc713f0#npm:5.5.3"],\
             ["linkedin", "workspace:modules/linkedin"],\
-            ["openai", "workspace:modules/openai"],\
+            ["openai-analyzer", "workspace:modules/openai-analyzer"],\
             ["react", "npm:18.2.0"],\
             ["react-dom", "virtual:a0d22ec436e964902391a14217aecc37630745a2186499b495f45945e82635a36c541e98650e60fa93ebd796f09f04e16e9c32468c11e418ff6ee556c3ef5b90#npm:18.2.0"],\
             ["ts-loader", "virtual:5786f16169769c8a1b4ad49978d8d449da06ad07bc2a16370536aad8c7277da52f87dd9371f16487fb285be3764e4aaaa02f2c80e6f3b899db0f5be24cc713f0#npm:9.4.4"],\
@@ -6854,11 +6854,11 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
-      ["openai", [\
-        ["workspace:modules/openai", {\
-          "packageLocation": "./modules/openai/",\
+      ["openai-analyzer", [\
+        ["workspace:modules/openai-analyzer", {\
+          "packageLocation": "./modules/openai-analyzer/",\
           "packageDependencies": [\
-            ["openai", "workspace:modules/openai"]\
+            ["openai-analyzer", "workspace:modules/openai-analyzer"]\
           ],\
           "linkType": "SOFT"\
         }]\

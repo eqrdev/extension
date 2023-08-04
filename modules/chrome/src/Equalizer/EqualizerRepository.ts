@@ -1,8 +1,8 @@
 import { ChromeStorageGateway } from '../Shared/ChromeStorageGateway'
 import { ChromeMessageGateway } from '../Shared/ChromeMessageGateway'
 import { Observable } from '../Shared/Observable'
-import { ConversationProcessor, LinkedInClient } from 'linkedin'
-import { analyzeMessage } from 'openai'
+import { LinkedInClient, Message } from 'linkedin'
+import { analyzeMessage, analyzeTitle } from 'openai-analyzer'
 
 export interface EqualizerModel {
   automaticMessage: string
@@ -17,7 +17,7 @@ export interface EqualizerModel {
 
 export interface EqualizerSessionData {
   csrfToken: string
-  mailboxUrn: string
+  profileId: string
 }
 
 const DEFAULT_AUTO_REPLY_TEXT = `Hi! Thank You for contacting me.
@@ -99,16 +99,6 @@ export class EqualizerRepository {
     await this.updateModel()
   }
 
-  static isMessagesUrl(url: string): boolean {
-    return /messengerConversations\.[a-f0-9]*&variables=\(mailboxUrn:urn%3Ali%3Afsd_profile%[A-Za-z0-9]*-[A-Za-z0-9]*\)/gm.test(
-      url
-    )
-  }
-
-  static getMailBoxUrnFromUrl(url: string): string {
-    return url.match(/fsd_profile%3A([^(&)]+)/)[1]
-  }
-
   async setSession(key: keyof EqualizerSessionData, value: string) {
     await this.sessionStorage.set({
       [key]: value,
@@ -123,12 +113,48 @@ export class EqualizerRepository {
   }
 
   async checkInvitations() {
-    const invites = await this.client.getInvites()
+    const invitations = await this.client.getInvites()
 
-    for (const invite of invites) {
-      const { invitationId, sharedSecret } = invite.invitation
+    for (const invitation of invitations) {
+      if (invitation.genericInvitationType !== 'CONNECTION') {
+        return
+      }
 
-      await this.client.acceptInvitation(invitationId.toString(), sharedSecret)
+      const apiKey = this.programmersModel.value.openAiKey
+      const hasOpenAiKey = Boolean(apiKey)
+      const hasMessage = Boolean(invitation.message)
+
+      const accept = async () =>
+        await this.client.acceptInvitation(
+          invitation.id.toString(),
+          invitation.sharedSecret
+        )
+
+      if (!hasOpenAiKey) {
+        await accept()
+      }
+
+      if (hasMessage) {
+        const { is_recruiter_message } = await analyzeMessage(
+          invitation.message,
+          apiKey
+        )
+
+        if (is_recruiter_message) {
+          await accept()
+        }
+
+        return
+      }
+
+      const { is_recruiter_title } = await analyzeTitle(
+        invitation.senderTitle,
+        apiKey
+      )
+
+      if (is_recruiter_title) {
+        await accept()
+      }
     }
   }
 
@@ -137,27 +163,46 @@ export class EqualizerRepository {
     await this.setDate(new Date())
   }
 
+  private isWithinTwoWeeks(timestamp: number) {
+    const now = Date.now()
+    const twoWeeksInMilliseconds = 14 * 24 * 60 * 60 * 1000
+    return timestamp >= now && timestamp <= now + twoWeeksInMilliseconds
+  }
+
   private async replyMessages() {
-    const mailBoxUrn = this.programmersModel.value.mailboxUrn
+    const mailBoxUrn = this.programmersModel.value.profileId
     const conversations = await this.client.getConversations(mailBoxUrn)
 
     const conversationsToProcess = conversations.filter(conversation => {
       return (
+        (conversation.categories.includes('PRIMARY_INBOX') ||
+          conversation.categories.includes('INMAIL')) &&
         conversation.conversationParticipants.length === 2 &&
         conversation.lastActivityAt >
-          this.programmersModel.value.messagesLastCheckedDate
+          this.programmersModel.value.messagesLastCheckedDate &&
+        this.isWithinTwoWeeks(conversation.createdAt)
       )
     })
+
+    const getUrnId = conversation =>
+      conversation.entityUrn.match(/fsd_profile:([^)]+)/)[1]
+
     const conversationUrnIds = conversationsToProcess.map(conversation =>
-      ConversationProcessor.getUrnId(conversation)
+      getUrnId(conversation)
     )
+
+    const getText = (messages: Message[]): string =>
+      messages
+        .map(message => message.body.text)
+        .reverse()
+        .join('\n')
 
     for (const urnId of conversationUrnIds) {
       const fullConversation = await this.client.getConversation(urnId)
       const notReplied =
         new Set([...fullConversation.map(message => message.sender.entityUrn)])
           .size === 1
-      const conversationText = ConversationProcessor.getText(fullConversation)
+      const conversationText = getText(fullConversation)
       const hasOpenAiKey = !!this.programmersModel.value.openAiKey
       const isOpenAiValidated = hasOpenAiKey
         ? (

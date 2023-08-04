@@ -1,5 +1,7 @@
 import { ExtensionBackend } from './ExtensionBackend'
 
-new ExtensionBackend().load().then(() => {
-  console.info('Extension backend initialized')
-})
+const worker = new ExtensionBackend()
+
+;(async () => {
+  await worker.load()
+})()

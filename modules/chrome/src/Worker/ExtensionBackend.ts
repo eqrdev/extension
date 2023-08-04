@@ -1,10 +1,7 @@
 import { ChromeMessageGateway } from '../Shared/ChromeMessageGateway'
 import { ActionBadge } from './ActionBadge'
-import { LinkedInUrl, RouteName } from '../LinkedIn/Shared/LinkedInUrl'
-import {
-  EqualizerRepository,
-  equalizerRepository,
-} from '../Equalizer/EqualizerRepository'
+import { LinkedInUrl } from '../LinkedIn/Shared/LinkedInUrl'
+import { equalizerRepository } from '../Equalizer/EqualizerRepository'
 import { LinkedInClient } from 'linkedin'
 
 export class ExtensionBackend {
@@ -39,6 +36,12 @@ export class ExtensionBackend {
   }
 
   async onNavigate() {
+    await chrome.webNavigation.onCommitted.addListener(
+      async ({ tabId }) => {
+        await this.messages.send({ type: 'Navigate', tabId })
+      },
+      { url: [{ urlPrefix: LinkedInUrl.getBase() }] }
+    )
     await chrome.webNavigation.onHistoryStateUpdated.addListener(
       async ({ tabId }) => {
         await this.messages.send({ type: 'Navigate', tabId })
@@ -52,24 +55,22 @@ export class ExtensionBackend {
       url,
       requestHeaders,
     }: chrome.webRequest.WebRequestHeadersDetails) => {
+      const match = url.match(/\/profiles\/([^/]+)\/versionTag/)
+      const profileId = match ? match[1] : null
       const csrfToken = requestHeaders?.find(
         ({ name }) => name === 'csrf-token'
       )?.value
       if (csrfToken) {
         equalizerRepository.setSession('csrfToken', csrfToken)
       }
-      if (EqualizerRepository.isMessagesUrl(url)) {
-        equalizerRepository.setSession(
-          'mailboxUrn',
-          EqualizerRepository.getMailBoxUrnFromUrl(url)
-        )
-      }
+
+      equalizerRepository.setSession('profileId', profileId)
     }
 
     await chrome.webRequest.onBeforeSendHeaders.addListener(
       listener,
       {
-        urls: [`${LinkedInClient.apiBaseUrl}*`],
+        urls: [`${LinkedInClient.apiBaseUrl}identity/profiles/*`],
       },
       ['requestHeaders']
     )

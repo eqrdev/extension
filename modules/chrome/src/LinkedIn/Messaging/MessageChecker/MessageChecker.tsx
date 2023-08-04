@@ -40,6 +40,7 @@ const Styled = {
 
 export const MessageChecker = (): ReactElement => {
   const { $i18n } = useContext(I18nContext)
+  const [loading, setLoading] = useState(false)
   const [data, setData] = useState<Partial<MessageCheckerData>>({})
 
   const loadData = async () => {
@@ -51,13 +52,24 @@ export const MessageChecker = (): ReactElement => {
     loadData()
   }, [])
 
+  const handleClick = async () => {
+    setLoading(true)
+    await data.onClickMessages()
+    setLoading(false)
+  }
+
   return (
     <Styled.Wrapper>
       <Styled.Logo>
         <EqLogo size={24} />
         <span>Equalizer</span>
       </Styled.Logo>
-      <Styled.Button outline size="small" onClick={data.onClickMessages}>
+      <Styled.Button
+        outline
+        size="small"
+        onClick={handleClick}
+        loading={loading}
+      >
         {$i18n('checkMessages')}
       </Styled.Button>
       {data.lastChecked && (

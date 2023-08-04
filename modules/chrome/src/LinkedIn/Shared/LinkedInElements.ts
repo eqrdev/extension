@@ -24,7 +24,7 @@ export class LinkedInElements {
   ): HTMLDivElement {
     const preceding = document.querySelector(precedingSelector)
     const container = LinkedInElements.getContainer(id)
-    preceding.parentNode?.insertBefore(container, preceding.nextSibling)
+    preceding?.parentNode?.insertBefore(container, preceding.nextSibling)
     return container
   }
 
@@ -34,7 +34,7 @@ export class LinkedInElements {
   ): HTMLDivElement {
     const parent = document.querySelector(parentSelector)
     const container = LinkedInElements.getContainer(id)
-    parent.appendChild(container)
+    parent?.appendChild(container)
     return container
   }
 

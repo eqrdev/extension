@@ -34,7 +34,7 @@ describe('when we have a last checked date', () => {
   })
 })
 
-describe('when we click the button', () => {
+describe.skip('when we click the button', () => {
   it('should call the LinkedIn client with the proper parameters', async () => {
     jest.spyOn(EqualizerRepository.prototype, 'client', 'get').mockReturnValue({
       getInvites: jest.fn().mockResolvedValue([

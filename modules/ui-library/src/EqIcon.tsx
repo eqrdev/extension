@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { ReactElement } from 'react'
+import { forwardRef, HTMLAttributes } from 'react'
 
 export interface EqIconProps {
   type: string
@@ -16,12 +16,16 @@ const Styled = {
   })),
 }
 
-export const EqIcon = ({
-  type,
-  size = 24,
-  ...props
-}: EqIconProps): ReactElement => (
-  <Styled.Icon size={size} {...props} className="material-symbols-outlined">
+export const EqIcon = forwardRef<
+  HTMLSpanElement,
+  EqIconProps & HTMLAttributes<HTMLSpanElement>
+>(({ type, size = 24, ...props }, ref) => (
+  <Styled.Icon
+    size={size}
+    {...props}
+    className={`material-symbols-outlined ${props.className}`}
+    ref={ref}
+  >
     {type}
   </Styled.Icon>
-)
+))

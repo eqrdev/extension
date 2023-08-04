@@ -1,20 +1,10 @@
 type ErrorPathSegment = number | string
 
-type Error = {
+export type ErrorObject = {
   path: ErrorPathSegment[]
   locations: ErrorPathSegment[]
   extensions: {
     classification: string
   }
   message: string
-}
-
-export type InvitesResponse = {
-  data: {
-    extensions: {
-      webMetadata: Record
-    }
-    data: Record
-    errors: Error[]
-  }
 }

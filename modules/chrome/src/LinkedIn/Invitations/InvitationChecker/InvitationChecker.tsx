@@ -28,6 +28,7 @@ const Styled = {
 export const InvitationChecker = (): ReactElement => {
   const { $i18n } = useContext(I18nContext)
   const [data, setData] = useState<Partial<InvitationModel>>({})
+  const [loading, setLoading] = useState(false)
 
   const loadData = async () => {
     const presenter = new InvitationCheckerPresenter()
@@ -37,6 +38,12 @@ export const InvitationChecker = (): ReactElement => {
   useEffect(() => {
     loadData()
   }, [])
+
+  const handleClick = async () => {
+    setLoading(true)
+    await data.onClickButton()
+    setLoading(false)
+  }
 
   return (
     <Styled.Wrapper>
@@ -49,7 +56,7 @@ export const InvitationChecker = (): ReactElement => {
       <Styled.LastCheck small>
         {$i18n('lastCheck', [data.lastCheck])}
       </Styled.LastCheck>
-      <EqButton outline onClick={data.onClickButton}>
+      <EqButton outline onClick={handleClick} loading={loading}>
         {$i18n('checkInvitations')}
       </EqButton>
     </Styled.Wrapper>

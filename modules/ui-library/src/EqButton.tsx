@@ -1,13 +1,21 @@
 import styled from '@emotion/styled'
 import { EqIcon } from './EqIcon'
 import { forwardRef, HTMLAttributes, ReactElement, ReactNode } from 'react'
+import { keyframes } from '@emotion/react'
 
 export interface EqButtonProps {
   icon?: string
   size?: 'large' | 'small' | 'default'
+  loading?: boolean
   outline?: boolean
   children?: ReactNode
 }
+
+const rotate = keyframes`
+  100% {
+    rotate: 360deg;
+  }
+`
 
 const Styled = {
   Button: styled.button<Pick<EqButtonProps, 'size' | 'outline'>>(
@@ -80,16 +88,36 @@ const Styled = {
     lineHeight: '24px',
     height: '24px',
   }),
+  Loading: styled.svg({
+    animation: `${rotate} .4s linear infinite`,
+    transformOrigin: 'center',
+    stroke: 'black',
+    strokeWidth: 2,
+    strokeDashoffset: 3,
+    width: 12,
+    height: 12,
+  }),
+  Circle: styled.circle<{ outline?: boolean }>(({ outline }) => ({
+    stroke: outline ? 'black' : 'white',
+    fill: 'transparent',
+    strokeDashoffset: 12,
+    strokeDasharray: '15px 3px',
+  })),
 }
 
 export const EqButton = forwardRef<
   HTMLButtonElement,
   EqButtonProps & HTMLAttributes<HTMLButtonElement>
 >(
-  ({ icon, size, outline, children, ...props }, ref): ReactElement => (
+  ({ icon, size, outline, children, loading, ...props }, ref): ReactElement => (
     <Styled.Button size={size} outline={outline} {...props} ref={ref}>
       {icon && <Styled.Icon type={icon} />}
       {children}
+      {loading && (
+        <Styled.Loading viewBox="0 0 12 12">
+          <Styled.Circle r={5} cx={6} cy={6} outline={outline}></Styled.Circle>
+        </Styled.Loading>
+      )}
     </Styled.Button>
   )
 )

@@ -5,14 +5,15 @@ export interface EqTypoProps {
   small?: boolean
   link?: boolean
   bold?: boolean
+  monospace?: boolean
   tag?: keyof JSX.IntrinsicElements
   children: ReactNode
 }
 
 const Styled = {
-  Tag: styled.span<Pick<EqTypoProps, 'small' | 'bold' | 'link'>>(
-    ({ small, bold, link }) => ({
-      fontFamily: 'var(--eq-font-primary)',
+  Tag: styled.span<Pick<EqTypoProps, 'small' | 'bold' | 'link' | 'monospace'>>(
+    ({ small, bold, link, monospace }) => ({
+      fontFamily: monospace ? 'monospace' : 'var(--eq-font-primary)',
       fontSize: small ? 13 : 15,
       lineHeight: small ? '16px' : '21px',
       fontWeight: bold ? 700 : 400,
@@ -26,10 +27,18 @@ export const EqTypo = ({
   link = false,
   bold = false,
   small = false,
+  monospace = false,
   children,
   ...props
 }: EqTypoProps) => (
-  <Styled.Tag as={tag} small={small} link={link} bold={bold} {...props}>
+  <Styled.Tag
+    as={tag}
+    small={small}
+    link={link}
+    bold={bold}
+    monospace={monospace}
+    {...props}
+  >
     {children}
   </Styled.Tag>
 )

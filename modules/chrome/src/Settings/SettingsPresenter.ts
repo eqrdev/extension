@@ -19,6 +19,9 @@ export interface SettingsModel {
   disableOpenAi(): Promise<void>
 }
 
+const maskOpenAIKey = (key: string) =>
+  key.substring(0, 3) + '********' + key.substring(key.length - 4)
+
 export class SettingsPresenter {
   async load(callback: (settings: SettingsModel) => void): Promise<void> {
     await equalizerRepository.load(
@@ -39,7 +42,7 @@ export class SettingsPresenter {
 
         callback({
           isOpenAiEnabled: !!openAiKey,
-          openAiKey: openAiKey,
+          openAiKey: openAiKey ? maskOpenAIKey(openAiKey) : openAiKey,
           profileUrl: profileUrl.base,
           profileUrlFull: profileUrl.full,
           profileName: profileUrl.name,

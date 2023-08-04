@@ -189,7 +189,7 @@ export const Settings = (): ReactElement => {
             placeholder={$i18n('apiKeyPlaceholder')}
           />
         ) : (
-          data.openAiKey && <EqTypo>{data.openAiKey}</EqTypo>
+          data.openAiKey && <EqTypo monospace>{data.openAiKey}</EqTypo>
         )}
       </SettingsSection>
     </Styled.Wrapper>

@@ -1,7 +1,7 @@
 import { EqAlert, EqAlertProps } from '../EqAlert'
 import { ReactElement } from 'react'
 
-export type SnackbarProps = Pick<EqAlertProps, 'severity', 'onClose'> & {
+export type SnackbarProps = Pick<EqAlertProps, 'severity' | 'onClose'> & {
   message: string
 }
 

@@ -1,17 +1,25 @@
 import { createContext, ReactNode, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Snackbars } from './Snackbars'
+import { SnackbarProps } from './Snackbar'
 
 const ROOT_ID = 'eq-snackbar-root'
 
-export const SnackbarContext = createContext({})
+export interface SnackbarContextInterface {
+  snackbars: SnackbarProps[]
+  setSnackbars: (snackbars: SnackbarProps[]) => void
+}
+
+export const SnackbarContext = createContext<SnackbarContextInterface>(
+  {} as SnackbarContextInterface
+)
 
 export const SnackbarContextProvider = ({
   children,
 }: {
   children: ReactNode
 }) => {
-  const [snackbars, setSnackbars] = useState([])
+  const [snackbars, setSnackbars] = useState<SnackbarProps[]>([])
 
   const createDiv = () => {
     const div = document.createElement('div')

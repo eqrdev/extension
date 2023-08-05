@@ -58,12 +58,7 @@ describe.skip('when we click the button', () => {
     } as unknown as LinkedInClient)
 
     const presenter = new InvitationCheckerPresenter()
-    let viewModel: InvitationModel
-    await presenter.load(model => {
-      viewModel = model
-    })
-
-    await viewModel.onClickButton()
+    await presenter.onClickButton()
 
     expect(equalizerRepository.client.getInvites).toHaveBeenCalledTimes(1)
     expect(equalizerRepository.client.acceptInvitation).toHaveBeenCalledTimes(3)

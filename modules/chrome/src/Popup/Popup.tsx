@@ -51,9 +51,9 @@ const Styled = {
 export const Popup = (): ReactElement => {
   const { $i18n } = useContext(I18nContext)
   const [data, setData] = useState<Partial<PopupModel>>({})
+  const popupPresenter = new PopupPresenter()
 
   const loadData = async () => {
-    const popupPresenter = new PopupPresenter()
     await popupPresenter.load(setData)
   }
 
@@ -66,7 +66,10 @@ export const Popup = (): ReactElement => {
       <Styled.Title>
         <EqLogo size={32} />
         <EqTypo bold>Equalizer</EqTypo>
-        <Styled.SettingsIcon onClick={data.onClickSettings} icon="settings" />
+        <Styled.SettingsIcon
+          onClick={popupPresenter.onClickSettings}
+          icon="settings"
+        />
       </Styled.Title>
       <Styled.Section>
         <Styled.SectionHeader>

@@ -10,18 +10,12 @@ export interface PopupModel {
   isProfileUrlProvided: boolean
   automaticMessage: string
   isOpenAiEnabled: boolean
-  onClickSettings?: () => void
 }
 
 export class PopupPresenter {
   async load(callback: (settings: PopupModel) => void): Promise<void> {
     await equalizerRepository.load(
-      ({
-        profileName,
-        openAiKey,
-        automaticMessage,
-        openSettings,
-      }: EqualizerModel) => {
+      ({ profileName, openAiKey, automaticMessage }: EqualizerModel) => {
         const profileUrl = new ProfileUrl(profileName)
 
         callback({
@@ -30,9 +24,12 @@ export class PopupPresenter {
           profileUrlFull: profileUrl.full,
           automaticMessage: profileUrl.replaceInText(automaticMessage),
           isProfileUrlProvided: Boolean(profileName),
-          onClickSettings: openSettings,
         })
       }
     )
+  }
+
+  async onClickSettings() {
+    await equalizerRepository.openSettings()
   }
 }

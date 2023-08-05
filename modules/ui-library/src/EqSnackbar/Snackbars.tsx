@@ -15,8 +15,8 @@ const Styled = {
 
 export const Snackbars = ({ snackbars }: { snackbars: SnackbarProps[] }) => (
   <Styled.Wrapper>
-    {snackbars.map(({ children, ...rest }, index) => (
-      <Snackbar message={children} {...rest} key={`snackbar-${index}`} />
+    {snackbars.map((props, index) => (
+      <Snackbar {...props} key={`snackbar-${index}`} />
     ))}
   </Styled.Wrapper>
 )

@@ -7,11 +7,7 @@ jest.mock('../../Shared/ChromeStorageGateway')
 describe('when we click on settings button', () => {
   it('should call the messageGateway with a specific message', async () => {
     const popupPresenter = new PopupPresenter()
-    let openSettings
-    await popupPresenter.load(viewModel => {
-      openSettings = viewModel.onClickSettings
-    })
-    openSettings()
+    await popupPresenter.onClickSettings()
     expect(equalizerRepository.messageGateway.send).toHaveBeenCalledWith({
       type: 'OpenSettings',
     })

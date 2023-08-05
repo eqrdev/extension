@@ -27,7 +27,7 @@ const Styled = {
         color: 'var(--eq-color-white)',
       },
     ({ severity }) =>
-      severity === 'alert' && {
+      severity === 'info' && {
         background: 'var(--eq-color-w300)',
         color: 'var(--eq-color-white)',
       },
@@ -37,7 +37,7 @@ const Styled = {
         color: 'var(--eq-color-white)',
       },
     ({ severity }) =>
-      severity === 'alert' && {
+      severity === 'warning' && {
         background: 'var(--eq-color-n100)',
         color: 'var(--eq-color-n400)',
       }

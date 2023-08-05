@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "build": "webpack --mode=production",
-    "dev": "webpack watch --mode=development"
+    "dev": "webpack watch --mode=development",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",

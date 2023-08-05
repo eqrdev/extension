@@ -4,7 +4,7 @@ import { Observable } from '../Shared/Observable'
 import { LinkedInClient, Message } from 'linkedin'
 import { analyzeMessage, analyzeTitle } from 'openai-analyzer'
 
-export interface EqualizerModel {
+export interface EqualizerSyncedData {
   automaticMessage: string
   openAiKey?: string
   profileName?: string
@@ -19,25 +19,25 @@ export interface EqualizerSessionData {
   invitationsAcceptedCount: number
 }
 
+export type EqualizerModel = EqualizerSyncedData & EqualizerSessionData
+
 const DEFAULT_AUTO_REPLY_TEXT = `Hi! Thank You for contacting me.
 Please check out my Equalizer Profile page and answer a few questions about the job that you are recruiting for.
 Please follow this link: #URL#`
 
 export class EqualizerRepository {
-  syncStorage: ChromeStorageGateway<EqualizerModel>
+  syncStorage: ChromeStorageGateway<EqualizerSyncedData>
   sessionStorage: ChromeStorageGateway<EqualizerSessionData>
   messageGateway: ChromeMessageGateway
-  private programmersModel: Observable<EqualizerModel & EqualizerSessionData>
+  private programmersModel: Observable<EqualizerModel>
 
   constructor() {
     this.sessionStorage = new ChromeStorageGateway<EqualizerSessionData>({
       sessionOnly: true,
     })
-    this.syncStorage = new ChromeStorageGateway<EqualizerModel>()
+    this.syncStorage = new ChromeStorageGateway<EqualizerSyncedData>()
     this.messageGateway = new ChromeMessageGateway({ isBackground: false })
-    this.programmersModel = new Observable<
-      EqualizerModel & EqualizerSessionData
-    >(null)
+    this.programmersModel = new Observable<EqualizerModel>(null)
   }
 
   async load(callback: (model: EqualizerModel) => void) {
@@ -45,7 +45,7 @@ export class EqualizerRepository {
     await this.updateModel()
   }
 
-  async set(settingKey: keyof EqualizerModel, value: string) {
+  async set(settingKey: keyof EqualizerSyncedData, value: string) {
     if (value === '') {
       throw new Error('EmptyValueError')
     }
@@ -65,7 +65,7 @@ export class EqualizerRepository {
     await this.updateModel()
   }
 
-  async remove(settingKey: keyof EqualizerModel) {
+  async remove(settingKey: keyof EqualizerSyncedData) {
     await this.syncStorage.remove(settingKey)
     await this.updateModel()
   }
@@ -95,7 +95,7 @@ export class EqualizerRepository {
     await this.updateModel()
   }
 
-  async setSession(key: keyof EqualizerSessionData, value: string) {
+  async setSession(key: keyof EqualizerSessionData, value: string | number) {
     await this.sessionStorage.set({
       [key]: value,
     })

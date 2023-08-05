@@ -9,7 +9,7 @@ export interface EqIconButtonProps {
 }
 
 const Styled = {
-  Button: styled<{ inverse: boolean; small: boolean }>(EqButton)(
+  Button: styled(EqButton)<{ inverse?: boolean; small?: boolean }>(
     ({ inverse, small }) => ({
       height: 'auto',
       padding: small ? 0 : 8,

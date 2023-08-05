@@ -46,7 +46,7 @@ export const InvitationChecker = (): ReactElement => {
       severity: 'success',
       message: `${$i18n('invitationsSuccessfulCheck')} ${
         data.invitationsAccepted
-          ? $i18n('invitationsAccepted', [data.invitationsAccepted])
+          ? $i18n('invitationsAccepted', [String(data.invitationsAccepted)])
           : $i18n('noInvitationsAccepted')
       }`,
     })

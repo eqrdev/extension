@@ -66,7 +66,7 @@ export const MessageChecker = (): ReactElement => {
       severity: 'success',
       message: `${$i18n('successfulCheck')}\n ${
         data.lastResponsesCount
-          ? $i18n('responsesSent', [data.lastResponsesCount])
+          ? $i18n('responsesSent', [String(data.lastResponsesCount)])
           : $i18n('noResponsesSent')
       }`,
     })

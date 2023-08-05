@@ -1,6 +1,6 @@
 import styled from '@emotion/styled'
 import { EqIcon } from './EqIcon'
-import { forwardRef, HTMLAttributes, ReactElement, ReactNode } from 'react'
+import { AllHTMLAttributes, forwardRef, ReactElement, ReactNode } from 'react'
 import { keyframes } from '@emotion/react'
 
 export interface EqButtonProps {
@@ -106,13 +106,17 @@ const Styled = {
 
 export const EqButton = forwardRef<
   HTMLButtonElement,
-  EqButtonProps & HTMLAttributes<HTMLButtonElement>
+  EqButtonProps &
+    Omit<AllHTMLAttributes<HTMLButtonElement>, 'as' | 'type' | 'size'>
 >(
-  ({ icon, size, outline, children, loading, ...props }, ref): ReactElement => (
+  (
+    { icon, size, outline, children, loading, disabled, ...props },
+    ref
+  ): ReactElement => (
     <Styled.Button
       size={size}
       outline={outline}
-      disabled={props.disabled || loading}
+      disabled={disabled || loading}
       {...props}
       ref={ref}
     >

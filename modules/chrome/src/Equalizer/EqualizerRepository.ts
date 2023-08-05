@@ -2,7 +2,7 @@ import { ChromeStorageGateway } from '../Shared/ChromeStorageGateway'
 import { ChromeMessageGateway } from '../Shared/ChromeMessageGateway'
 import { Observable } from '../Shared/Observable'
 import { LinkedInClient, Message } from 'linkedin'
-import { analyzeMessage, analyzeTitle } from 'openai-analyzer'
+import { OpenAIGateway } from '../Shared/OpenAIGateway'
 
 export interface EqualizerSyncedData {
   automaticMessage: string
@@ -108,6 +108,10 @@ export class EqualizerRepository {
     })
   }
 
+  get openAi() {
+    return new OpenAIGateway(this.programmersModel.value.openAiKey)
+  }
+
   async checkInvitations() {
     const invitations = await this.client.getInvites()
 
@@ -118,8 +122,6 @@ export class EqualizerRepository {
         return
       }
 
-      const apiKey = this.programmersModel.value.openAiKey
-      const hasOpenAiKey = Boolean(apiKey)
       const hasMessage = Boolean(invitation.message)
 
       const accept = async () => {
@@ -130,29 +132,19 @@ export class EqualizerRepository {
         invitationsAcceptedCount++
       }
 
-      if (!hasOpenAiKey) {
+      if (!this.openAi.hasOpenAi) {
         await accept()
       }
 
       if (hasMessage) {
-        const { is_recruiter_message } = await analyzeMessage(
-          invitation.message,
-          apiKey
-        )
-
-        if (is_recruiter_message) {
+        if (await this.openAi.isRecruiterMessage(invitation.message)) {
           await accept()
         }
 
         return
       }
 
-      const { is_recruiter_title } = await analyzeTitle(
-        invitation.senderTitle,
-        apiKey
-      )
-
-      if (is_recruiter_title) {
+      if (await this.openAi.isRecruiterTitle(invitation.senderTitle)) {
         await accept()
       }
     }
@@ -207,14 +199,8 @@ export class EqualizerRepository {
         new Set([...fullConversation.map(message => message.sender.entityUrn)])
           .size === 1
       const conversationText = getText(fullConversation)
-      const hasOpenAiKey = !!this.programmersModel.value.openAiKey
-      const isOpenAiValidated = hasOpenAiKey
-        ? (
-            await analyzeMessage(
-              conversationText,
-              this.programmersModel.value.openAiKey
-            )
-          ).is_recruiter_message
+      const isOpenAiValidated = this.openAi.hasOpenAi
+        ? await this.openAi.isRecruiterMessage(conversationText)
         : true
 
       const shouldReply = notReplied && isOpenAiValidated

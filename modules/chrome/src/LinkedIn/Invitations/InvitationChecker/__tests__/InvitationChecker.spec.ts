@@ -10,6 +10,7 @@ import { LinkedInClient } from 'linkedin'
 
 jest.mock('../../../../Shared/ChromeMessageGateway')
 jest.mock('../../../../Shared/ChromeStorageGateway')
+jest.mock('../../../../Shared/OpenAIGateway')
 jest.mock('linkedin', () => ({
   LinkedInClient: jest.fn().mockImplementation(() => ({
     getInvites: jest.fn().mockResolvedValue([]),
@@ -34,24 +35,36 @@ describe('when we have a last checked date', () => {
   })
 })
 
-describe.skip('when we click the button', () => {
+describe('when we click the button', () => {
   it('should call the LinkedIn client with the proper parameters', async () => {
     jest.spyOn(EqualizerRepository.prototype, 'client', 'get').mockReturnValue({
       getInvites: jest.fn().mockResolvedValue([
         {
-          invitation: {
-            invitationId: '9789428921',
-          },
+          id: 9789428921,
+          genericInvitationType: 'CONNECTION',
+          sharedSecret: 'NrtQx6ioﬀ',
+          message: 'Hello, do you remember me from high school?',
+          invitationType: 'RECEIVED',
+          invitationState: 'PENDING',
+          senderTitle: 'DTP operator at QuickPrint HQ, Inc.',
         },
         {
-          invitation: {
-            invitationId: '4892374874',
-          },
+          id: 4892374874,
+          genericInvitationType: 'CONNECTION',
+          sharedSecret: 'wlApmssu',
+          message: null,
+          invitationType: 'RECEIVED',
+          invitationState: 'PENDING',
+          senderTitle: 'HR associate at HRComm Solutions',
         },
         {
-          invitation: {
-            invitationId: '9867875488',
-          },
+          id: 9867875488,
+          genericInvitationType: 'CONNECTION',
+          sharedSecret: 'NifOCrk1',
+          message: null,
+          invitationType: 'RECEIVED',
+          invitationState: 'PENDING',
+          senderTitle: 'Headhunter at Black and Lockwood',
         },
       ]),
       acceptInvitation: jest.fn(),
@@ -61,6 +74,6 @@ describe.skip('when we click the button', () => {
     await presenter.onClickButton()
 
     expect(equalizerRepository.client.getInvites).toHaveBeenCalledTimes(1)
-    expect(equalizerRepository.client.acceptInvitation).toHaveBeenCalledTimes(3)
+    expect(equalizerRepository.client.acceptInvitation).toHaveBeenCalledTimes(1)
   })
 })

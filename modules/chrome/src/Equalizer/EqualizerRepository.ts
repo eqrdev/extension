@@ -10,14 +10,13 @@ export interface EqualizerModel {
   profileName?: string
   invitationsLastCheckedDate?: number
   messagesLastCheckedDate?: number
-  openSettings: () => Promise<void>
-  checkMessages: () => Promise<void>
-  checkInvitations: () => Promise<void>
 }
 
 export interface EqualizerSessionData {
   csrfToken: string
   profileId: string
+  lastResponsesCount: number
+  invitationsAcceptedCount: number
 }
 
 const DEFAULT_AUTO_REPLY_TEXT = `Hi! Thank You for contacting me.
@@ -78,7 +77,7 @@ export class EqualizerRepository {
     await this.updateModel()
   }
 
-  private async openSettings() {
+  async openSettings() {
     return this.messageGateway.send({ type: 'OpenSettings' })
   }
 
@@ -86,9 +85,6 @@ export class EqualizerRepository {
     this.programmersModel.value = {
       ...(await this.syncStorage.getAll()),
       ...(await this.sessionStorage.getAll()),
-      openSettings: this.openSettings.bind(this),
-      checkMessages: this.checkMessages.bind(this),
-      checkInvitations: this.checkInvitations.bind(this),
     }
   }
 
@@ -115,6 +111,8 @@ export class EqualizerRepository {
   async checkInvitations() {
     const invitations = await this.client.getInvites()
 
+    let invitationsAcceptedCount = 0
+
     for (const invitation of invitations) {
       if (invitation.genericInvitationType !== 'CONNECTION') {
         return
@@ -124,11 +122,13 @@ export class EqualizerRepository {
       const hasOpenAiKey = Boolean(apiKey)
       const hasMessage = Boolean(invitation.message)
 
-      const accept = async () =>
+      const accept = async () => {
         await this.client.acceptInvitation(
           invitation.id.toString(),
           invitation.sharedSecret
         )
+        invitationsAcceptedCount++
+      }
 
       if (!hasOpenAiKey) {
         await accept()
@@ -156,9 +156,11 @@ export class EqualizerRepository {
         await accept()
       }
     }
+
+    await this.setSession('invitationsAcceptedCount', invitationsAcceptedCount)
   }
 
-  private async checkMessages() {
+  async checkMessages() {
     await this.replyMessages()
     await this.setDate(new Date())
   }
@@ -197,6 +199,8 @@ export class EqualizerRepository {
         .reverse()
         .join('\n')
 
+    let responsesCount = 0
+
     for (const urnId of conversationUrnIds) {
       const fullConversation = await this.client.getConversation(urnId)
       const notReplied =
@@ -216,6 +220,8 @@ export class EqualizerRepository {
       const shouldReply = notReplied && isOpenAiValidated
 
       if (shouldReply) {
+        responsesCount++
+
         await this.client.sendMessage(
           urnId,
           mailBoxUrn,
@@ -223,6 +229,8 @@ export class EqualizerRepository {
         )
       }
     }
+
+    await this.setSession('lastResponsesCount', responsesCount)
   }
 }
 

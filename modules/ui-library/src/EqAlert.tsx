@@ -1,12 +1,16 @@
 import { EqIcon } from './EqIcon'
 import styled from '@emotion/styled'
 import { ReactElement } from 'react'
+import { EqIconButton } from './EqIconButton'
+
+type Severity = 'info' | 'warning' | 'error' | 'success'
 
 export interface EqAlertProps {
-  severity?: string
+  severity?: Severity
   closable?: boolean
   children: string
   small?: boolean
+  onClose?: () => void
 }
 
 const Styled = {
@@ -28,6 +32,11 @@ const Styled = {
         color: 'var(--eq-color-white)',
       },
     ({ severity }) =>
+      severity === 'success' && {
+        background: 'var(--eq-color-s300)',
+        color: 'var(--eq-color-white)',
+      },
+    ({ severity }) =>
       severity === 'alert' && {
         background: 'var(--eq-color-n100)',
         color: 'var(--eq-color-n400)',
@@ -40,10 +49,11 @@ const Styled = {
 }
 
 export const EqAlert = ({
-  severity,
+  severity = 'error',
   closable,
   children,
   small = false,
+  onClose,
   ...props
 }: EqAlertProps): ReactElement => (
   <Styled.Wrapper severity={severity} small={small} {...props}>
@@ -53,10 +63,11 @@ export const EqAlert = ({
           info: 'info',
           warning: 'error_outline',
           error: 'highlight_off',
+          success: 'check_circle',
         }[severity]
       }
     />
     <Styled.Content small={small}>{children}</Styled.Content>
-    {closable && <EqIcon type="close" />}
+    {closable && <EqIconButton small inverse icon="close" onClick={onClose} />}
   </Styled.Wrapper>
 )

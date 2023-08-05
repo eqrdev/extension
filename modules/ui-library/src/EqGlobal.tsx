@@ -2,6 +2,7 @@ import type { ReactElement, ReactNode } from 'react'
 import { createContext } from 'react'
 import { Global, css, CacheProvider } from '@emotion/react'
 import createCache from '@emotion/cache'
+import { SnackbarContextProvider } from './EqSnackbar/SnackbarContext'
 
 export const GlobalStyleContext = createContext({})
 
@@ -56,7 +57,7 @@ export const EqGlobal = ({
     <CacheProvider value={emotionCache}>
       <GlobalStyleContext.Provider value={{}}>
         <Global styles={css(globalStyles)} />
-        {children}
+        <SnackbarContextProvider>{children}</SnackbarContextProvider>
       </GlobalStyleContext.Provider>
     </CacheProvider>
   )

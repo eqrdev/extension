@@ -1,5 +1,5 @@
 import { ReactElement, useContext, useEffect, useState } from 'react'
-import { EqAlert, EqButton, EqLogo, EqTypo } from 'ui-library'
+import { EqAlert, EqButton, EqLogo, EqTypo, useSnackbar } from 'ui-library'
 import { I18nContext } from '../../../Shared/I18nProvider'
 import styled from '@emotion/styled'
 import {
@@ -18,6 +18,7 @@ const Styled = {
   Logo: styled.header({
     display: 'flex',
     alignItems: 'center',
+    margin: '0 auto 0 0',
   }),
   LastCheck: styled(EqTypo)({
     color: 'var(--eq-color-n300)',
@@ -33,10 +34,22 @@ export const InvitationChecker = (): ReactElement => {
   const { $i18n } = useContext(I18nContext)
   const [data, setData] = useState<Partial<InvitationModel>>({})
   const [loading, setLoading] = useState(false)
+  const presenter = new InvitationCheckerPresenter()
+  const showSnackbar = useSnackbar()
 
   const loadData = async () => {
-    const presenter = new InvitationCheckerPresenter()
     await presenter.load(setData)
+  }
+
+  const showSuccessfulCheck = () => {
+    showSnackbar({
+      severity: 'success',
+      message: `${$i18n('invitationsSuccessfulCheck')} ${
+        data.invitationsAccepted
+          ? $i18n('invitationsAccepted', [data.invitationsAccepted])
+          : $i18n('noInvitationsAccepted')
+      }`,
+    })
   }
 
   useEffect(() => {
@@ -45,7 +58,8 @@ export const InvitationChecker = (): ReactElement => {
 
   const handleClick = async () => {
     setLoading(true)
-    await data.onClickButton()
+    await presenter.onClickButton()
+    showSuccessfulCheck()
     setLoading(false)
   }
 
@@ -59,9 +73,11 @@ export const InvitationChecker = (): ReactElement => {
       </Styled.Logo>
       {data.isProfileNameProvided ? (
         <>
-          <Styled.LastCheck small>
-            {$i18n('lastCheck', [data.lastCheck])}
-          </Styled.LastCheck>
+          {data.lastCheck && (
+            <Styled.LastCheck small>
+              {$i18n('lastCheck', [data.lastCheck])}
+            </Styled.LastCheck>
+          )}
           <EqButton outline onClick={handleClick} loading={loading}>
             {$i18n('checkInvitations')}
           </EqButton>
@@ -71,7 +87,7 @@ export const InvitationChecker = (): ReactElement => {
           <Styled.Alert severity="error" small>
             {$i18n('missingUrlMessageChecker')}
           </Styled.Alert>
-          <EqButton size="small" outline onClick={data.onClickSettings}>
+          <EqButton size="small" outline onClick={presenter.onClickSettings}>
             {$i18n('openSettings')}
           </EqButton>
         </>

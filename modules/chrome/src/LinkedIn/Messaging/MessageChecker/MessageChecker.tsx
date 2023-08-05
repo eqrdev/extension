@@ -1,7 +1,7 @@
 import { ReactElement, useContext, useEffect, useState } from 'react'
 import { I18nContext } from '../../../Shared/I18nProvider'
 import styled from '@emotion/styled'
-import { EqAlert, EqButton, EqLogo, EqTypo } from 'ui-library'
+import { EqAlert, EqButton, EqLogo, EqTypo, useSnackbar } from 'ui-library'
 import {
   MessageCheckerData,
   MessageCheckerPresenter,
@@ -50,9 +50,10 @@ export const MessageChecker = (): ReactElement => {
   const { $i18n } = useContext(I18nContext)
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState<Partial<MessageCheckerData>>({})
+  const showSnackbar = useSnackbar()
+  const presenter = new MessageCheckerPresenter()
 
   const loadData = async () => {
-    const presenter = new MessageCheckerPresenter()
     await presenter.load(setData)
   }
 
@@ -60,9 +61,21 @@ export const MessageChecker = (): ReactElement => {
     loadData()
   }, [])
 
+  const showSuccessSnackbar = () => {
+    showSnackbar({
+      severity: 'success',
+      message: `${$i18n('successfulCheck')}\n ${
+        data.lastResponsesCount
+          ? $i18n('responsesSent', [data.lastResponsesCount])
+          : $i18n('noResponsesSent')
+      }`,
+    })
+  }
+
   const handleClick = async () => {
     setLoading(true)
-    await data.onClickMessages()
+    await presenter.onClickMessages()
+    showSuccessSnackbar()
     setLoading(false)
   }
 
@@ -96,7 +109,7 @@ export const MessageChecker = (): ReactElement => {
           <Styled.Button
             outline
             size="small"
-            onClick={data.onClickSettings}
+            onClick={presenter.onClickSettings}
             loading={loading}
           >
             {$i18n('openSettings')}

@@ -109,7 +109,13 @@ export const EqButton = forwardRef<
   EqButtonProps & HTMLAttributes<HTMLButtonElement>
 >(
   ({ icon, size, outline, children, loading, ...props }, ref): ReactElement => (
-    <Styled.Button size={size} outline={outline} {...props} ref={ref}>
+    <Styled.Button
+      size={size}
+      outline={outline}
+      disabled={props.disabled || loading}
+      {...props}
+      ref={ref}
+    >
       {icon && <Styled.Icon type={icon} />}
       {children}
       {loading && (

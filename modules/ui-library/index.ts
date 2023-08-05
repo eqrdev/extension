@@ -10,3 +10,5 @@ export { EqLogo } from './src/EqLogo'
 export { EqSwitch } from './src/EqSwitch'
 export { EqTextarea } from './src/EqTextarea'
 export { EqTypo } from './src/EqTypo'
+
+export { useSnackbar } from './src/EqSnackbar/useSnackbar'

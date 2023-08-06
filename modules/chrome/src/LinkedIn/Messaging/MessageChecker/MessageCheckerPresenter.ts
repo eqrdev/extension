@@ -3,9 +3,11 @@ import {
   EqualizerModel,
   equalizerRepository,
 } from '../../../Equalizer/EqualizerRepository'
+import { dateTimeFormatter } from '../../../Shared/i18n'
 
 export interface MessageCheckerData {
   lastChecked: string
+  hasLastCheckedDate: boolean
   isProfileUrlProvided: boolean
   automaticMessage: string
   lastResponsesCount?: number
@@ -13,17 +15,6 @@ export interface MessageCheckerData {
 
 export class MessageCheckerPresenter {
   async load(callback: (settings: MessageCheckerData) => void): Promise<void> {
-    /**
-     * Currently we only support english
-     * when we'll have multiple languages, we need
-     * `chrome.i18n.getUILanguage()` here.
-     */
-    const formatter = new Intl.DateTimeFormat('en-US', {
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric',
-    })
-
     await equalizerRepository.load(
       ({
         messagesLastCheckedDate,
@@ -37,8 +28,9 @@ export class MessageCheckerPresenter {
             automaticMessage
           ),
           lastChecked: messagesLastCheckedDate
-            ? formatter.format(new Date(messagesLastCheckedDate))
-            : undefined,
+            ? dateTimeFormatter.format(new Date(messagesLastCheckedDate))
+            : '',
+          hasLastCheckedDate: Boolean(messagesLastCheckedDate),
           lastResponsesCount,
         })
       }

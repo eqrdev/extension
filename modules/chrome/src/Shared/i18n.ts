@@ -20,3 +20,14 @@ export const i18n = (
   key: MessageKey,
   substitutions?: string | string[]
 ): string => chrome.i18n.getMessage(key, substitutions)
+
+/**
+ * Currently we only support english
+ * when we'll have multiple languages, we need
+ * `chrome.i18n.getUILanguage()` here.
+ */
+export const dateTimeFormatter = new Intl.DateTimeFormat('en-US', {
+  month: 'long',
+  day: 'numeric',
+  year: 'numeric',
+})

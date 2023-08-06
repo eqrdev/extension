@@ -19,7 +19,7 @@ use our [Chrome extension.][chrome-extension]
 
 If you want to build it yourself or modify the extension, you can do it easily. All you have to do is run the build command (`yarn build`). This creates a directory called `dist` in the root of the repository.
 
-Open the [Extensions][chrome-page] page in Chrome and set the developer mode. Then click the "Load unpacked" button and browse to the `dist' directory.
+Open the [Extensions][chrome-page] page in Chrome and set the developer mode. Then click the "Load unpacked" button and browse to the `dist` directory.
 
 ## Development
 

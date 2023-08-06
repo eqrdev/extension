@@ -1,11 +1,11 @@
 export class ActionBadge {
-  static async set() {
+  static async show() {
     await chrome.action.setBadgeText({ text: '!' })
     await chrome.action.setBadgeBackgroundColor({ color: '#ef4127' })
     await chrome.action.setBadgeTextColor({ color: '#fff' })
   }
 
-  static async remove() {
+  static async hide() {
     await chrome.action.setBadgeText({ text: '' })
   }
 }

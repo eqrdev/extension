@@ -21,7 +21,7 @@ export class ExtensionBackend {
     )
 
     await this.messages.on('AddProfileName', async () => {
-      await ActionBadge.remove()
+      await ActionBadge.hide()
     })
 
     await this.messages.on('Install', async () => {
@@ -82,7 +82,7 @@ export class ExtensionBackend {
         return
       }
 
-      await ActionBadge.set()
+      await ActionBadge.show()
     })
   }
 }

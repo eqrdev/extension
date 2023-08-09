@@ -1,8 +1,9 @@
 import { ChromeStorageGateway } from '../Shared/ChromeStorageGateway'
 import { ChromeMessageGateway } from '../Shared/ChromeMessageGateway'
 import { Observable } from '../Shared/Observable'
-import { LinkedInClient, Message } from 'linkedin'
 import { OpenAIGateway } from '../Shared/OpenAIGateway'
+import { LinkedInAPIGateway } from '../Shared/LinkedInAPIGateway'
+import { Message } from 'linkedin'
 
 export interface EqualizerSyncedData {
   automaticMessage: string
@@ -102,9 +103,12 @@ export class EqualizerRepository {
     await this.updateModel()
   }
 
-  get client() {
-    return new LinkedInClient({
-      csrfToken: this.programmersModel.value.csrfToken,
+  get linkedin() {
+    const { csrfToken, profileId } = this.programmersModel.value
+
+    return new LinkedInAPIGateway({
+      csrfToken,
+      profileId,
     })
   }
 
@@ -113,7 +117,7 @@ export class EqualizerRepository {
   }
 
   async checkInvitations() {
-    const invitations = await this.client.getInvites()
+    const invitations = await this.linkedin.getInvitations()
 
     let invitationsAcceptedCount = 0
 
@@ -125,7 +129,7 @@ export class EqualizerRepository {
       const hasMessage = Boolean(invitation.message)
 
       const accept = async () => {
-        await this.client.acceptInvitation(
+        await this.linkedin.acceptInvitation(
           invitation.id.toString(),
           invitation.sharedSecret
         )
@@ -164,8 +168,7 @@ export class EqualizerRepository {
   }
 
   private async replyMessages() {
-    const mailBoxUrn = this.programmersModel.value.profileId
-    const conversations = await this.client.getConversations(mailBoxUrn)
+    const conversations = await this.linkedin.getConversations()
 
     const conversationsToProcess = conversations.filter(conversation => {
       return (
@@ -194,7 +197,7 @@ export class EqualizerRepository {
     let responsesCount = 0
 
     for (const urnId of conversationUrnIds) {
-      const fullConversation = await this.client.getConversation(urnId)
+      const fullConversation = await this.linkedin.getConversation(urnId)
       const notReplied =
         new Set([...fullConversation.map(message => message.sender.entityUrn)])
           .size === 1
@@ -208,9 +211,8 @@ export class EqualizerRepository {
       if (shouldReply) {
         responsesCount++
 
-        await this.client.sendMessage(
+        await this.linkedin.sendMessage(
           urnId,
-          mailBoxUrn,
           this.programmersModel.value.automaticMessage
         )
       }

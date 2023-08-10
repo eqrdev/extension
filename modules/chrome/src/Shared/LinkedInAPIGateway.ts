@@ -1,11 +1,9 @@
 import { Invitation } from 'linkedin/src/types/Invitation'
 import { Conversation, LinkedInClient, Message } from 'linkedin'
-import { ReactElement } from 'react'
 
 export class LinkedInAPIGateway {
   client: LinkedInClient
   profileId: string
-  a: ReactElement
 
   constructor({
     csrfToken,

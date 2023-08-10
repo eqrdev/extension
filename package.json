@@ -6,16 +6,16 @@
   "author": "Péter Viola <info@violapeter.hu>",
   "license": "MIT",
   "private": true,
-  "packageManager": "yarn@3.6.0",
+  "packageManager": "yarn@3.6.1",
   "workspaces": [
     "modules/*"
   ],
   "scripts": {
     "build": "yarn workspace chrome run build",
     "dev": "yarn workspace chrome run dev",
+    "test": "yarn workspace chrome run test",
     "type-check": "yarn workspace chrome run type-check",
     "lint": "yarn workspace eslint run lint",
-    "test": "yarn workspace tests run test",
     "ui-sb": "yarn workspace ui-library run storybook"
   }
 }

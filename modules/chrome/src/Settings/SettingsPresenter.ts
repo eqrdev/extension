@@ -13,10 +13,6 @@ export interface SettingsModel {
   rawAutomaticMessage: string
   isOpenAiEnabled: boolean
   openAiKey?: string
-  onSaveProfileName(value: string): Promise<void>
-  onSaveMessage(value: string): Promise<void>
-  onSaveApiKey(value: string): Promise<void>
-  disableOpenAi(): Promise<void>
 }
 
 const maskOpenAIKey = (key: string) =>
@@ -27,19 +23,6 @@ export class SettingsPresenter {
     await equalizerRepository.load(
       ({ profileName, openAiKey, automaticMessage }: EqualizerModel) => {
         const profileUrl = new ProfileUrl(profileName)
-
-        const handleProfileNameChange = async (value: string): Promise<void> =>
-          equalizerRepository.set('profileName', value)
-
-        const handleMessageChange = async (value: string): Promise<void> =>
-          equalizerRepository.set('automaticMessage', value)
-
-        const handleApiKeyChange = async (value: string): Promise<void> =>
-          equalizerRepository.set('openAiKey', value)
-
-        const handleDisabledOpenAi = async () =>
-          equalizerRepository.remove('openAiKey')
-
         callback({
           isOpenAiEnabled: !!openAiKey,
           openAiKey: openAiKey ? maskOpenAIKey(openAiKey) : openAiKey,
@@ -49,12 +32,22 @@ export class SettingsPresenter {
           automaticMessage: profileUrl.replaceInText(automaticMessage),
           rawAutomaticMessage: automaticMessage,
           isProfileUrlProvided: Boolean(profileName),
-          onSaveProfileName: handleProfileNameChange,
-          onSaveMessage: handleMessageChange,
-          onSaveApiKey: handleApiKeyChange,
-          disableOpenAi: handleDisabledOpenAi,
         })
       }
     )
+  }
+
+  async onSaveProfileName(profileName: string) {
+    await equalizerRepository.set('profileName', profileName)
+  }
+
+  async onSaveMessage(message: string) {
+    await equalizerRepository.set('automaticMessage', message)
+  }
+  async onSaveApiKey(apiKey: string) {
+    await equalizerRepository.set('openAiKey', apiKey)
+  }
+  async disableOpenAi() {
+    await equalizerRepository.remove('openAiKey')
   }
 }

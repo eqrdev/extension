@@ -35,6 +35,7 @@ const Styled = {
 }
 
 export const Settings = (): ReactElement => {
+  const presenter = new SettingsPresenter()
   const { $i18n } = useContext(I18nContext)
   const profileNameInput = useRef(null)
   const messageInput = useRef(null)
@@ -48,13 +49,8 @@ export const Settings = (): ReactElement => {
   const [linkError, setLinkError] = useState('')
   const [data, setData] = useState<Partial<SettingsModel>>({})
 
-  const loadSettings = async () => {
-    const settingsPresenter = new SettingsPresenter()
-    await settingsPresenter.load(setData)
-  }
-
   useEffect(() => {
-    loadSettings()
+    presenter.load(setData)
   }, [])
 
   const handleEdit = () => {
@@ -64,7 +60,7 @@ export const Settings = (): ReactElement => {
   const handleSaveClick = async () => {
     try {
       setLinkError('')
-      await data.onSaveProfileName(profileNameInput.current.value)
+      await presenter.onSaveProfileName(profileNameInput.current.value)
       setEditLink(false)
     } catch (error) {
       if (error.message === 'EmptyValueError') {
@@ -76,7 +72,7 @@ export const Settings = (): ReactElement => {
   const handleMessageSave = async () => {
     try {
       setMessageError('')
-      await data.onSaveMessage(messageInput.current.value)
+      await presenter.onSaveMessage(messageInput.current.value)
       setEditMessage(false)
     } catch (error) {
       if (error.message === 'EmptyValueError') {
@@ -94,7 +90,7 @@ export const Settings = (): ReactElement => {
   const handleApiKeySave = async () => {
     try {
       setApiKeyError('')
-      await data.onSaveApiKey(apiKeyInput.current.value)
+      await presenter.onSaveApiKey(apiKeyInput.current.value)
       setEditApiKey(false)
     } catch (error) {
       if (error.message === 'EmptyValueError') {
@@ -105,7 +101,7 @@ export const Settings = (): ReactElement => {
 
   const handleSwitchApiKey = async (checked: boolean) => {
     if (!checked) {
-      await data.disableOpenAi()
+      await presenter.disableOpenAi()
     }
 
     setEditApiKey(checked)

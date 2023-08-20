@@ -71,6 +71,11 @@ describe('When we click the button', () => {
       'soCL20G6BeOdqbYQBnU0AAnAYHCz0vKk4XQRC3t',
       'My message'
     )
+
+    expect(testHarness.spies.setSyncedData).toHaveBeenCalledWith(
+      'messagesLastCheckedDate',
+      new Date('2023-10-10:10:10').getTime()
+    )
   })
 })
 

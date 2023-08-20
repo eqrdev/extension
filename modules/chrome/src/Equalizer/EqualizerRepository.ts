@@ -1,9 +1,9 @@
-import { ChromeStorageGateway } from '../Shared/ChromeStorageGateway'
-import { ChromeMessageGateway } from '../Shared/ChromeMessageGateway'
 import { Observable } from '../Shared/Observable'
-import { OpenAIGateway } from '../Shared/OpenAIGateway'
-import { LinkedInAPIGateway } from '../Shared/LinkedInAPIGateway'
-import { Message } from 'linkedin'
+import { OpenAIGateway } from '../Shared/Gateways/OpenAIGateway'
+import { LinkedInAPIGateway } from '../Shared/Gateways/LinkedInAPIGateway'
+import { CrossThreadGateway } from '../Shared/Gateways/CrossThreadGateway'
+import { StorageGateway } from '../Shared/Gateways/StorageGateway'
+import { DateTimeGateway } from '../Shared/Gateways/DateTimeGateway'
 
 export interface EqualizerSyncedData {
   automaticMessage: string
@@ -27,19 +27,12 @@ Please check out my Equalizer Profile page and answer a few questions about the 
 Please follow this link: #URL#`
 
 export class EqualizerRepository {
-  syncStorage: ChromeStorageGateway<EqualizerSyncedData>
-  sessionStorage: ChromeStorageGateway<EqualizerSessionData>
-  messageGateway: ChromeMessageGateway
-  private programmersModel: Observable<EqualizerModel>
-
-  constructor() {
-    this.sessionStorage = new ChromeStorageGateway<EqualizerSessionData>({
-      sessionOnly: true,
-    })
-    this.syncStorage = new ChromeStorageGateway<EqualizerSyncedData>()
-    this.messageGateway = new ChromeMessageGateway({ isBackground: false })
-    this.programmersModel = new Observable<EqualizerModel>(null)
-  }
+  storageGateway = new StorageGateway()
+  crossThreadGateway = new CrossThreadGateway()
+  programmersModel = new Observable<EqualizerModel>(null)
+  linkedInGateway: LinkedInAPIGateway = null
+  openAiGateway: OpenAIGateway = null
+  dateTimeGateway: DateTimeGateway = new DateTimeGateway()
 
   async load(callback: (model: EqualizerModel) => void) {
     this.programmersModel.subscribe(callback)
@@ -60,64 +53,70 @@ export class EqualizerRepository {
         throw new Error('IncorrectFormatError')
       }
 
-      await this.messageGateway.send({ type: 'AddProfileName' })
+      await this.crossThreadGateway.addProfileName()
     }
-    await this.syncStorage.set({ [settingKey]: value })
+    await this.storageGateway.setSyncedData(settingKey, value)
     await this.updateModel()
   }
 
   async remove(settingKey: keyof EqualizerSyncedData) {
-    await this.syncStorage.remove(settingKey)
+    await this.storageGateway.removeSyncedData(settingKey)
     await this.updateModel()
   }
 
   async setDefaultSettings() {
-    await this.syncStorage.set({
-      automaticMessage: DEFAULT_AUTO_REPLY_TEXT,
-    })
+    await this.storageGateway.setSyncedData(
+      'automaticMessage',
+      DEFAULT_AUTO_REPLY_TEXT
+    )
     await this.updateModel()
   }
 
   async openSettings() {
-    return this.messageGateway.send({ type: 'OpenSettings' })
+    return this.crossThreadGateway.openSettings()
   }
 
   private async updateModel() {
-    this.programmersModel.value = {
-      ...(await this.syncStorage.getAll()),
-      ...(await this.sessionStorage.getAll()),
-    }
+    this.programmersModel.value = await this.storageGateway.getAllData()
   }
 
   private async setDate(date: Date) {
-    await this.syncStorage.set({
-      messagesLastCheckedDate: date.getTime(),
-    })
+    await this.storageGateway.setSyncedData(
+      'messagesLastCheckedDate',
+      date.getTime()
+    )
     await this.updateModel()
   }
 
   async setSession(key: keyof EqualizerSessionData, value: string | number) {
-    await this.sessionStorage.set({
-      [key]: value,
-    })
+    await this.storageGateway.setSessionData(key, value)
     await this.updateModel()
   }
 
-  get linkedin() {
-    const { csrfToken, profileId } = this.programmersModel.value
+  async getLinkedinGateway() {
+    if (this.linkedInGateway !== null) {
+      return this.linkedInGateway
+    }
+
+    const allData = await this.storageGateway.getAllData()
 
     return new LinkedInAPIGateway({
-      csrfToken,
-      profileId,
+      csrfToken: allData.csrfToken,
+      profileId: allData.profileId,
     })
   }
 
-  get openAi() {
+  getOpenAiGateway() {
+    if (this.openAiGateway !== null) {
+      return this.openAiGateway
+    }
+
     return new OpenAIGateway(this.programmersModel.value.openAiKey)
   }
 
   async checkInvitations() {
-    const invitations = await this.linkedin.getInvitations()
+    const linkedin = await this.getLinkedinGateway()
+    const invitations = await linkedin.getInvitations()
 
     let invitationsAcceptedCount = 0
 
@@ -129,26 +128,28 @@ export class EqualizerRepository {
       const hasMessage = Boolean(invitation.message)
 
       const accept = async () => {
-        await this.linkedin.acceptInvitation(
+        await linkedin.acceptInvitation(
           invitation.id.toString(),
           invitation.sharedSecret
         )
         invitationsAcceptedCount++
       }
 
-      if (!this.openAi.hasOpenAi) {
+      const openai = this.getOpenAiGateway()
+
+      if (!openai.hasOpenAi()) {
         await accept()
       }
 
       if (hasMessage) {
-        if (await this.openAi.isRecruiterMessage(invitation.message)) {
+        if (await openai.isRecruiterMessage(invitation.message)) {
           await accept()
         }
 
         return
       }
 
-      if (await this.openAi.isRecruiterTitle(invitation.senderTitle)) {
+      if (await openai.isRecruiterTitle(invitation.senderTitle)) {
         await accept()
       }
     }
@@ -162,24 +163,33 @@ export class EqualizerRepository {
   }
 
   private isWithinTwoWeeks(timestamp: number) {
-    const now = Date.now()
+    const now = this.dateTimeGateway.now().getTime()
     const twoWeeksInMilliseconds = 14 * 24 * 60 * 60 * 1000
-    return timestamp >= now && timestamp <= now + twoWeeksInMilliseconds
+    return timestamp >= now - twoWeeksInMilliseconds
   }
 
   private async replyMessages() {
-    const conversations = await this.linkedin.getConversations()
+    const linkedin = await this.getLinkedinGateway()
 
-    const conversationsToProcess = conversations.filter(conversation => {
-      return (
-        (conversation.categories.includes('PRIMARY_INBOX') ||
-          conversation.categories.includes('INMAIL')) &&
-        conversation.conversationParticipants.length === 2 &&
-        conversation.lastActivityAt >
-          this.programmersModel.value.messagesLastCheckedDate &&
-        this.isWithinTwoWeeks(conversation.createdAt)
-      )
-    })
+    const conversations = await linkedin.getConversations()
+
+    const conversationsToProcess = conversations.filter(
+      ({
+        categories,
+        conversationParticipantsCount,
+        lastActivityAt,
+        createdAt,
+      }) => {
+        return (
+          (categories.includes('PRIMARY_INBOX') ||
+            categories.includes('INMAIL')) &&
+          conversationParticipantsCount === 2 &&
+          lastActivityAt >
+            this.programmersModel.value.messagesLastCheckedDate &&
+          this.isWithinTwoWeeks(createdAt)
+        )
+      }
+    )
 
     const getUrnId = conversation =>
       conversation.entityUrn.match(/fsd_profile:([^)]+)/)[1]
@@ -188,37 +198,34 @@ export class EqualizerRepository {
       getUrnId(conversation)
     )
 
-    const getText = (messages: Message[]): string =>
-      messages
-        .map(message => message.body.text)
-        .reverse()
-        .join('\n')
-
     let responsesCount = 0
 
     for (const urnId of conversationUrnIds) {
-      const fullConversation = await this.linkedin.getConversation(urnId)
-      const notReplied =
-        new Set([...fullConversation.map(message => message.sender.entityUrn)])
-          .size === 1
-      const conversationText = getText(fullConversation)
-      const isOpenAiValidated = this.openAi.hasOpenAi
-        ? await this.openAi.isRecruiterMessage(conversationText)
+      const { entityUrns, conversationText } = await linkedin.getConversation(
+        urnId
+      )
+      const openAi = this.getOpenAiGateway()
+      const isOnlyOnePersonInConversation = new Set([...entityUrns]).size === 1
+      const isOpenAiValidated = openAi.hasOpenAi()
+        ? await openAi.isRecruiterMessage(conversationText)
         : true
 
-      const shouldReply = notReplied && isOpenAiValidated
+      const shouldReply = isOnlyOnePersonInConversation && isOpenAiValidated
 
       if (shouldReply) {
         responsesCount++
 
-        await this.linkedin.sendMessage(
+        await linkedin.sendMessage(
           urnId,
           this.programmersModel.value.automaticMessage
         )
       }
     }
 
-    await this.setSession('lastResponsesCount', responsesCount)
+    await this.storageGateway.setSessionData(
+      'lastResponsesCount',
+      responsesCount
+    )
   }
 }
 

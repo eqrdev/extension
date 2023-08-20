@@ -1,30 +1,26 @@
-import { ChromeMessageGateway } from '../Shared/ChromeMessageGateway'
 import { ActionBadge } from './ActionBadge'
 import { LinkedInUrl } from '../LinkedIn/Shared/LinkedInUrl'
 import { equalizerRepository } from '../Equalizer/EqualizerRepository'
 import { LinkedInClient } from 'linkedin'
 
 export class ExtensionBackend {
-  messages: ChromeMessageGateway
-
-  constructor() {
-    this.messages = new ChromeMessageGateway({ isBackground: true })
-  }
-
   async load() {
     await chrome.storage.session.setAccessLevel({
       accessLevel: 'TRUSTED_AND_UNTRUSTED_CONTEXTS',
     })
 
-    await this.messages.on('OpenSettings', () =>
-      chrome.runtime.openOptionsPage()
-    )
-
-    await this.messages.on('AddProfileName', async () => {
-      await ActionBadge.hide()
+    await chrome.runtime.onMessage.addListener(async ({ type }) => {
+      switch (type) {
+        case 'AddProfileName':
+          await ActionBadge.hide()
+          break
+        case 'OpenSettings':
+          chrome.runtime.openOptionsPage()
+          break
+      }
     })
 
-    await this.messages.on('Install', async () => {
+    await chrome.runtime.onInstalled.addListener(async () => {
       await equalizerRepository.setDefaultSettings()
     })
 
@@ -38,13 +34,13 @@ export class ExtensionBackend {
   async onNavigate() {
     await chrome.webNavigation.onCommitted.addListener(
       async ({ tabId }) => {
-        await this.messages.send({ type: 'Navigate', tabId })
+        await chrome.tabs.sendMessage(tabId, { type: 'Navigate' })
       },
       { url: [{ urlPrefix: LinkedInUrl.getBase() }] }
     )
     await chrome.webNavigation.onHistoryStateUpdated.addListener(
       async ({ tabId }) => {
-        await this.messages.send({ type: 'Navigate', tabId })
+        await chrome.tabs.sendMessage(tabId, { type: 'Navigate' })
       },
       { url: [{ urlPrefix: LinkedInUrl.getBase() }] }
     )

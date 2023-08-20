@@ -1,4 +1,4 @@
-import { analyzeMessage, analyzeTitle } from 'openai-analyzer'
+import { analyzeMessage, analyzeTitle, isKeyValid } from 'openai-analyzer'
 
 export class OpenAIGateway {
   private readonly openAiKey: string
@@ -17,7 +17,11 @@ export class OpenAIGateway {
     return response.is_recruiter_title
   }
 
-  get hasOpenAi(): boolean {
+  async isKeyValid(apiKey: string): Promise<boolean> {
+    return isKeyValid(apiKey)
+  }
+
+  hasOpenAi(): boolean {
     return Boolean(this.openAiKey)
   }
 }

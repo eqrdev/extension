@@ -1,4 +1,4 @@
-export class ChromeStorageGateway<T> {
+export class ChromeStorage<T> {
   sessionOnly: boolean = false
 
   constructor(

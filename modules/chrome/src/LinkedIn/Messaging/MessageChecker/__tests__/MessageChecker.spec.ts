@@ -1,20 +1,90 @@
-import { MessageCheckerPresenter } from '../MessageCheckerPresenter'
-
-jest.mock('../../../../Shared/ChromeMessageGateway')
-jest.mock('../../../../Shared/ChromeStorageGateway')
-jest.mock('../../../../Shared/OpenAIGateway')
-jest.mock('../../../../Shared/LinkedInAPIGateway', () => ({
-  getInvitations: jest.fn().mockResolvedValue([]),
-  getConversations: jest.fn().mockResolvedValue([]),
-}))
+import { EqualizerTestHarness } from '../../../../TestUtils/EqualizerTestHarness'
 
 describe('When profile url is not provided by the user', () => {
-  it('isProfileUrlProvided should return false', async () => {
-    const presenter = new MessageCheckerPresenter()
-    let viewModel = null
-    await presenter.load(data => {
+  let testHarness = null
+  let viewModel = null
+
+  beforeEach(async () => {
+    testHarness = new EqualizerTestHarness({ profileName: null })
+    await testHarness.initMessageChecker(data => {
       viewModel = data
     })
-    expect(viewModel.isProfileUrlProvided).toBe(false)
+  })
+
+  it("shouldn't show the Message checker button", async () => {
+    expect(viewModel.shouldShowCheckerButton).toBe(false)
+  })
+})
+
+describe('When we click the button', () => {
+  let testHarness = null
+  let viewModel = null
+
+  beforeEach(async () => {
+    testHarness = new EqualizerTestHarness()
+    await testHarness.initMessageChecker(data => {
+      viewModel = data
+    })
+  })
+
+  it('should show the message checker', async () => {
+    expect(viewModel.shouldShowCheckerButton).toBe(true)
+  })
+
+  it('should call the linkedin api with the correct values', async () => {
+    await testHarness.messageCheckerPresenter.onClickMessages()
+    expect(testHarness.spies.getConversations).toHaveBeenCalledTimes(1)
+
+    expect(testHarness.spies.getConversation).toHaveBeenNthCalledWith(
+      1,
+      'ARqe0o0OYH2XvCCzQdnB043AbQKCAU6BLYGsknt'
+    )
+    expect(testHarness.spies.getConversation).toHaveBeenNthCalledWith(
+      2,
+      'UY0AHsqKvOAQCCkB6Gtd0nbY0CBQX4z3ALeRo2n'
+    )
+    expect(testHarness.spies.getConversation).toHaveBeenNthCalledWith(
+      3,
+      'soCL20G6BeOdqbYQBnU0AAnAYHCz0vKk4XQRC3t'
+    )
+
+    expect(testHarness.spies.isRecruiterMessage).toHaveBeenCalledWith(
+      'Hello, this is a message from a recruiter. Really.'
+    )
+
+    expect(testHarness.spies.isRecruiterMessage).toHaveBeenCalledTimes(3)
+
+    expect(testHarness.spies.sendMessage).toHaveBeenNthCalledWith(
+      1,
+      'ARqe0o0OYH2XvCCzQdnB043AbQKCAU6BLYGsknt',
+      'My message'
+    )
+
+    expect(testHarness.spies.sendMessage).toHaveBeenNthCalledWith(
+      2,
+      'UY0AHsqKvOAQCCkB6Gtd0nbY0CBQX4z3ALeRo2n',
+      'My message'
+    )
+
+    expect(testHarness.spies.sendMessage).toHaveBeenNthCalledWith(
+      3,
+      'soCL20G6BeOdqbYQBnU0AAnAYHCz0vKk4XQRC3t',
+      'My message'
+    )
+  })
+})
+
+describe('when no openai key provided', () => {
+  let testHarness = null
+
+  beforeEach(async () => {
+    testHarness = new EqualizerTestHarness({ openAiKey: null })
+    testHarness.spies.hasOpenAi = jest.fn().mockReturnValue(false)
+    await testHarness.initMessageChecker(() => {})
+  })
+
+  it("shouldn't call the openai api", async () => {
+    await testHarness.messageCheckerPresenter.onClickMessages()
+    expect(testHarness.spies.isRecruiterMessage).not.toHaveBeenCalled()
   })
 })

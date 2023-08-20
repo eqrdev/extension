@@ -1,4 +1,3 @@
-import { ProfileUrl } from '../../../Shared/ProfileUrl'
 import {
   EqualizerModel,
   equalizerRepository,
@@ -8,9 +7,8 @@ import { dateTimeFormatter } from '../../../Shared/i18n'
 export interface MessageCheckerData {
   lastChecked: string
   hasLastCheckedDate: boolean
-  isProfileUrlProvided: boolean
-  automaticMessage: string
   lastResponsesCount?: number
+  shouldShowCheckerButton: boolean
 }
 
 export class MessageCheckerPresenter {
@@ -19,19 +17,15 @@ export class MessageCheckerPresenter {
       ({
         messagesLastCheckedDate,
         profileName,
-        automaticMessage,
         lastResponsesCount,
       }: EqualizerModel) => {
         callback({
-          isProfileUrlProvided: !!profileName,
-          automaticMessage: new ProfileUrl(profileName).replaceInText(
-            automaticMessage
-          ),
           lastChecked: messagesLastCheckedDate
             ? dateTimeFormatter.format(new Date(messagesLastCheckedDate))
             : '',
           hasLastCheckedDate: Boolean(messagesLastCheckedDate),
           lastResponsesCount,
+          shouldShowCheckerButton: Boolean(profileName),
         })
       }
     )

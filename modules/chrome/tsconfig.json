@@ -7,6 +7,6 @@
     "jsx": "react-jsx",
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
-    "types": ["chrome", "jest"]
+    "types": ["chrome", "jest", "@types/jest"]
   }
 }

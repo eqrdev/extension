@@ -1,43 +1,47 @@
-import { PopupModel, PopupPresenter } from '../PopupPresenter'
-import { equalizerRepository } from '../../Equalizer/EqualizerRepository'
-
-jest.mock('../../Shared/ChromeMessageGateway')
-jest.mock('../../Shared/ChromeStorageGateway')
+import { EqualizerTestHarness } from '../../TestUtils/EqualizerTestHarness'
 
 describe('when we click on settings button', () => {
+  let testHarness = null
+
+  beforeEach(async () => {
+    testHarness = new EqualizerTestHarness()
+    await testHarness.initPopup(() => {})
+  })
+
   it('should call the messageGateway with a specific message', async () => {
-    const popupPresenter = new PopupPresenter()
-    await popupPresenter.onClickSettings()
-    expect(equalizerRepository.messageGateway.send).toHaveBeenCalledWith({
-      type: 'OpenSettings',
-    })
+    await testHarness.popupPresenter.onClickSettings()
+    expect(testHarness.spies.openSettings).toHaveBeenCalledTimes(1)
   })
 })
 
 describe('when the profileName is not provided', () => {
-  it("shouldn't show an alert", async () => {
-    const popupPresenter = new PopupPresenter()
-    let profileNameProvided
-    await popupPresenter.load(viewModel => {
-      profileNameProvided = viewModel.isProfileUrlProvided
+  let viewModel
+  let testHarness = null
+  beforeEach(async () => {
+    testHarness = new EqualizerTestHarness({ profileName: null })
+    await testHarness.initPopup(data => {
+      viewModel = data
     })
-    expect(profileNameProvided).toBe(false)
+  })
+
+  it("shouldn't show an alert", async () => {
+    expect(viewModel.isProfileUrlProvided).toBe(false)
   })
 })
 
 describe('when the profileName is provided', () => {
-  it('should show an alert', async () => {
-    equalizerRepository.syncStorage.getAll = jest
-      .fn()
-      .mockImplementation(() => ({
-        profileName: 'dwight-schrute',
-        openAiKey: '8848783',
-      }))
-    const popupPresenter = new PopupPresenter()
-    let viewModel: PopupModel
-    await popupPresenter.load(model => {
-      viewModel = model
+  let viewModel
+  let testHarness = null
+  beforeEach(async () => {
+    testHarness = new EqualizerTestHarness({
+      profileName: 'dwight-schrute',
+      openAiKey: '8848783',
     })
+    await testHarness.initPopup(data => {
+      viewModel = data
+    })
+  })
+  it('should show an alert', async () => {
     expect(viewModel.isProfileUrlProvided).toBe(true)
     expect(viewModel.profileUrl).toBe('equalizer.dev/me/dwight-schrute')
     expect(viewModel.profileUrlFull).toBe(

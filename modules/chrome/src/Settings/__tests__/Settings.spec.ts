@@ -1,51 +1,73 @@
-import { SettingsModel, SettingsPresenter } from '../SettingsPresenter'
-import { equalizerRepository } from '../../Equalizer/EqualizerRepository'
+import { EqualizerTestHarness } from '../../TestUtils/EqualizerTestHarness'
 
-jest.mock('../../Shared/ChromeMessageGateway')
-jest.mock('../../Shared/ChromeStorageGateway')
+jest.mock('../../Shared/Gateways/CrossThreadGateway')
+jest.mock('../../Shared/Gateways/StorageGateway')
 
 describe('when no profileName provided', () => {
-  it('should show an alert', async () => {
-    const settingsPresenter = new SettingsPresenter()
-    let viewModel: SettingsModel
-    await settingsPresenter.load(model => {
-      viewModel = model
+  let viewModel
+  let testHarness
+
+  beforeEach(async () => {
+    testHarness = new EqualizerTestHarness({ profileName: null })
+    await testHarness.initSettings(data => {
+      viewModel = data
     })
+  })
+
+  it('should show an alert', async () => {
     expect(viewModel.isProfileUrlProvided).toBe(false)
   })
 })
 
 describe('when we click on save', () => {
+  let viewModel
+  let testHarness
+
+  beforeEach(async () => {
+    testHarness = new EqualizerTestHarness({ profileName: null })
+    await testHarness.initSettings(data => {
+      viewModel = data
+    })
+  })
+
   it('should call the storages appropriate method', async () => {
-    const settingsPresenter = new SettingsPresenter()
-    let viewModel: SettingsModel
-    await settingsPresenter.load(model => {
-      viewModel = model
-    })
-    await viewModel.onSaveProfileName('dwight_schrute')
-    await viewModel.onSaveMessage('Bears. Beets. Battlestar Galactica.')
-    expect(equalizerRepository.syncStorage.set).toHaveBeenCalledWith({
-      profileName: 'dwight_schrute',
-    })
-    expect(equalizerRepository.syncStorage.set).toHaveBeenCalledWith({
-      automaticMessage: 'Bears. Beets. Battlestar Galactica.',
-    })
+    expect(viewModel).not.toBe(null)
+    await testHarness.settingsPresenter.onSaveProfileName('dwight_schrute')
+    expect(testHarness.spies.setSyncedData).toHaveBeenCalledWith(
+      'profileName',
+      'dwight_schrute'
+    )
+    await testHarness.settingsPresenter.onSaveMessage(
+      'Bears. Beets. Battlestar Galactica.'
+    )
+    expect(testHarness.spies.setSyncedData).toHaveBeenCalledWith(
+      'automaticMessage',
+      'Bears. Beets. Battlestar Galactica.'
+    )
   })
 })
 
 describe('when we click on save and the input is empty or incorrect', () => {
-  it('should throw an error', async () => {
-    const settingsPresenter = new SettingsPresenter()
-    let viewModel: SettingsModel
-    await settingsPresenter.load(model => {
-      viewModel = model
+  let viewModel
+  let testHarness
+
+  beforeEach(async () => {
+    testHarness = new EqualizerTestHarness({ profileName: null })
+    await testHarness.initSettings(data => {
+      viewModel = data
     })
+  })
+
+  it('should throw an error', async () => {
+    expect(viewModel).not.toBe(null)
     await expect(async () => {
-      await viewModel.onSaveProfileName('')
+      await testHarness.settingsPresenter.onSaveProfileName('')
     }).rejects.toThrow('EmptyValueError')
 
     await expect(async () => {
-      await viewModel.onSaveProfileName('my_new profileName')
+      await testHarness.settingsPresenter.onSaveProfileName(
+        'my_new profileName'
+      )
     }).rejects.toThrow('IncorrectFormatError')
   })
 })

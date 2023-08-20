@@ -1,7 +1,6 @@
 import { LinkedInUrl, RouteName } from './LinkedInUrl'
 import { ReactElement } from 'react'
 import { createRoot, Root } from 'react-dom/client'
-import { ChromeMessageGateway } from '../../Shared/ChromeMessageGateway'
 
 export interface ReactLoaderOptions {
   rootGetter: () => HTMLElement
@@ -14,7 +13,6 @@ export class ReactAppLoader {
   rootGetter: () => HTMLElement
   element: ReactElement
   root: Root
-  private messageGateway: ChromeMessageGateway
 
   /**
    * @const BODY_LOADED_CLASS {string} This is a class that the body receives when LinkedIn is loaded.
@@ -31,7 +29,6 @@ export class ReactAppLoader {
     this.routeName = routeName
     this.rootGetter = rootGetter
     this.element = element
-    this.messageGateway = new ChromeMessageGateway()
   }
 
   renderApp() {
@@ -47,7 +44,9 @@ export class ReactAppLoader {
       this.renderApp()
     }
 
-    await this.messageGateway.on('Navigate', () => {
+    chrome.runtime.onMessage.addListener(message => {
+      if (message.type !== 'Navigate') return
+
       if (LinkedInUrl.isOnRoute(this.routeName)) {
         this.renderApp()
         return

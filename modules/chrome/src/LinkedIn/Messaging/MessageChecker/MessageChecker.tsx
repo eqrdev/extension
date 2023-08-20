@@ -85,7 +85,7 @@ export const MessageChecker = (): ReactElement => {
         <EqLogo size={24} />
         <span>Equalizer</span>
       </Styled.Logo>
-      {data.isProfileUrlProvided ? (
+      {data.shouldShowCheckerButton ? (
         <>
           <Styled.Button
             outline

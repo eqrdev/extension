@@ -1,3 +1,5 @@
+import { OpenAIClient } from './client'
+
 export type TextAnalyzer<T> = (message: string, openAiKey: string) => Promise<T>
 
 export const createTextAnalyzer =
@@ -14,29 +16,27 @@ export const createTextAnalyzer =
     JSON.parse(
       (
         await (
-          await fetch('https://api.openai.com/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${openAiKey}`,
-            },
-            body: JSON.stringify({
-              model: 'gpt-3.5-turbo-0613',
-              messages: [
-                {
-                  role: 'user',
-                  content: message,
-                },
-              ],
-              functions: [
-                {
-                  name: title,
-                  description: prompt,
-                  parameters,
-                },
-              ],
-            }),
-          })
+          await new OpenAIClient({ apiKey: openAiKey }).post(
+            'chat/completions',
+            {
+              body: JSON.stringify({
+                model: 'gpt-3.5-turbo-0613',
+                messages: [
+                  {
+                    role: 'user',
+                    content: message,
+                  },
+                ],
+                functions: [
+                  {
+                    name: title,
+                    description: prompt,
+                    parameters,
+                  },
+                ],
+              }),
+            }
+          )
         ).json()
       ).choices[0].message.function_call.arguments
     )

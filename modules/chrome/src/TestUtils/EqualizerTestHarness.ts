@@ -41,6 +41,7 @@ export class EqualizerTestHarness {
     isRecruiterMessage: jest.fn().mockResolvedValue(true),
     isRecruiterTitle: jest.fn().mockResolvedValue(true),
     hasOpenAi: jest.fn().mockReturnValue(true),
+    isKeyValid: jest.fn().mockResolvedValue(true),
     getConversations: jest.fn().mockResolvedValue(conversationsStub),
     getConversation: jest.fn().mockResolvedValue(conversationStub),
     sendMessage: jest.fn(),
@@ -51,6 +52,7 @@ export class EqualizerTestHarness {
     getAllData: this.viewModelSpy,
     openSettings: jest.fn(),
     addProfileName: jest.fn(),
+    removeSyncedData: jest.fn(),
   }
 
   private initSpies() {
@@ -64,6 +66,7 @@ export class EqualizerTestHarness {
       isRecruiterMessage: this.spies.isRecruiterMessage,
       isRecruiterTitle: this.spies.isRecruiterTitle,
       hasOpenAi: this.spies.hasOpenAi,
+      isKeyValid: this.spies.isKeyValid,
     })
     repository.getLinkedinGateway = jest.fn().mockResolvedValue({
       getInvitations: this.spies.getInvitations,
@@ -76,6 +79,7 @@ export class EqualizerTestHarness {
       setSessionData: this.spies.setSessionData,
       setSyncedData: this.spies.setSyncedData,
       getAllData: this.viewModelSpy,
+      removeSyncedData: this.spies.removeSyncedData,
     })()
     repository.dateTimeGateway = jest.fn().mockReturnValue({
       now: jest.fn().mockReturnValue(new Date('2023-10-10:10:10')),

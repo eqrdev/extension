@@ -19,7 +19,7 @@ describe('when no profileName provided', () => {
   })
 })
 
-describe('when we click on save', () => {
+describe('when we click on save in sections like profileName or automaticMessage', () => {
   let viewModel
   let testHarness
 
@@ -69,5 +69,61 @@ describe('when we click on save and the input is empty or incorrect', () => {
         'my_new profileName'
       )
     }).rejects.toThrow('IncorrectFormatError')
+  })
+})
+
+describe('when we click on save openAi key', () => {
+  let testHarness
+
+  beforeEach(async () => {
+    testHarness = new EqualizerTestHarness()
+    await testHarness.initSettings(() => {})
+  })
+
+  it('should validate the key and save into the synced storage', async () => {
+    await testHarness.settingsPresenter.onSaveApiKey('my-api-key')
+
+    expect(testHarness.spies.isKeyValid).toHaveBeenCalledWith('my-api-key')
+
+    expect(testHarness.spies.setSyncedData).toHaveBeenCalledWith(
+      'openAiKey',
+      'my-api-key'
+    )
+  })
+})
+
+describe('when the api key is invalid', () => {
+  let testHarness
+
+  beforeEach(async () => {
+    testHarness = new EqualizerTestHarness()
+    testHarness.spies.isKeyValid = jest.fn().mockResolvedValue(false)
+    await testHarness.initSettings(() => {})
+  })
+
+  it('should validate the key and save into the synced storage', async () => {
+    await expect(async () => {
+      await testHarness.settingsPresenter.onSaveApiKey('my-api-key')
+    }).rejects.toThrow('IncorrectValueError')
+
+    expect(testHarness.spies.isKeyValid).toHaveBeenCalledWith('my-api-key')
+
+    expect(testHarness.spies.setSyncedData).not.toHaveBeenCalled()
+  })
+})
+
+describe('when we click on disable OpenAI', () => {
+  let testHarness
+
+  beforeEach(async () => {
+    testHarness = new EqualizerTestHarness()
+    await testHarness.initSettings(() => {})
+  })
+
+  it('should remove the openAi key from the synced storage', async () => {
+    await testHarness.settingsPresenter.disableOpenAi()
+    expect(testHarness.storageGateway.removeSyncedData).toHaveBeenCalledWith(
+      'openAiKey'
+    )
   })
 })

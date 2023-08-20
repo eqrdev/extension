@@ -1,6 +1,7 @@
 body::after {
   content: '';
   background: white;
+  color: black;
   display: flex;
   align-items: center;
   justify-content: center;

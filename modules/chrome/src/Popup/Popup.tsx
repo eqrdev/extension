@@ -55,6 +55,7 @@ export const Popup = (): ReactElement => {
 
   const loadData = async () => {
     await popupPresenter.load(setData)
+    document.body.classList.remove('loading')
   }
 
   useEffect(() => {

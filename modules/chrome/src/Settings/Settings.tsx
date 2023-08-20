@@ -96,6 +96,10 @@ export const Settings = (): ReactElement => {
       if (error.message === 'EmptyValueError') {
         setApiKeyError($i18n('emptyApiKeyError'))
       }
+
+      if (error.message === 'IncorrectValueError') {
+        setApiKeyError($i18n('incorrectApiKeyError'))
+      }
     }
   }
 

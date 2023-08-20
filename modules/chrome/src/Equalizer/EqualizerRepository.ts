@@ -55,6 +55,14 @@ export class EqualizerRepository {
 
       await this.crossThreadGateway.addProfileName()
     }
+
+    if (settingKey === 'openAiKey') {
+      const openAi = await this.getOpenAiGateway()
+      if (!(await openAi.isKeyValid(value))) {
+        throw new Error('IncorrectValueError')
+      }
+    }
+
     await this.storageGateway.setSyncedData(settingKey, value)
     await this.updateModel()
   }

@@ -83,6 +83,9 @@
   "emptyApiKeyError": {
     "message": "The OpenAI API key cannot be empty!"
   },
+  "incorrectApiKeyError": {
+    "message": "The OpenAI API key you provided is not valid."
+  },
   "checkMessages": {
     "message": "Check messages"
   },

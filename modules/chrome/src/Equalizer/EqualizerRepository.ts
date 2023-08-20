@@ -167,7 +167,7 @@ export class EqualizerRepository {
 
   async checkMessages() {
     await this.replyMessages()
-    await this.setDate(new Date())
+    await this.setDate(this.dateTimeGateway.now())
   }
 
   private isWithinTwoWeeks(timestamp: number) {

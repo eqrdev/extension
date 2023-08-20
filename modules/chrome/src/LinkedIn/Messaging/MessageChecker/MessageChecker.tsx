@@ -48,13 +48,14 @@ const Styled = {
 
 export const MessageChecker = (): ReactElement => {
   const { $i18n } = useContext(I18nContext)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [data, setData] = useState<Partial<MessageCheckerData>>({})
   const showSnackbar = useSnackbar()
   const presenter = new MessageCheckerPresenter()
 
   const loadData = async () => {
     await presenter.load(setData)
+    setLoading(false)
   }
 
   useEffect(() => {
@@ -85,7 +86,7 @@ export const MessageChecker = (): ReactElement => {
         <EqLogo size={24} />
         <span>Equalizer</span>
       </Styled.Logo>
-      {data.shouldShowCheckerButton ? (
+      {data.shouldShowCheckerButton || loading ? (
         <>
           <Styled.Button
             outline

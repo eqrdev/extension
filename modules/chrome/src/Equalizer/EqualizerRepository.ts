@@ -147,17 +147,11 @@ export class EqualizerRepository {
 
       if (!openai.hasOpenAi()) {
         await accept()
-      }
-
-      if (hasMessage) {
+      } else if (hasMessage) {
         if (await openai.isRecruiterMessage(invitation.message)) {
           await accept()
         }
-
-        return
-      }
-
-      if (await openai.isRecruiterTitle(invitation.senderTitle)) {
+      } else if (await openai.isRecruiterTitle(invitation.senderTitle)) {
         await accept()
       }
     }

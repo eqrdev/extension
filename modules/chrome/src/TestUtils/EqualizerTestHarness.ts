@@ -12,6 +12,7 @@ import {
   conversationStub,
 } from '../LinkedIn/Messaging/MessageChecker/__tests__/__stubs__/stubs'
 import { SettingsPresenter } from '../Settings/SettingsPresenter'
+import { Invitation } from 'linkedin'
 
 type ViewModel = Partial<EqualizerModel>
 
@@ -108,5 +109,11 @@ export class EqualizerTestHarness {
   async initSettings(callback) {
     this.initSpies()
     await this.settingsPresenter.load(callback)
+  }
+
+  async receiveInvitation(invitation: Invitation) {
+    this.spies.getInvitations = jest.fn().mockResolvedValue([invitation])
+    this.initSpies()
+    await this.invitationCheckerPresenter.onClickButton()
   }
 }

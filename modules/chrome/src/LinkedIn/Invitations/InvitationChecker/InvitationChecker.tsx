@@ -33,12 +33,14 @@ const Styled = {
 export const InvitationChecker = (): ReactElement => {
   const { $i18n } = useContext(I18nContext)
   const [data, setData] = useState<Partial<InvitationModel>>({})
+  const [firstLoading, setFirstLoading] = useState(true)
   const [loading, setLoading] = useState(false)
   const presenter = new InvitationCheckerPresenter()
   const showSnackbar = useSnackbar()
 
   const loadData = async () => {
     await presenter.load(setData)
+    setFirstLoading(false)
   }
 
   const showSuccessfulCheck = () => {
@@ -63,7 +65,9 @@ export const InvitationChecker = (): ReactElement => {
     setLoading(false)
   }
 
-  return (
+  return firstLoading ? (
+    <Styled.Wrapper>...</Styled.Wrapper>
+  ) : (
     <Styled.Wrapper>
       <Styled.Logo>
         <EqLogo />

@@ -122,8 +122,6 @@ describe('when we click on disable OpenAI', () => {
 
   it('should remove the openAi key from the synced storage', async () => {
     await testHarness.settingsPresenter.disableOpenAi()
-    expect(testHarness.storageGateway.removeSyncedData).toHaveBeenCalledWith(
-      'openAiKey'
-    )
+    expect(testHarness.spies.removeSyncedData).toHaveBeenCalledWith('openAiKey')
   })
 })

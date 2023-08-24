@@ -6,15 +6,16 @@ import { SnackbarContextProvider } from './EqSnackbar/SnackbarContext'
 
 export const GlobalStyleContext = createContext({})
 
-const globalStyles = `
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Roboto+Mono&display=swap&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
-
+const bodyResetCSS = `
 body {
   margin: 0;
   color: var(--eq-color-n500);
   background: var(--eq-color-white);
   font-family: var(--eq-font-primary), sans-serif;
-}
+}`
+
+const globalStyles = `
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Roboto+Mono&display=swap&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
 
 :root {
   --eq-font-primary: 'Inter', Arial, sans-serif;
@@ -45,18 +46,21 @@ body {
 export const EqGlobal = ({
   children,
   cacheId,
+  resetBody = false,
 }: {
   children: ReactNode
   cacheId: string
+  resetBody?: boolean
 }): ReactElement => {
   const emotionCache = createCache({
     key: cacheId,
   })
+  const fullCSS = css(globalStyles + (resetBody ? bodyResetCSS : ''))
 
   return (
     <CacheProvider value={emotionCache}>
       <GlobalStyleContext.Provider value={{}}>
-        <Global styles={css(globalStyles)} />
+        <Global styles={fullCSS} />
         <SnackbarContextProvider>{children}</SnackbarContextProvider>
       </GlobalStyleContext.Provider>
     </CacheProvider>

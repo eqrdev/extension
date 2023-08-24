@@ -29,13 +29,15 @@ export class LinkedInClient {
   }
 
   private request(method: 'post' | 'get', url: string, options?: RequestInit) {
+    const { headers, ...restOptions } = options
     return fetch(`${LinkedInClient.apiBaseUrl}${url}`, {
       method,
       headers: {
         Accept: 'application/json',
         'Csrf-Token': this.options.csrfToken,
+        ...headers,
       },
-      ...options,
+      ...restOptions,
     })
   }
 
@@ -128,10 +130,12 @@ export class LinkedInClient {
         response.data.data.relationshipsDashInvitationViewsByReceived.elements
 
       return response.included.filter(isInvitation).map<Invitation>(invite => {
-        const senderTitle = invitationElements.find(
+        const invitation = invitationElements.find(
           invitationElement =>
             invitationElement['*invitation'] === invite.entityUrn
-        ).subtitle.text
+        )
+        const senderTitle = invitation?.subtitle.text
+        const senderName = invitation?.title.text
 
         return {
           id: invite.invitationId,
@@ -141,12 +145,13 @@ export class LinkedInClient {
           invitationType: invite.invitationType,
           invitationState: invite.invitationState,
           senderTitle,
+          senderName,
         }
       })
     }
 
     return response.data.relationshipsDashInvitationViewsByReceived.elements.map(
-      ({ invitation, subtitle }) => ({
+      ({ invitation, subtitle, title }) => ({
         id: invitation.invitationId,
         sharedSecret: invitation.sharedSecret,
         message: invitation.message,
@@ -154,6 +159,7 @@ export class LinkedInClient {
         invitationType: invitation.invitationType,
         invitationState: invitation.invitationState,
         senderTitle: subtitle.text,
+        senderName: title.text,
       })
     )
   }
@@ -169,6 +175,10 @@ export class LinkedInClient {
           invitationType: 'CONNECTION',
           sharedSecret,
         }),
+        headers: {
+          Accept: 'application/vnd.linkedin.normalized+json+2.1',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
       }
     )
   }

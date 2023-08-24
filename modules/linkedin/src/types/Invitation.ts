@@ -8,5 +8,6 @@ export type Invitation = {
   genericInvitationType: GenericInvitationType
   invitationType: InvitationType
   invitationState: State
+  senderName: string
   senderTitle: string
 }

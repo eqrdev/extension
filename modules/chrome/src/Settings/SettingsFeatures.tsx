@@ -71,7 +71,7 @@ export const SettingsFeatures = (): ReactElement => {
             <EqTypo>{$i18n('autoReplyText')}</EqTypo>
           </Styled.TextPart>
         </Styled.Section>
-        <Styled.Section>
+        <Styled.Section right>
           <img
             src="../assets/images/linkedin-message.png"
             alt={$i18n('linkedinMessage')}

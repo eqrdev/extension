@@ -6,7 +6,10 @@
     "message": "Job offer qualifier for sought software engineers"
   },
   "yourProfileLink": {
-    "message": "Your profile link"
+    "message": "Your profile URL"
+  },
+  "findItHere": {
+    "message": "Find it here."
   },
   "automaticMessage": {
     "message": "Automatic reply"
@@ -48,25 +51,25 @@
     "message": "Auto reply LinkedIn messages"
   },
   "autoReplyText": {
-    "message": "Nullam risus euismod maecenas sed. Gravida vulputate purus nisi sed. Pharetra faucibus nunc diam eu pellentesque mus at. Vitae et id id elit pellentesque nisi at turpis. Augue non id neque a mattis. Aenean mauris."
+    "message": "Checks whether your unread messages are job-related or not and send an automatic reply on your behalf. \n\n Utilizes artificial intelligence. (Open AI)"
   },
   "linkedinMessage": {
-    "message": "LinkedIn message"
+    "message": "Message thread"
   },
   "linkedinMessageText": {
-    "message": "Blandit ullamcorper vulputate sit viverra lectus scelerisque tortor faucibus elit. Nibh gravida convallis maecenas porttitor cursus a mi enim pellentesque. Nulla purus cum euismod egestas nec scelerisque dictum."
+    "message": "You also have the option to manually paste your 'Reply message' by clicking on the Equalizer icon below the message input. \u2028\u2028Utilizes human intelligence. (That's you :P)"
   },
   "extensionFeatures": {
-    "message": "Extension features"
+    "message": "Browser options"
   },
   "extensionFeaturesText": {
-    "message": "Tempus velit ultricies felis nunc eget. Eleifend hendrerit aliquet malesuada phasellus ac nisl. In ullamcorper sed tincidunt in. A laoreet consequat egestas arcu. Cursus sed facilisi consequat urna odio nisi orci ac eleifend."
+    "message": "From the extensions menu, you can also copy your \"Equalizer URL\" or \"Reply message\" wherever you are on the web."
   },
   "openAi": {
     "message": "OpenAI"
   },
   "openAiDescription": {
-    "message": "Here you can enable OpenAI.....Lorem ipsum dolor sit amet consectetur adipiscing elit, primis tempor ullamcorper himenaeos gravida malesuada."
+    "message": "Here you can enable OpenAI to utilize our AI assistant that sends automated responses to inquiries related to job opportunity on LinkedIn. It disregards any messages on other topics.\n\nHow to get your own OpenAI key? Find it here."
   },
   "apiKeyLabel": {
     "message": "Enter your OpenAI key"

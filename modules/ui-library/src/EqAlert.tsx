@@ -46,6 +46,9 @@ const Styled = {
     fontSize: small ? '13px' : '15px',
     lineHeight: '21px',
   })),
+  Close: styled(EqIconButton)({
+    flex: '42px 0 0',
+  }),
 }
 
 export const EqAlert = ({
@@ -68,6 +71,6 @@ export const EqAlert = ({
       }
     />
     <Styled.Content small={small}>{children}</Styled.Content>
-    {closable && <EqIconButton small inverse icon="close" onClick={onClose} />}
+    {closable && <Styled.Close small inverse icon="close" onClick={onClose} />}
   </Styled.Wrapper>
 )

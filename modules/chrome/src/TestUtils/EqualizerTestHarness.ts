@@ -32,7 +32,7 @@ export class EqualizerTestHarness {
     return jest.fn().mockResolvedValue({
       profileName: 'my-profile-name',
       messagesLastCheckedDate: new Date('2023-10-08'),
-      automaticMessage: 'My message',
+      automaticMessage: 'My message: #URL#',
       openAiKey: 'my-openai-key',
       ...this.viewModel,
     })

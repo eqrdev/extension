@@ -57,19 +57,19 @@ describe('When we click the button', () => {
     expect(testHarness.spies.sendMessage).toHaveBeenNthCalledWith(
       1,
       'ARqe0o0OYH2XvCCzQdnB043AbQKCAU6BLYGsknt',
-      'My message'
+      'My message: https://equalizer.dev/me/my-profile-name'
     )
 
     expect(testHarness.spies.sendMessage).toHaveBeenNthCalledWith(
       2,
       'UY0AHsqKvOAQCCkB6Gtd0nbY0CBQX4z3ALeRo2n',
-      'My message'
+      'My message: https://equalizer.dev/me/my-profile-name'
     )
 
     expect(testHarness.spies.sendMessage).toHaveBeenNthCalledWith(
       3,
       'soCL20G6BeOdqbYQBnU0AAnAYHCz0vKk4XQRC3t',
-      'My message'
+      'My message: https://equalizer.dev/me/my-profile-name'
     )
 
     expect(testHarness.spies.setSyncedData).toHaveBeenCalledWith(

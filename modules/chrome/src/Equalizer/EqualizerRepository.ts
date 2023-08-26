@@ -4,6 +4,7 @@ import { LinkedInAPIGateway } from '../Shared/Gateways/LinkedInAPIGateway'
 import { CrossThreadGateway } from '../Shared/Gateways/CrossThreadGateway'
 import { StorageGateway } from '../Shared/Gateways/StorageGateway'
 import { DateTimeGateway } from '../Shared/Gateways/DateTimeGateway'
+import { ProfileUrl } from '../Shared/ProfileUrl'
 
 export interface EqualizerSyncedData {
   automaticMessage: string
@@ -201,6 +202,10 @@ export class EqualizerRepository {
     )
 
     let responsesCount = 0
+    const profileUrl = new ProfileUrl(this.programmersModel.value.profileName)
+    const message = profileUrl.replaceInText(
+      this.programmersModel.value.automaticMessage
+    )
 
     for (const urnId of conversationUrnIds) {
       const { entityUrns, conversationText } = await linkedin.getConversation(
@@ -217,10 +222,7 @@ export class EqualizerRepository {
       if (shouldReply) {
         responsesCount++
 
-        await linkedin.sendMessage(
-          urnId,
-          this.programmersModel.value.automaticMessage
-        )
+        await linkedin.sendMessage(urnId, message)
       }
     }
 

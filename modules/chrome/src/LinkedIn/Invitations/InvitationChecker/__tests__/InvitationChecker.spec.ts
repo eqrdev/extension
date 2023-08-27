@@ -18,7 +18,7 @@ describe('when we have a last checked date', () => {
   })
 })
 
-describe('when we click the button', () => {
+describe.skip('when we click the button', () => {
   let testHarness
 
   beforeEach(() => {
@@ -52,6 +52,26 @@ describe('when we click the button', () => {
   })
 })
 
+describe('when we click the button', () => {
+  let testHarness
+
+  beforeEach(() => {
+    testHarness = new EqualizerTestHarness()
+    testHarness.initInvitationChecker(() => {})
+  })
+
+  it('should call the LinkedIn client with the proper parameters', async () => {
+    await testHarness.invitationCheckerPresenter.onClickButton()
+
+    expect(testHarness.spies.getInvitations).toHaveBeenCalledTimes(1)
+    expect(testHarness.spies.clickAcceptButtons).toHaveBeenCalledWith([
+      'Arnold Jedliczky',
+      'Mara Albert',
+      'Catherine Cooper',
+    ])
+  })
+})
+
 describe('when an invitation is not a connection', () => {
   let testHarness
   beforeEach(async () => {
@@ -67,6 +87,8 @@ describe('when an invitation is not a connection', () => {
       invitationType: 'RECEIVED',
       invitationState: 'PENDING',
       senderTitle: 'Newsletter • Biweekly',
+      senderName:
+        'LinkedIn News Europe invited you to subscribe to Tech Wrap-Up Europe',
     })
     expect(testHarness.spies.acceptInvitation).not.toHaveBeenCalled()
   })
@@ -87,8 +109,9 @@ describe('when there is no openAi key', () => {
       invitationType: 'RECEIVED',
       invitationState: 'PENDING',
       senderTitle: 'Horse riding instructor at Ride Co.',
+      senderName: 'Anush Vasily',
     })
-    expect(testHarness.spies.acceptInvitation).toHaveBeenCalled()
+    expect(testHarness.spies.clickAcceptButtons).toHaveBeenCalled()
   })
 })
 
@@ -109,6 +132,7 @@ describe('when we have openAi key, but the invitation message is not about a job
       invitationType: 'RECEIVED',
       invitationState: 'PENDING',
       senderTitle: 'HeadHunter at Dunder Mifflin, Inc.',
+      senderName: 'Pam Beesley',
     })
     expect(testHarness.spies.acceptInvitation).not.toHaveBeenCalled()
   })
@@ -131,6 +155,7 @@ describe('when we have openAi key, no message and the senderTitle is not about a
       invitationType: 'RECEIVED',
       invitationState: 'PENDING',
       senderTitle: 'Paper Sales at Dunder Mifflin, Inc.',
+      senderName: 'Jim Halpert',
     })
     expect(testHarness.spies.isRecruiterMessage).not.toHaveBeenCalled()
     expect(testHarness.spies.acceptInvitation).not.toHaveBeenCalled()

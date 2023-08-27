@@ -54,6 +54,7 @@ export class EqualizerTestHarness {
     openSettings: jest.fn(),
     addProfileName: jest.fn(),
     removeSyncedData: jest.fn(),
+    clickAcceptButtons: jest.fn(),
   }
 
   private initSpies() {
@@ -88,6 +89,9 @@ export class EqualizerTestHarness {
     repository.crossThreadGateway = jest.fn().mockReturnValue({
       openSettings: this.spies.openSettings,
       addProfileName: this.spies.addProfileName,
+    })()
+    repository.domGateway = jest.fn().mockReturnValue({
+      clickAcceptButtons: this.spies.clickAcceptButtons,
     })()
   }
 

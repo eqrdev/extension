@@ -5,6 +5,7 @@ import { CrossThreadGateway } from '../Shared/Gateways/CrossThreadGateway'
 import { StorageGateway } from '../Shared/Gateways/StorageGateway'
 import { DateTimeGateway } from '../Shared/Gateways/DateTimeGateway'
 import { ProfileUrl } from '../Shared/ProfileUrl'
+import { DOMGateway } from '../Shared/Gateways/DOMGateway'
 
 export interface EqualizerSyncedData {
   automaticMessage: string
@@ -34,6 +35,7 @@ export class EqualizerRepository {
   linkedInGateway: LinkedInAPIGateway = null
   openAiGateway: OpenAIGateway = null
   dateTimeGateway: DateTimeGateway = new DateTimeGateway()
+  domGateway: DOMGateway = new DOMGateway()
 
   async load(callback: (model: EqualizerModel) => void) {
     this.programmersModel.subscribe(callback)
@@ -128,6 +130,7 @@ export class EqualizerRepository {
     const invitations = await linkedin.getInvitations()
 
     let invitationsAcceptedCount = 0
+    const invitationSenderNames: string[] = []
 
     for (const invitation of invitations) {
       if (invitation.genericInvitationType !== 'CONNECTION') {
@@ -137,10 +140,7 @@ export class EqualizerRepository {
       const hasMessage = Boolean(invitation.message)
 
       const accept = async () => {
-        await linkedin.acceptInvitation(
-          invitation.id.toString(),
-          invitation.sharedSecret
-        )
+        invitationSenderNames.push(invitation.senderName)
         invitationsAcceptedCount++
       }
 
@@ -157,6 +157,7 @@ export class EqualizerRepository {
       }
     }
 
+    this.domGateway.clickAcceptButtons(invitationSenderNames)
     await this.setSession('invitationsAcceptedCount', invitationsAcceptedCount)
   }
 

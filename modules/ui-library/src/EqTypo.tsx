@@ -1,4 +1,4 @@
-import { JSX, ReactNode } from 'react'
+import { HTMLProps, JSX, ReactNode } from 'react'
 import styled from '@emotion/styled'
 
 export interface EqTypoProps {
@@ -13,6 +13,7 @@ export interface EqTypoProps {
 const Styled = {
   Tag: styled.span<Pick<EqTypoProps, 'small' | 'bold' | 'link' | 'monospace'>>(
     ({ small, bold, link, monospace }) => ({
+      color: 'var(--eq-color-n400)',
       fontFamily: monospace ? 'monospace' : 'var(--eq-font-primary)',
       fontSize: small ? 13 : 15,
       lineHeight: small ? '16px' : '21px',
@@ -30,7 +31,7 @@ export const EqTypo = ({
   monospace = false,
   children,
   ...props
-}: EqTypoProps) => (
+}: EqTypoProps & HTMLProps<typeof tag>) => (
   <Styled.Tag
     as={tag}
     small={small}

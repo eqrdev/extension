@@ -69,7 +69,10 @@
     "message": "OpenAI"
   },
   "openAiDescription": {
-    "message": "Here you can enable OpenAI to utilize our AI assistant that sends automated responses to inquiries related to job opportunity on LinkedIn. It disregards any messages on other topics.\n\nHow to get your own OpenAI key? Find it here."
+    "message": "Here you can enable OpenAI to utilize our AI assistant that sends automated responses to inquiries related to job opportunity on LinkedIn. It disregards any messages on other topics."
+  },
+  "howToOpenAi": {
+    "message": "How to get your own OpenAI key?"
   },
   "apiKeyLabel": {
     "message": "Enter your OpenAI key"

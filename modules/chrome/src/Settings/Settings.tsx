@@ -176,6 +176,16 @@ export const Settings = (): ReactElement => {
         switched={data.isOpenAiEnabled}
       >
         <EqTypo>{$i18n('openAiDescription')}</EqTypo>
+        <EqTypo>
+          {$i18n('howToOpenAi')}{' '}
+          <EqTypo
+            link
+            tag="a"
+            href="https://help.openai.com/en/articles/4936850-where-do-i-find-my-secret-api-key"
+          >
+            {$i18n('findItHere')}
+          </EqTypo>
+        </EqTypo>
         {(data.openAiKey || editApiKey) && (
           <EqTypo bold small>
             {$i18n('apiKeyLabel')}

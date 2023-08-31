@@ -24,9 +24,17 @@ export class ProfileUrl {
     return this.profileName
   }
 
+  get placeholder() {
+    return this.DEFAULT_PROTOCOL + this.DEFAULT_URL + 'my-profile'
+  }
+
   replaceInText(text: string): string {
     return typeof text === 'string'
       ? text.replaceAll(this.URL_REGEX, this.full)
       : ''
+  }
+
+  replaceWithPlaceholder(text: string): string {
+    return text.replaceAll(this.URL_REGEX, this.placeholder)
   }
 }

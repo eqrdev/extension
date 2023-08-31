@@ -17,13 +17,16 @@ export class PopupPresenter {
     await equalizerRepository.load(
       ({ profileName, openAiKey, automaticMessage }: EqualizerModel) => {
         const profileUrl = new ProfileUrl(profileName)
+        const isProfileUrlProvided = Boolean(profileName)
 
         callback({
           isOpenAiEnabled: Boolean(openAiKey),
           profileUrl: profileUrl.base,
           profileUrlFull: profileUrl.full,
-          automaticMessage: profileUrl.replaceInText(automaticMessage),
-          isProfileUrlProvided: Boolean(profileName),
+          automaticMessage: isProfileUrlProvided
+            ? profileUrl.replaceInText(automaticMessage)
+            : profileUrl.replaceWithPlaceholder(automaticMessage),
+          isProfileUrlProvided,
         })
       }
     )

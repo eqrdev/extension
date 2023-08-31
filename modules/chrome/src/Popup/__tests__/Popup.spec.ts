@@ -27,6 +27,12 @@ describe('when the profileName is not provided', () => {
   it("shouldn't show an alert", async () => {
     expect(viewModel.isProfileUrlProvided).toBe(false)
   })
+
+  it('should show a temporary url in automatic message', () => {
+    expect(viewModel.automaticMessage).toBe(
+      'My message: https://equalizer.dev/me/my-profile'
+    )
+  })
 })
 
 describe('when the profileName is provided', () => {
@@ -48,5 +54,8 @@ describe('when the profileName is provided', () => {
       'https://equalizer.dev/me/dwight-schrute'
     )
     expect(viewModel.isOpenAiEnabled).toBe(true)
+    expect(viewModel.automaticMessage).toBe(
+      'My message: https://equalizer.dev/me/dwight-schrute'
+    )
   })
 })

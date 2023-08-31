@@ -55,6 +55,7 @@ export class EqualizerTestHarness {
     addProfileName: jest.fn(),
     removeSyncedData: jest.fn(),
     clickAcceptButtons: jest.fn(),
+    getNow: jest.fn().mockReturnValue(new Date('2023-10-10:10:10')),
   }
 
   private initSpies() {
@@ -84,7 +85,7 @@ export class EqualizerTestHarness {
       removeSyncedData: this.spies.removeSyncedData,
     })()
     repository.dateTimeGateway = jest.fn().mockReturnValue({
-      now: jest.fn().mockReturnValue(new Date('2023-10-10:10:10')),
+      now: this.spies.getNow,
     })()
     repository.crossThreadGateway = jest.fn().mockReturnValue({
       openSettings: this.spies.openSettings,

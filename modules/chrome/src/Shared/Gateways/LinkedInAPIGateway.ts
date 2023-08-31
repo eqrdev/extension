@@ -1,5 +1,5 @@
 import { Invitation } from 'linkedin/src/types/Invitation'
-import { LinkedInClient } from 'linkedin'
+import { Conversation, LinkedInClient } from 'linkedin'
 
 export type ConversationData = {
   categories: string[]
@@ -31,6 +31,24 @@ export class LinkedInAPIGateway {
     this.profileId = profileId
   }
 
+  static mapConversations(conversations: Conversation[]): ConversationData[] {
+    return conversations.map(
+      ({
+        categories,
+        conversationParticipants,
+        lastActivityAt,
+        createdAt,
+        entityUrn,
+      }) => ({
+        categories,
+        lastActivityAt,
+        createdAt,
+        entityUrn,
+        conversationParticipantsCount: conversationParticipants.length,
+      })
+    )
+  }
+
   async getInvitations(): Promise<Invitation[]> {
     return this.client.getInvites()
   }
@@ -50,21 +68,7 @@ export class LinkedInAPIGateway {
 
   async getConversations(): Promise<ConversationData[]> {
     const response = await this.client.getConversations(this.profileId)
-    return response.map(
-      ({
-        categories,
-        conversationParticipants,
-        lastActivityAt,
-        createdAt,
-        entityUrn,
-      }) => ({
-        categories,
-        lastActivityAt,
-        createdAt,
-        entityUrn,
-        conversationParticipantsCount: conversationParticipants.length,
-      })
-    )
+    return LinkedInAPIGateway.mapConversations(response)
   }
 
   async acceptInvitation(

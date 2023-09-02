@@ -86,6 +86,9 @@
   "emptyMessageError": {
     "message": "The automatic reply cannot be empty!"
   },
+  "missingMessageUrlError": {
+    "message": "You need to include the `#URL#` string in your message."
+  },
   "emptyApiKeyError": {
     "message": "The OpenAI API key cannot be empty!"
   },

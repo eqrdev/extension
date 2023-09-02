@@ -78,6 +78,10 @@ export const Settings = (): ReactElement => {
       if (error.message === 'EmptyValueError') {
         setMessageError($i18n('emptyMessageError'))
       }
+
+      if (error.message === 'MissingUrlError') {
+        setMessageError($i18n('missingMessageUrlError'))
+      }
     }
   }
 

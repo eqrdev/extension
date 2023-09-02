@@ -62,6 +62,12 @@ export class EqualizerRepository {
       await this.crossThreadGateway.addProfileName()
     }
 
+    if (settingKey === 'automaticMessage') {
+      if (!value.includes('#URL#')) {
+        throw new Error('MissingUrlError')
+      }
+    }
+
     if (settingKey === 'openAiKey') {
       const openAi = await this.getOpenAiGateway()
       if (!(await openAi.isKeyValid(value))) {

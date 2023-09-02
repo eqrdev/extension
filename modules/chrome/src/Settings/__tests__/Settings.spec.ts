@@ -38,11 +38,11 @@ describe('when we click on save in sections like profileName or automaticMessage
       'dwight_schrute'
     )
     await testHarness.settingsPresenter.onSaveMessage(
-      'Bears. Beets. Battlestar Galactica.'
+      'Bears. Beets. Battlestar Galactica. #URL#'
     )
     expect(testHarness.spies.setSyncedData).toHaveBeenCalledWith(
       'automaticMessage',
-      'Bears. Beets. Battlestar Galactica.'
+      'Bears. Beets. Battlestar Galactica. #URL#'
     )
   })
 })
@@ -69,6 +69,23 @@ describe('when we click on save and the input is empty or incorrect', () => {
         'my_new profileName'
       )
     }).rejects.toThrow('IncorrectFormatError')
+  })
+})
+
+describe('when we try to save automatic message without providing an #URL# string in it', () => {
+  let testHarness
+
+  beforeEach(async () => {
+    testHarness = new EqualizerTestHarness()
+    await testHarness.initSettings(() => {})
+  })
+
+  it('should validate the key and save into the synced storage', async () => {
+    await expect(async () => {
+      await testHarness.settingsPresenter.onSaveMessage(
+        'My message does not contain url'
+      )
+    }).rejects.toThrow('MissingUrlError')
   })
 })
 

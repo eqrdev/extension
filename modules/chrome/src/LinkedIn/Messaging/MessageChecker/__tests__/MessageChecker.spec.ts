@@ -16,6 +16,73 @@ describe('When profile url is not provided by the user', () => {
   })
 })
 
+describe('When `messagesLastCheckedDate` not provided', () => {
+  let testHarness = null
+  let viewModel = null
+
+  beforeEach(async () => {
+    testHarness = new EqualizerTestHarness({
+      messagesLastCheckedDate: undefined,
+    })
+    testHarness.spies.getConversations = jest.fn().mockResolvedValue([
+      {
+        categories: ['PRIMARY_INBOX', 'INMAIL'],
+        conversationParticipantsCount: 2,
+        lastActivityAt: new Date('2023-10-10').getTime(),
+        createdAt: new Date('2023-10-10').getTime(),
+        entityUrn: 'urn:li:fsd_profile:ARqe0o0OYH2XvCCzQdnB043AbQKCAU6BLYGsknt',
+      },
+    ])
+    await testHarness.initMessageChecker(data => {
+      viewModel = data
+    })
+  })
+
+  it('should not display the last checked date', async () => {
+    expect(viewModel.hasLastCheckedDate).toBe(false)
+  })
+
+  it('should not check for the last check', async () => {
+    await testHarness.messageCheckerPresenter.onClickMessages()
+
+    expect(testHarness.spies.getConversation).toHaveBeenCalledWith(
+      'ARqe0o0OYH2XvCCzQdnB043AbQKCAU6BLYGsknt'
+    )
+  })
+})
+
+describe('When `messagesLastCheckedDate` provided', () => {
+  let testHarness = null
+  let viewModel = null
+
+  beforeEach(async () => {
+    testHarness = new EqualizerTestHarness({
+      messagesLastCheckedDate: new Date('2023-10-10').getTime(),
+    })
+    testHarness.spies.getConversations = jest.fn().mockResolvedValue([
+      {
+        categories: ['PRIMARY_INBOX', 'INMAIL'],
+        conversationParticipantsCount: 2,
+        lastActivityAt: new Date('2023-10-11').getTime(),
+        createdAt: new Date('2023-10-10').getTime(),
+        entityUrn: 'urn:li:fsd_profile:ARqe0o0OYH2XvCCzQdnB043AbQKCAU6BLYGsknt',
+      },
+    ])
+    await testHarness.initMessageChecker(data => {
+      viewModel = data
+    })
+  })
+
+  it('should show the last checked date', async () => {
+    expect(viewModel.hasLastCheckedDate).toBe(true)
+  })
+
+  it('should check for the last message check', async () => {
+    await testHarness.messageCheckerPresenter.onClickMessages()
+    expect(testHarness.spies.getConversation).not.toHaveBeenCalled()
+  })
+})
+
 describe('When we click the button', () => {
   let testHarness = null
   let viewModel = null

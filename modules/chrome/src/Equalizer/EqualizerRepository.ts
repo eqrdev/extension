@@ -1,6 +1,9 @@
 import { Observable } from '../Shared/Observable'
 import { OpenAIGateway } from '../Shared/Gateways/OpenAIGateway'
-import { LinkedInAPIGateway } from '../Shared/Gateways/LinkedInAPIGateway'
+import {
+  ConversationData,
+  LinkedInAPIGateway,
+} from '../Shared/Gateways/LinkedInAPIGateway'
 import { CrossThreadGateway } from '../Shared/Gateways/CrossThreadGateway'
 import { StorageGateway } from '../Shared/Gateways/StorageGateway'
 import { DateTimeGateway } from '../Shared/Gateways/DateTimeGateway'
@@ -172,27 +175,46 @@ export class EqualizerRepository {
     return timestamp >= now - twoWeeksInMilliseconds
   }
 
+  private shouldProcessMessage({
+    categories,
+    conversationParticipantsCount,
+    lastActivityAt,
+    createdAt,
+  }: ConversationData): boolean {
+    const hasLastCheckedDate =
+      typeof this.programmersModel.value.messagesLastCheckedDate === 'number'
+
+    if (
+      !categories.includes('PRIMARY_INBOX') &&
+      !categories.includes('INMAIL')
+    ) {
+      return false
+    }
+
+    if (conversationParticipantsCount !== 2) {
+      return false
+    }
+
+    if (!this.isWithinTwoWeeks(createdAt)) {
+      return false
+    }
+
+    if (hasLastCheckedDate) {
+      return (
+        lastActivityAt < this.programmersModel.value.messagesLastCheckedDate
+      )
+    }
+
+    return true
+  }
+
   private async replyMessages() {
     const linkedin = await this.getLinkedinGateway()
 
     const conversations = await linkedin.getConversations()
 
     const conversationsToProcess = conversations.filter(
-      ({
-        categories,
-        conversationParticipantsCount,
-        lastActivityAt,
-        createdAt,
-      }) => {
-        return (
-          (categories.includes('PRIMARY_INBOX') ||
-            categories.includes('INMAIL')) &&
-          conversationParticipantsCount === 2 &&
-          lastActivityAt >
-            this.programmersModel.value.messagesLastCheckedDate &&
-          this.isWithinTwoWeeks(createdAt)
-        )
-      }
+      this.shouldProcessMessage.bind(this)
     )
 
     const getUrnId = conversation =>

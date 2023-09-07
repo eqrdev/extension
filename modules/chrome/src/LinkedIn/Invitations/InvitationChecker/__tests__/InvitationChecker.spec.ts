@@ -69,6 +69,8 @@ describe('when we click the button', () => {
       'Mara Albert',
       'Catherine Cooper',
     ])
+
+    expect(testHarness.spies.getConversations).toHaveBeenCalledTimes(1)
   })
 })
 
@@ -157,7 +159,18 @@ describe('when we have openAi key, no message and the senderTitle is not about a
       senderTitle: 'Paper Sales at Dunder Mifflin, Inc.',
       senderName: 'Jim Halpert',
     })
-    expect(testHarness.spies.isRecruiterMessage).not.toHaveBeenCalled()
+    expect(testHarness.spies.isRecruiterMessage).toHaveBeenNthCalledWith(
+      1,
+      'Hello, this is a message from a recruiter. Really.'
+    )
+    expect(testHarness.spies.isRecruiterMessage).toHaveBeenNthCalledWith(
+      2,
+      'Hello, this is a message from a recruiter. Really.'
+    )
+    expect(testHarness.spies.isRecruiterMessage).toHaveBeenNthCalledWith(
+      3,
+      'Hello, this is a message from a recruiter. Really.'
+    )
     expect(testHarness.spies.acceptInvitation).not.toHaveBeenCalled()
   })
 })

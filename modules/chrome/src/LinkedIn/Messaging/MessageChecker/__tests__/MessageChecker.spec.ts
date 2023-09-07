@@ -143,6 +143,8 @@ describe('When we click the button', () => {
       'messagesLastCheckedDate',
       new Date('2023-10-10:10:10').getTime()
     )
+
+    expect(viewModel.lastResponsesCount).toBe(3)
   })
 })
 

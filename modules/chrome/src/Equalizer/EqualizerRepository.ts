@@ -21,11 +21,16 @@ export interface EqualizerSyncedData {
 export interface EqualizerSessionData {
   csrfToken: string
   profileId: string
-  lastResponsesCount: number
-  invitationsAcceptedCount: number
 }
 
-export type EqualizerModel = EqualizerSyncedData & EqualizerSessionData
+export interface EqualizerMemoryData {
+  invitationsAcceptedCount: number
+  lastResponsesCount: number
+}
+
+export type EqualizerModel = EqualizerSyncedData &
+  EqualizerSessionData &
+  EqualizerMemoryData
 
 const DEFAULT_AUTO_REPLY_TEXT = `Hi! Thank You for contacting me.
 Please check out my Equalizer Profile page and answer a few questions about the job that you are recruiting for.
@@ -97,7 +102,24 @@ export class EqualizerRepository {
   }
 
   private async updateModel() {
-    this.programmersModel.value = await this.storageGateway.getAllData()
+    this.programmersModel.value = {
+      ...this.programmersModel.value,
+      ...(await this.storageGateway.getAllData()),
+    }
+  }
+
+  private setLastResponsesCount(count: number): void {
+    this.programmersModel.value = {
+      ...this.programmersModel.value,
+      lastResponsesCount: count,
+    }
+  }
+
+  private setInvitationsAcceptedCount(count: number): void {
+    this.programmersModel.value = {
+      ...this.programmersModel.value,
+      invitationsAcceptedCount: count,
+    }
   }
 
   private async setDate(date: Date) {
@@ -167,7 +189,8 @@ export class EqualizerRepository {
     }
 
     this.domGateway.clickAcceptButtons(invitationSenderNames)
-    await this.setSession('invitationsAcceptedCount', invitationsAcceptedCount)
+    this.setInvitationsAcceptedCount(invitationsAcceptedCount)
+    await this.checkMessages()
   }
 
   async checkMessages() {
@@ -255,10 +278,7 @@ export class EqualizerRepository {
       }
     }
 
-    await this.storageGateway.setSessionData(
-      'lastResponsesCount',
-      responsesCount
-    )
+    this.setLastResponsesCount(responsesCount)
   }
 }
 

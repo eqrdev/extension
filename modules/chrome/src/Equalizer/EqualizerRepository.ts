@@ -165,7 +165,7 @@ export class EqualizerRepository {
 
     for (const invitation of invitations) {
       if (invitation.genericInvitationType !== 'CONNECTION') {
-        return
+        continue
       }
 
       const hasMessage = Boolean(invitation.message)

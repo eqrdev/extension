@@ -170,7 +170,7 @@ export class EqualizerRepository {
 
       const hasMessage = Boolean(invitation.message)
 
-      const accept = async () => {
+      const accept = () => {
         invitationSenderNames.push(invitation.senderName)
         invitationsAcceptedCount++
       }
@@ -178,13 +178,13 @@ export class EqualizerRepository {
       const openai = this.getOpenAiGateway()
 
       if (!openai.hasOpenAi()) {
-        await accept()
+        accept()
       } else if (hasMessage) {
         if (await openai.isRecruiterMessage(invitation.message)) {
-          await accept()
+          accept()
         }
       } else if (await openai.isRecruiterTitle(invitation.senderTitle)) {
-        await accept()
+        accept()
       }
     }
 

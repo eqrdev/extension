@@ -7,7 +7,7 @@ export const analyzeMessage: TextAnalyzer<{
 }> = createTextAnalyzer({
   title: 'message_interpretation',
   prompt:
-    'Decide whether the input is a request from a recruiter, and is a message about a possible job opportunity',
+    'Decide whether the input is a request from a recruiter, not somebody who seek for job, and is a message about a possible job opportunity',
   parameters: {
     type: 'object',
     properties: {

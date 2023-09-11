@@ -2,19 +2,11 @@ import { generateTrackingIdAsCharString } from './generateTrackingIdAsCharString
 
 import { v4 as uuid } from 'uuid'
 import { Invitations } from './types/Invitations'
-import { VoyagerInvitations } from './types/VoyagerInvitations'
 import {
   ConversationMessagesResponse,
   ConversationsResponse,
 } from './types/Conversation'
-import { Conversation, Message } from './types/common/Entities'
-import {
-  CompanyInclude,
-  ContentSeriesInclude,
-  InviteInclude,
-  ProfileInclude,
-} from './types/common/VoyagerEntities'
-import { Invitation } from './types/Invitation'
+import { Conversation, InvitationView, Message } from './types/common/Entities'
 
 export interface LinkedInClientOptions {
   csrfToken: string
@@ -103,65 +95,13 @@ export class LinkedInClient {
     return response.data.messengerConversationsBySyncToken.elements
   }
 
-  public async getInvites(): Promise<Invitation[]> {
-    const isVoyagerResponse = (
-      response: Invitations | VoyagerInvitations
-    ): response is VoyagerInvitations =>
-      Array.isArray((response as VoyagerInvitations).included)
-
-    const isInvitation = (
-      entity:
-        | CompanyInclude
-        | ContentSeriesInclude
-        | InviteInclude
-        | ProfileInclude
-    ): entity is InviteInclude =>
-      entity.$type ===
-      'com.linkedin.voyager.dash.relationships.invitation.Invitation'
-
-    const response: Invitations | VoyagerInvitations =
-      await this.requestGraphQL(
-        'voyagerRelationshipsDashInvitationViews.92f52706ef5898d18d9f60d184f01de9',
-        `(invitationTypes:List(),filterCriteria:List(),includeInsights:true,start:0,count:3)`
-      )
-
-    if (isVoyagerResponse(response)) {
-      const invitationElements =
-        response.data.data.relationshipsDashInvitationViewsByReceived.elements
-
-      return response.included.filter(isInvitation).map<Invitation>(invite => {
-        const invitation = invitationElements.find(
-          invitationElement =>
-            invitationElement['*invitation'] === invite.entityUrn
-        )
-        const senderTitle = invitation?.subtitle.text
-        const senderName = invitation?.title.text
-
-        return {
-          id: invite.invitationId,
-          sharedSecret: invite.sharedSecret,
-          message: invite.message,
-          genericInvitationType: invite.genericInvitationType,
-          invitationType: invite.invitationType,
-          invitationState: invite.invitationState,
-          senderTitle,
-          senderName,
-        }
-      })
-    }
-
-    return response.data.relationshipsDashInvitationViewsByReceived.elements.map(
-      ({ invitation, subtitle, title }) => ({
-        id: invitation.invitationId,
-        sharedSecret: invitation.sharedSecret,
-        message: invitation.message,
-        genericInvitationType: invitation.genericInvitationType,
-        invitationType: invitation.invitationType,
-        invitationState: invitation.invitationState,
-        senderTitle: subtitle.text,
-        senderName: title.text,
-      })
+  public async getInvites(): Promise<InvitationView[]> {
+    const response: Invitations = await this.requestGraphQL(
+      'voyagerRelationshipsDashInvitationViews.92f52706ef5898d18d9f60d184f01de9',
+      `(invitationTypes:List(),filterCriteria:List(),includeInsights:true,start:0,count:3)`
     )
+
+    return response.data.relationshipsDashInvitationViewsByReceived.elements
   }
 
   public async acceptInvitation(

@@ -1,5 +1,6 @@
 import { Invitation } from 'linkedin/src/types/Invitation'
 import { Conversation, LinkedInClient } from 'linkedin'
+import { InvitationView } from 'linkedin/src/types/common/Entities'
 
 export type ConversationData = {
   categories: string[]
@@ -49,8 +50,22 @@ export class LinkedInAPIGateway {
     )
   }
 
+  static mapInvitations(invitations: InvitationView[]): Invitation[] {
+    return invitations.map(({ invitation, subtitle, title }) => ({
+      id: invitation.invitationId,
+      sharedSecret: invitation.sharedSecret,
+      message: invitation.message,
+      genericInvitationType: invitation.genericInvitationType,
+      invitationType: invitation.invitationType,
+      invitationState: invitation.invitationState,
+      senderTitle: subtitle.text,
+      senderName: title.text,
+    }))
+  }
+
   async getInvitations(): Promise<Invitation[]> {
-    return this.client.getInvites()
+    const response = await this.client.getInvites()
+    return LinkedInAPIGateway.mapInvitations(response)
   }
 
   async getConversation(

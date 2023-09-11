@@ -10,8 +10,6 @@ export class DOMGateway {
     )
 
     listItems.forEach(listItem => {
-      console.log(listItem)
-
       const title = listItem.querySelector<HTMLDivElement>(
         `.${cardTitleClass}`
       ).innerText

@@ -18,40 +18,6 @@ describe('when we have a last checked date', () => {
   })
 })
 
-describe.skip('when we click the button', () => {
-  let testHarness
-
-  beforeEach(() => {
-    testHarness = new EqualizerTestHarness()
-    testHarness.initInvitationChecker(() => {})
-  })
-
-  it('should call the LinkedIn client with the proper parameters', async () => {
-    await testHarness.invitationCheckerPresenter.onClickButton()
-
-    expect(testHarness.spies.getInvitations).toHaveBeenCalledTimes(1)
-    expect(testHarness.spies.acceptInvitation).toHaveBeenNthCalledWith(
-      1,
-      '9789428921',
-      'NrtQx6ioﬀ'
-    )
-    expect(testHarness.spies.acceptInvitation).toHaveBeenNthCalledWith(
-      2,
-      '4892374874',
-      'wlApmssu'
-    )
-    expect(testHarness.spies.acceptInvitation).toHaveBeenNthCalledWith(
-      3,
-      '9867875488',
-      'NifOCrk1'
-    )
-    expect(testHarness.spies.setSessionData).toHaveBeenCalledWith(
-      'invitationsAcceptedCount',
-      3
-    )
-  })
-})
-
 describe('when we click the button', () => {
   let testHarness
 

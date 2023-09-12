@@ -4,7 +4,7 @@ import { dateTimeFormatter } from '../../../Shared/i18n'
 export interface InvitationModel {
   lastCheck: string
   isProfileNameProvided: boolean
-  invitationsAccepted?: number
+  invitationsAcceptedCount: number
 }
 
 export class InvitationCheckerPresenter {
@@ -20,7 +20,10 @@ export class InvitationCheckerPresenter {
             ? dateTimeFormatter.format(invitationsLastCheckedDate)
             : null,
           isProfileNameProvided: Boolean(profileName),
-          invitationsAccepted: invitationsAcceptedCount,
+          invitationsAcceptedCount:
+            invitationsAcceptedCount === undefined
+              ? 0
+              : invitationsAcceptedCount,
         })
       }
     )

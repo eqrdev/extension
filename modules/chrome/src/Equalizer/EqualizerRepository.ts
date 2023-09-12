@@ -189,8 +189,12 @@ export class EqualizerRepository {
     }
 
     this.domGateway.clickAcceptButtons(invitationSenderNames)
+
+    this.dateTimeGateway.setTimeout(async () => {
+      await this.checkMessages()
+    }, 2000)
+
     this.setInvitationsAcceptedCount(invitationsAcceptedCount)
-    await this.checkMessages()
   }
 
   async checkMessages() {

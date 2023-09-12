@@ -19,11 +19,14 @@ describe('when we have a last checked date', () => {
 })
 
 describe('when we click the button', () => {
+  let viewModel
   let testHarness
 
   beforeEach(() => {
     testHarness = new EqualizerTestHarness()
-    testHarness.initInvitationChecker(() => {})
+    testHarness.initInvitationChecker(data => {
+      viewModel = data
+    })
   })
 
   it('should call the LinkedIn client with the proper parameters', async () => {
@@ -36,6 +39,7 @@ describe('when we click the button', () => {
       'Catherine Cooper',
     ])
 
+    expect(viewModel.invitationsAcceptedCount).toBe(3)
     expect(testHarness.spies.getConversations).toHaveBeenCalledTimes(1)
   })
 })
@@ -44,99 +48,116 @@ describe('when an invitation is not a connection', () => {
   let testHarness
   beforeEach(async () => {
     testHarness = new EqualizerTestHarness()
+    await testHarness.receiveInvitation(
+      {
+        id: 7086734793308078080,
+        genericInvitationType: 'CONTENT_SERIES',
+        sharedSecret: 'NifOCrk1',
+        message: null,
+        invitationType: 'RECEIVED',
+        invitationState: 'PENDING',
+        senderTitle: 'Newsletter • Biweekly',
+        senderName:
+          'LinkedIn News Europe invited you to subscribe to Tech Wrap-Up Europe',
+      },
+      () => {}
+    )
   })
 
   it('should not accept, because it is a newsletter', async () => {
-    await testHarness.receiveInvitation({
-      id: 7086734793308078080,
-      genericInvitationType: 'CONTENT_SERIES',
-      sharedSecret: 'NifOCrk1',
-      message: null,
-      invitationType: 'RECEIVED',
-      invitationState: 'PENDING',
-      senderTitle: 'Newsletter • Biweekly',
-      senderName:
-        'LinkedIn News Europe invited you to subscribe to Tech Wrap-Up Europe',
-    })
     expect(testHarness.spies.acceptInvitation).not.toHaveBeenCalled()
   })
 })
 
 describe('when there is no openAi key', () => {
+  let viewModel
   let testHarness
   beforeEach(async () => {
-    testHarness = new EqualizerTestHarness({ openAiKey: null })
+    testHarness = new EqualizerTestHarness()
+
+    await testHarness.receiveInvitation(
+      {
+        id: 7086734793308078080,
+        genericInvitationType: 'CONNECTION',
+        sharedSecret: 'NifOCrk1',
+        message: null,
+        invitationType: 'RECEIVED',
+        invitationState: 'PENDING',
+        senderTitle: 'Horse riding instructor at Ride Co.',
+        senderName: 'Anush Vasily',
+      },
+      data => {
+        viewModel = data
+      }
+    )
   })
 
   it('should accept every invitation', async () => {
-    await testHarness.receiveInvitation({
-      id: 7086734793308078080,
-      genericInvitationType: 'CONNECTION',
-      sharedSecret: 'NifOCrk1',
-      message: null,
-      invitationType: 'RECEIVED',
-      invitationState: 'PENDING',
-      senderTitle: 'Horse riding instructor at Ride Co.',
-      senderName: 'Anush Vasily',
-    })
-    expect(testHarness.spies.clickAcceptButtons).toHaveBeenCalled()
+    expect(testHarness.spies.clickAcceptButtons).toHaveBeenCalledWith([
+      'Anush Vasily',
+    ])
+    expect(viewModel.invitationsAcceptedCount).toBe(1)
   })
 })
 
 describe('when we have openAi key, but the invitation message is not about a job opportunity', () => {
+  let viewModel
   let testHarness
   beforeEach(async () => {
     testHarness = new EqualizerTestHarness()
     testHarness.spies.isRecruiterMessage = jest.fn().mockResolvedValue(false)
     testHarness.spies.isRecruiterTitle = jest.fn().mockResolvedValue(true)
+    await testHarness.receiveInvitation(
+      {
+        id: 7086734793308078080,
+        genericInvitationType: 'CONNECTION',
+        sharedSecret: 'NifOCrk1',
+        message: 'Hey, do you remember me? I am Creed',
+        invitationType: 'RECEIVED',
+        invitationState: 'PENDING',
+        senderTitle: 'HeadHunter at Dunder Mifflin, Inc.',
+        senderName: 'Pam Beesley',
+      },
+      data => {
+        viewModel = data
+      }
+    )
   })
 
-  it('should accept every invitation', async () => {
-    await testHarness.receiveInvitation({
-      id: 7086734793308078080,
-      genericInvitationType: 'CONNECTION',
-      sharedSecret: 'NifOCrk1',
-      message: 'Hey, do you remember me? I am Creed',
-      invitationType: 'RECEIVED',
-      invitationState: 'PENDING',
-      senderTitle: 'HeadHunter at Dunder Mifflin, Inc.',
-      senderName: 'Pam Beesley',
-    })
+  it('should not accept the invitation', async () => {
     expect(testHarness.spies.acceptInvitation).not.toHaveBeenCalled()
+    expect(viewModel.invitationsAcceptedCount).toBe(0)
   })
 })
 
 describe('when we have openAi key, no message and the senderTitle is not about a recruiter', () => {
   let testHarness
+  let viewModel
   beforeEach(async () => {
     testHarness = new EqualizerTestHarness()
     testHarness.spies.isRecruiterMessage = jest.fn().mockResolvedValue(false)
     testHarness.spies.isRecruiterTitle = jest.fn().mockResolvedValue(false)
+    testHarness.spies.getConversations = jest.fn().mockResolvedValue([])
+    await testHarness.receiveInvitation(
+      {
+        id: 7086734793308078080,
+        genericInvitationType: 'CONNECTION',
+        sharedSecret: 'NifOCrk1',
+        message: null,
+        invitationType: 'RECEIVED',
+        invitationState: 'PENDING',
+        senderTitle: 'Paper Sales at Dunder Mifflin, Inc.',
+        senderName: 'Jim Halpert',
+      },
+      data => {
+        viewModel = data
+      }
+    )
   })
 
-  it('should accept every invitation', async () => {
-    await testHarness.receiveInvitation({
-      id: 7086734793308078080,
-      genericInvitationType: 'CONNECTION',
-      sharedSecret: 'NifOCrk1',
-      message: null,
-      invitationType: 'RECEIVED',
-      invitationState: 'PENDING',
-      senderTitle: 'Paper Sales at Dunder Mifflin, Inc.',
-      senderName: 'Jim Halpert',
-    })
-    expect(testHarness.spies.isRecruiterMessage).toHaveBeenNthCalledWith(
-      1,
-      'Hello, this is a message from a recruiter. Really.'
-    )
-    expect(testHarness.spies.isRecruiterMessage).toHaveBeenNthCalledWith(
-      2,
-      'Hello, this is a message from a recruiter. Really.'
-    )
-    expect(testHarness.spies.isRecruiterMessage).toHaveBeenNthCalledWith(
-      3,
-      'Hello, this is a message from a recruiter. Really.'
-    )
+  it('should accept no invitation', async () => {
+    expect(testHarness.spies.isRecruiterMessage).not.toHaveBeenCalled()
     expect(testHarness.spies.acceptInvitation).not.toHaveBeenCalled()
+    expect(viewModel.invitationsAcceptedCount).toBe(0)
   })
 })

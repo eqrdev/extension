@@ -86,6 +86,9 @@ export class EqualizerTestHarness {
     })()
     repository.dateTimeGateway = jest.fn().mockReturnValue({
       now: this.spies.getNow,
+      setTimeout: jest.fn(callback => {
+        callback()
+      }),
     })()
     repository.crossThreadGateway = jest.fn().mockReturnValue({
       openSettings: this.spies.openSettings,
@@ -116,9 +119,10 @@ export class EqualizerTestHarness {
     await this.settingsPresenter.load(callback)
   }
 
-  async receiveInvitation(invitation: Invitation) {
+  async receiveInvitation(invitation: Invitation, viewCallback) {
     this.spies.getInvitations = jest.fn().mockResolvedValue([invitation])
     this.initSpies()
+    await this.initInvitationChecker(viewCallback)
     await this.invitationCheckerPresenter.onClickButton()
   }
 }

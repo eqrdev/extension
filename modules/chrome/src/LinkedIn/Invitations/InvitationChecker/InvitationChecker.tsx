@@ -47,8 +47,10 @@ export const InvitationChecker = (): ReactElement => {
     showSnackbar({
       severity: 'success',
       message: `${$i18n('invitationsSuccessfulCheck')} ${
-        data.invitationsAccepted
-          ? $i18n('invitationsAccepted', [String(data.invitationsAccepted)])
+        data.invitationsAcceptedCount
+          ? $i18n('invitationsAccepted', [
+              String(data.invitationsAcceptedCount),
+            ])
           : $i18n('noInvitationsAccepted')
       }`,
     })

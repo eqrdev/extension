@@ -6,6 +6,7 @@ import {
   InvitationCheckerPresenter,
   InvitationModel,
 } from './InvitationCheckerPresenter'
+import { DOMGateway } from '../../../Shared/Gateways/DOMGateway'
 
 const Styled = {
   Wrapper: styled.div({
@@ -36,6 +37,7 @@ export const InvitationChecker = (): ReactElement => {
   const [firstLoading, setFirstLoading] = useState(true)
   const [loading, setLoading] = useState(false)
   const presenter = new InvitationCheckerPresenter()
+  const domGateway = new DOMGateway()
   const showSnackbar = useSnackbar()
 
   const loadData = async () => {
@@ -43,14 +45,12 @@ export const InvitationChecker = (): ReactElement => {
     setFirstLoading(false)
   }
 
-  const showSuccessfulCheck = () => {
+  const showSuccessfulCheck = (count: number) => {
     showSnackbar({
       severity: 'success',
       message: `${$i18n('invitationsSuccessfulCheck')} ${
-        data.invitationsAcceptedCount
-          ? $i18n('invitationsAccepted', [
-              String(data.invitationsAcceptedCount),
-            ])
+        count
+          ? $i18n('invitationsAccepted', [String(count)])
           : $i18n('noInvitationsAccepted')
       }`,
     })
@@ -58,12 +58,15 @@ export const InvitationChecker = (): ReactElement => {
 
   useEffect(() => {
     loadData()
+
+    domGateway.listen('checked:messages', (event: CustomEvent) => {
+      showSuccessfulCheck(event.detail.count)
+    })
   }, [])
 
   const handleClick = async () => {
     setLoading(true)
     await presenter.onClickButton()
-    showSuccessfulCheck()
     setLoading(false)
   }
 

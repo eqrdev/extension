@@ -4,26 +4,17 @@ import { dateTimeFormatter } from '../../../Shared/i18n'
 export interface InvitationModel {
   lastCheck: string
   isProfileNameProvided: boolean
-  invitationsAcceptedCount: number
 }
 
 export class InvitationCheckerPresenter {
   async load(callback: (settings: InvitationModel) => void): Promise<void> {
     await equalizerRepository.load(
-      ({
-        invitationsLastCheckedDate,
-        profileName,
-        invitationsAcceptedCount,
-      }) => {
+      ({ invitationsLastCheckedDate, profileName }) => {
         callback({
           lastCheck: invitationsLastCheckedDate
             ? dateTimeFormatter.format(invitationsLastCheckedDate)
             : null,
           isProfileNameProvided: Boolean(profileName),
-          invitationsAcceptedCount:
-            invitationsAcceptedCount === undefined
-              ? 0
-              : invitationsAcceptedCount,
         })
       }
     )

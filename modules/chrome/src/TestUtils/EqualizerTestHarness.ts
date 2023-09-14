@@ -56,6 +56,7 @@ export class EqualizerTestHarness {
     removeSyncedData: jest.fn(),
     clickAcceptButtons: jest.fn(),
     getNow: jest.fn().mockReturnValue(new Date('2023-10-10:10:10')),
+    domDispatch: jest.fn(),
   }
 
   private initSpies() {
@@ -96,6 +97,7 @@ export class EqualizerTestHarness {
     })()
     repository.domGateway = jest.fn().mockReturnValue({
       clickAcceptButtons: this.spies.clickAcceptButtons,
+      dispatch: this.spies.domDispatch,
     })()
   }
 

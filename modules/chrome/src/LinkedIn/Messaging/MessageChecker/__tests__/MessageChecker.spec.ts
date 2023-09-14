@@ -144,7 +144,10 @@ describe('When we click the button', () => {
       new Date('2023-10-10:10:10').getTime()
     )
 
-    expect(viewModel.lastResponsesCount).toBe(3)
+    expect(testHarness.spies.domDispatch).toHaveBeenCalledWith(
+      'checked:messages',
+      { count: 3 }
+    )
   })
 })
 

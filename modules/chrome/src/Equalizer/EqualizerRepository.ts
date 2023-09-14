@@ -23,14 +23,7 @@ export interface EqualizerSessionData {
   profileId: string
 }
 
-export interface EqualizerMemoryData {
-  invitationsAcceptedCount: number
-  lastResponsesCount: number
-}
-
-export type EqualizerModel = EqualizerSyncedData &
-  EqualizerSessionData &
-  EqualizerMemoryData
+export type EqualizerModel = EqualizerSyncedData & EqualizerSessionData
 
 const DEFAULT_AUTO_REPLY_TEXT = `Hi! Thank You for contacting me.
 Please check out my Equalizer Profile page and answer a few questions about the job that you are recruiting for.
@@ -108,20 +101,6 @@ export class EqualizerRepository {
     }
   }
 
-  private setLastResponsesCount(count: number): void {
-    this.programmersModel.value = {
-      ...this.programmersModel.value,
-      lastResponsesCount: count,
-    }
-  }
-
-  private setInvitationsAcceptedCount(count: number): void {
-    this.programmersModel.value = {
-      ...this.programmersModel.value,
-      invitationsAcceptedCount: count,
-    }
-  }
-
   private async setDate(date: Date) {
     await this.storageGateway.setSyncedData(
       'messagesLastCheckedDate',
@@ -194,7 +173,9 @@ export class EqualizerRepository {
       await this.checkMessages()
     }, 2000)
 
-    this.setInvitationsAcceptedCount(invitationsAcceptedCount)
+    this.domGateway.dispatch('checked:invitations', {
+      count: invitationsAcceptedCount,
+    })
   }
 
   async checkMessages() {
@@ -282,7 +263,9 @@ export class EqualizerRepository {
       }
     }
 
-    this.setLastResponsesCount(responsesCount)
+    this.domGateway.dispatch('checked:messages', {
+      count: responsesCount,
+    })
   }
 }
 

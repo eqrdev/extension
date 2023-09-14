@@ -6,6 +6,7 @@ import {
   MessageCheckerData,
   MessageCheckerPresenter,
 } from './MessageCheckerPresenter'
+import { DOMGateway } from '../../../Shared/Gateways/DOMGateway'
 
 const Styled = {
   Wrapper: styled.div({
@@ -52,6 +53,7 @@ export const MessageChecker = (): ReactElement => {
   const [data, setData] = useState<Partial<MessageCheckerData>>({})
   const showSnackbar = useSnackbar()
   const presenter = new MessageCheckerPresenter()
+  const domGateway = new DOMGateway()
 
   const loadData = async () => {
     await presenter.load(setData)
@@ -60,14 +62,18 @@ export const MessageChecker = (): ReactElement => {
 
   useEffect(() => {
     loadData()
+
+    domGateway.listen('checked:messages', (event: CustomEvent) => {
+      showSuccessSnackbar(event.detail.count)
+    })
   }, [])
 
-  const showSuccessSnackbar = () => {
+  const showSuccessSnackbar = (responsesCount: number) => {
     showSnackbar({
       severity: 'success',
       message: `${$i18n('successfulCheck')}\n ${
-        data.lastResponsesCount
-          ? $i18n('responsesSent', [String(data.lastResponsesCount)])
+        responsesCount
+          ? $i18n('responsesSent', [String(responsesCount)])
           : $i18n('noResponsesSent')
       }`,
     })
@@ -76,7 +82,6 @@ export const MessageChecker = (): ReactElement => {
   const handleClick = async () => {
     setLoading(true)
     await presenter.onClickMessages()
-    showSuccessSnackbar()
     setLoading(false)
   }
 

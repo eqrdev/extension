@@ -20,4 +20,17 @@ export class DOMGateway {
       }
     })
   }
+
+  dispatch<T = Record<string, unknown>>(eventName: string, eventDetail: T) {
+    window.dispatchEvent(
+      new CustomEvent(eventName, {
+        bubbles: true,
+        detail: eventDetail,
+      })
+    )
+  }
+
+  listen(eventName: string, callback) {
+    window.addEventListener(eventName, callback)
+  }
 }

@@ -39,7 +39,10 @@ describe('when we click the button', () => {
       'Catherine Cooper',
     ])
 
-    expect(viewModel.invitationsAcceptedCount).toBe(3)
+    expect(testHarness.spies.domDispatch).toHaveBeenCalledWith(
+      'checked:invitations',
+      { count: 3 }
+    )
     expect(testHarness.spies.getConversations).toHaveBeenCalledTimes(1)
   })
 })
@@ -96,7 +99,10 @@ describe('when there is no openAi key', () => {
     expect(testHarness.spies.clickAcceptButtons).toHaveBeenCalledWith([
       'Anush Vasily',
     ])
-    expect(viewModel.invitationsAcceptedCount).toBe(1)
+    expect(testHarness.spies.domDispatch).toHaveBeenCalledWith(
+      'checked:invitations',
+      { count: 1 }
+    )
   })
 })
 
@@ -126,13 +132,22 @@ describe('when we have openAi key, but the invitation message is not about a job
 
   it('should not accept the invitation', async () => {
     expect(testHarness.spies.acceptInvitation).not.toHaveBeenCalled()
-    expect(viewModel.invitationsAcceptedCount).toBe(0)
+    expect(testHarness.spies.acceptInvitation).not.toHaveBeenCalled()
+    expect(testHarness.spies.domDispatch).toHaveBeenNthCalledWith(
+      1,
+      'checked:invitations',
+      { count: 0 }
+    )
+    expect(testHarness.spies.domDispatch).toHaveBeenNthCalledWith(
+      2,
+      'checked:messages',
+      { count: 0 }
+    )
   })
 })
 
 describe('when we have openAi key, no message and the senderTitle is not about a recruiter', () => {
   let testHarness
-  let viewModel
   beforeEach(async () => {
     testHarness = new EqualizerTestHarness()
     testHarness.spies.isRecruiterMessage = jest.fn().mockResolvedValue(false)
@@ -149,15 +164,22 @@ describe('when we have openAi key, no message and the senderTitle is not about a
         senderTitle: 'Paper Sales at Dunder Mifflin, Inc.',
         senderName: 'Jim Halpert',
       },
-      data => {
-        viewModel = data
-      }
+      () => {}
     )
   })
 
   it('should accept no invitation', async () => {
     expect(testHarness.spies.isRecruiterMessage).not.toHaveBeenCalled()
     expect(testHarness.spies.acceptInvitation).not.toHaveBeenCalled()
-    expect(viewModel.invitationsAcceptedCount).toBe(0)
+    expect(testHarness.spies.domDispatch).toHaveBeenNthCalledWith(
+      1,
+      'checked:invitations',
+      { count: 0 }
+    )
+    expect(testHarness.spies.domDispatch).toHaveBeenNthCalledWith(
+      2,
+      'checked:messages',
+      { count: 0 }
+    )
   })
 })

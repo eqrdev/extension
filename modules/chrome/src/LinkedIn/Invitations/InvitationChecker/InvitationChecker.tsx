@@ -59,7 +59,7 @@ export const InvitationChecker = (): ReactElement => {
   useEffect(() => {
     loadData()
 
-    domGateway.listen('checked:messages', (event: CustomEvent) => {
+    domGateway.listen('checked:invitations', (event: CustomEvent) => {
       showSuccessfulCheck(event.detail.count)
     })
   }, [])

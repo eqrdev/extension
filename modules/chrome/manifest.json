@@ -28,8 +28,7 @@
   "permissions": [
     "storage",
     "webNavigation",
-    "webRequest",
-    "cookies"
+    "webRequest"
   ],
   "host_permissions": [
     "https://www.linkedin.com/*"

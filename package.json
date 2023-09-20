@@ -6,7 +6,7 @@
   "author": "Péter Viola <info@violapeter.hu>",
   "license": "MIT",
   "private": true,
-  "packageManager": "yarn@3.6.1",
+  "packageManager": "yarn@4.0.0-rc.51",
   "workspaces": [
     "modules/*"
   ],
@@ -16,10 +16,7 @@
     "test": "yarn workspace chrome run test",
     "type-check": "yarn workspace chrome run type-check",
     "lint": "yarn workspace eslint run lint",
-    "ui-sb": "yarn workspace ui-library run storybook"
-  },
-  "volta": {
-    "node": "20.5.1",
-    "yarn": "3.6.1"
+    "ui-sb": "yarn workspace ui-library run storybook",
+    "serve": "yarn workspace enquiry-checker run start"
   }
 }

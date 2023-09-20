@@ -1,9 +1,17 @@
 dist
 
-logs
 *.log
 yarn-debug.log*
 yarn-error.log*
+
+# Yarn
+.yarn/*
+!.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
 
 .idea
 .vscode

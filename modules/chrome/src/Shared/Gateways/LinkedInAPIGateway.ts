@@ -51,16 +51,19 @@ export class LinkedInAPIGateway {
   }
 
   static mapInvitations(invitations: InvitationView[]): Invitation[] {
-    return invitations.map(({ invitation, subtitle, title }) => ({
-      id: invitation.invitationId,
-      sharedSecret: invitation.sharedSecret,
-      message: invitation.message,
-      genericInvitationType: invitation.genericInvitationType,
-      invitationType: invitation.invitationType,
-      invitationState: invitation.invitationState,
-      senderTitle: subtitle.text,
-      senderName: title.text,
-    }))
+    return invitations.map(
+      ({ invitation, subtitle, title, sentTimeLabel }) => ({
+        id: invitation.invitationId,
+        sharedSecret: invitation.sharedSecret,
+        message: invitation.message,
+        genericInvitationType: invitation.genericInvitationType,
+        invitationType: invitation.invitationType,
+        invitationState: invitation.invitationState,
+        senderTitle: subtitle.text,
+        senderName: title.text,
+        timeLabel: sentTimeLabel,
+      })
+    )
   }
 
   async getInvitations(): Promise<Invitation[]> {

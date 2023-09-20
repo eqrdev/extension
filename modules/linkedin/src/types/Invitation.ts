@@ -10,4 +10,5 @@ export type Invitation = {
   invitationState: State
   senderName: string
   senderTitle: string
+  timeLabel: string
 }

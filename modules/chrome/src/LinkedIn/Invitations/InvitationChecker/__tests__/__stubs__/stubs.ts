@@ -10,6 +10,7 @@ export const invitationsStub: Invitation[] = [
     invitationState: 'PENDING',
     senderTitle: 'DTP operator at QuickPrint HQ, Inc.',
     senderName: 'Arnold Jedliczky',
+    timeLabel: '2 days ago',
   },
   {
     id: 4892374874,
@@ -20,6 +21,7 @@ export const invitationsStub: Invitation[] = [
     invitationState: 'PENDING',
     senderTitle: 'HR associate at HRComm Solutions',
     senderName: 'Mara Albert',
+    timeLabel: '3 hours ago',
   },
   {
     id: 9867875488,
@@ -30,5 +32,6 @@ export const invitationsStub: Invitation[] = [
     invitationState: 'PENDING',
     senderTitle: 'Headhunter at Black and Lockwood',
     senderName: 'Catherine Cooper',
+    timeLabel: 'Yesterday',
   },
 ]

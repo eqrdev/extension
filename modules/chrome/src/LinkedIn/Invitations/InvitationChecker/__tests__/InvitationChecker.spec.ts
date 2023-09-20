@@ -19,14 +19,11 @@ describe('when we have a last checked date', () => {
 })
 
 describe('when we click the button', () => {
-  let viewModel
   let testHarness
 
   beforeEach(() => {
     testHarness = new EqualizerTestHarness()
-    testHarness.initInvitationChecker(data => {
-      viewModel = data
-    })
+    testHarness.initInvitationChecker(() => {})
   })
 
   it('should call the LinkedIn client with the proper parameters', async () => {
@@ -62,6 +59,7 @@ describe('when an invitation is not a connection', () => {
         senderTitle: 'Newsletter • Biweekly',
         senderName:
           'LinkedIn News Europe invited you to subscribe to Tech Wrap-Up Europe',
+        timeLabel: '3 days ago',
       },
       () => {}
     )
@@ -73,7 +71,6 @@ describe('when an invitation is not a connection', () => {
 })
 
 describe('when there is no openAi key', () => {
-  let viewModel
   let testHarness
   beforeEach(async () => {
     testHarness = new EqualizerTestHarness()
@@ -88,10 +85,9 @@ describe('when there is no openAi key', () => {
         invitationState: 'PENDING',
         senderTitle: 'Horse riding instructor at Ride Co.',
         senderName: 'Anush Vasily',
+        timeLabel: '2 days ago',
       },
-      data => {
-        viewModel = data
-      }
+      () => {}
     )
   })
 
@@ -107,7 +103,6 @@ describe('when there is no openAi key', () => {
 })
 
 describe('when we have openAi key, but the invitation message is not about a job opportunity', () => {
-  let viewModel
   let testHarness
   beforeEach(async () => {
     testHarness = new EqualizerTestHarness()
@@ -123,10 +118,9 @@ describe('when we have openAi key, but the invitation message is not about a job
         invitationState: 'PENDING',
         senderTitle: 'HeadHunter at Dunder Mifflin, Inc.',
         senderName: 'Pam Beesley',
+        timeLabel: 'Yesterday',
       },
-      data => {
-        viewModel = data
-      }
+      () => {}
     )
   })
 
@@ -163,6 +157,7 @@ describe('when we have openAi key, no message and the senderTitle is not about a
         invitationState: 'PENDING',
         senderTitle: 'Paper Sales at Dunder Mifflin, Inc.',
         senderName: 'Jim Halpert',
+        timeLabel: '2 days ago',
       },
       () => {}
     )

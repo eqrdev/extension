@@ -245,9 +245,8 @@ export class EqualizerRepository {
     )
 
     for (const urnId of conversationUrnIds) {
-      const { entityUrns, conversationText } = await linkedin.getConversation(
-        urnId
-      )
+      const { entityUrns, conversationText } =
+        await linkedin.getConversation(urnId)
       const openAi = this.getOpenAiGateway()
       const isOnlyOnePersonInConversation = new Set([...entityUrns]).size === 1
       const isOpenAiValidated = openAi.hasOpenAi()

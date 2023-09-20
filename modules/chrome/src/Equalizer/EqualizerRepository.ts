@@ -171,7 +171,7 @@ export class EqualizerRepository {
 
     this.dateTimeGateway.setTimeout(async () => {
       await this.checkMessages()
-    }, 2000)
+    }, 4000)
 
     this.domGateway.dispatch('checked:invitations', {
       count: invitationsAcceptedCount,

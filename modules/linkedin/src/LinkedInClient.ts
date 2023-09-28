@@ -1,5 +1,3 @@
-import { generateTrackingIdAsCharString } from './generateTrackingIdAsCharString'
-
 import { v4 as uuid } from 'uuid'
 import { Invitations } from './types/Invitations'
 import {
@@ -18,6 +16,18 @@ export class LinkedInClient {
 
   constructor(options: LinkedInClientOptions) {
     this.options = options
+  }
+
+  private generateTrackingIdAsCharacterString() {
+    const randomIntArray = Array.from({ length: 16 }, () =>
+      Math.floor(Math.random() * 256)
+    )
+    const randByteArray = new Uint8Array(randomIntArray)
+    const charArray = Array.from(randByteArray, byte =>
+      String.fromCharCode(byte)
+    )
+
+    return charArray.join('')
   }
 
   private request(method: 'post' | 'get', url: string, options?: RequestInit) {
@@ -71,7 +81,7 @@ export class LinkedInClient {
             originToken: uuid(),
             renderContentUnions: [],
           },
-          trackingId: generateTrackingIdAsCharString(),
+          trackingId: this.generateTrackingIdAsCharacterString(),
         }),
       }
     )

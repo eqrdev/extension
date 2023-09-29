@@ -13,7 +13,7 @@
   "scripts": {
     "build": "yarn workspace chrome run build",
     "dev": "yarn workspace chrome run dev",
-    "test": "yarn workspace chrome run test",
+    "test": "yarn workspace test-runner initialize",
     "type-check": "yarn workspace chrome run type-check",
     "lint": "yarn workspace eslint run lint",
     "ui-sb": "yarn workspace ui-library run storybook",

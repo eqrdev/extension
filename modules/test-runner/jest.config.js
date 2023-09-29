@@ -1,5 +1,5 @@
 module.exports = {
-  roots: ['<rootDir>/../../modules'],
+  roots: ['<rootDir>/../'],
   setupFilesAfterEnv: ['<rootDir>/.scripts/setup.ts'],
   moduleFileExtensions: ['ts', 'tsx', 'ts', 'js'],
   testMatch: ['**/__tests__/**/*.(spec|test).[jt]s?(x)'],

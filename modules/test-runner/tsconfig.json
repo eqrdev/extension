@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "moduleResolution": "node",
+        "lib": ["es2021", "dom"],
+        "target": "es6",
+        "skipLibCheck": true,
+        "jsx": "react-jsx",
+        "resolveJsonModule": true,
+        "allowSyntheticDefaultImports": true,
+        "types": ["chrome", "jest", "react", "node"]
+    }
+}

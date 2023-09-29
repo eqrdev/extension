@@ -1,10 +1,16 @@
 {
   "name": "linkedin",
   "version": "1.0.0",
+  "main": "dist/index.js",
+  "module": "index.ts",
+  "scripts": {
+    "build": "tsc --build --clean && tsc --build"
+  },
   "dependencies": {
     "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "@types/uuid": "^9.0.4"
+    "@types/uuid": "^9.0.4",
+    "typescript": "^5.2.2"
   }
 }

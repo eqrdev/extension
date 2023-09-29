@@ -1,0 +1,8 @@
+{
+  "references": [
+    { "path": "./modules/enquiry-checker" },
+    { "path": "./modules/openai-analyzer" },
+    { "path": "./modules/linkedin" },
+    { "path": "./modules/equalizer" }
+  ]
+}

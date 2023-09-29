@@ -11,7 +11,7 @@
     "modules/*"
   ],
   "scripts": {
-    "build": "yarn workspace chrome run build",
+    "build": "yarn workspaces foreach -A run build",
     "dev": "yarn workspace chrome run dev",
     "test": "yarn workspace test-runner initialize",
     "type-check": "yarn workspace chrome run type-check",

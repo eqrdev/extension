@@ -6,6 +6,7 @@ export class VoyagerInvitationsProcessor {
 
   get generalInvitations(): GeneralInvitation[] {
     return this.getInvitationUrns().map(entityUrn => ({
+      urn: entityUrn,
       message: this.getIncludeByEntityUrn(entityUrn).message,
       sentTimeLabel: this.getViewByEntityUrn(entityUrn).sentTimeLabel,
       inviterTitle: this.getViewByEntityUrn(entityUrn).subtitle.text,

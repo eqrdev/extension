@@ -7,4 +7,4 @@ const equalizer = new Equalizer(
   process.env.OPENAI_API_KEY
 )
 
-;(async () => await equalizer.run())()
+;(async () => await equalizer.monitorEnquiries())()

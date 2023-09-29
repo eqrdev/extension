@@ -1,4 +1,5 @@
 export interface GeneralConversation {
+  urn: string
   messages: Array<{
     text: string
     sender: string

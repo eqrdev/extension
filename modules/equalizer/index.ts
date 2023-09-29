@@ -4,6 +4,7 @@ export { InvitationEvaluator } from './src/Evaluators/InvitationEvaluator'
 export { OpenAIEvaluator } from './src/Evaluators/OpenAIEvaluator'
 export { DateEvaluator } from './src/Evaluators/DateEvaluator'
 
+export type { DateProvider } from './src/Evaluators/DateEvaluator'
 export type { AIEvaluator } from './src/Types/AIEvaluator'
 export type { DateEvaluatorInterface } from './src/Types/DateEvaluatorInterface'
 export type { GeneralConversation } from './src/Types/GeneralConversation'

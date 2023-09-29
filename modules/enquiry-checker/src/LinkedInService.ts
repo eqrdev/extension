@@ -65,9 +65,10 @@ export class LinkedInService {
     const conversations =
       response.data.messengerConversationsBySyncToken.elements
 
-    const generalConversations = []
+    const generalConversations: GeneralConversation[] = []
 
     for (const {
+      entityUrn,
       conversationUrl,
       conversationParticipants,
       categories,
@@ -76,6 +77,7 @@ export class LinkedInService {
     } of conversations) {
       const fullConversation = await this.getFullConversation(conversationUrl)
       generalConversations.push({
+        urn: entityUrn,
         messages: fullConversation.map(({ sender, body }) => ({
           text: body.text,
           sender: sender.entityUrn,

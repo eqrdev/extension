@@ -5,7 +5,6 @@ import { GeneralConversation } from '../Types/GeneralConversation'
 export class ConversationEvaluator {
   constructor(
     private dateEvaluator: DateEvaluatorInterface,
-    private lastCheckedDate?: Date,
     private aiEvaluator?: AIEvaluator
   ) {}
 
@@ -37,13 +36,6 @@ export class ConversationEvaluator {
     return this.dateEvaluator.isWithinTwoWeeks(conversation.createdAt)
   }
 
-  private isAlreadyChecked(conversation: GeneralConversation): boolean {
-    return (
-      this.lastCheckedDate &&
-      conversation.lastActivityAt < this.lastCheckedDate.getTime()
-    )
-  }
-
   private isUnilateralContact(conversation: GeneralConversation): boolean {
     return this.getEngagedParticipantsCount(conversation) === 1
   }
@@ -63,7 +55,6 @@ export class ConversationEvaluator {
   async shouldReply(conversation: GeneralConversation): Promise<boolean> {
     return (
       !this.isGroupMessage(conversation) &&
-      !this.isAlreadyChecked(conversation) &&
       this.isInInbox(conversation) &&
       this.isInTimeRange(conversation) &&
       this.isUnilateralContact(conversation) &&

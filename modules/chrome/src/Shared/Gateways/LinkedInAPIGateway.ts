@@ -1,5 +1,5 @@
 import { Invitation } from 'linkedin/src/types/Invitation'
-import { Conversation, LinkedInClient } from 'linkedin'
+import { Entities, LinkedInClient } from 'linkedin'
 import { InvitationView } from 'linkedin/src/types/common/Entities'
 
 export type ConversationData = {
@@ -32,7 +32,9 @@ export class LinkedInAPIGateway {
     this.profileId = profileId
   }
 
-  static mapConversations(conversations: Conversation[]): ConversationData[] {
+  static mapConversations(
+    conversations: Entities.Conversation[]
+  ): ConversationData[] {
     return conversations.map(
       ({
         categories,

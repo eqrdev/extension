@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "module": "commonjs",
+    "lib": ["es2021"],
+    "target": "es2017",
+    "outDir": "dist",
+    "skipLibCheck": true,
+    "allowJs": true
+  },
+  "references": [
+    {
+      "path": "../linkedin/"
+    },
+    {
+      "path": "../openai-analyzer/"
+    }
+  ]
+}

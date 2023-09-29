@@ -1,0 +1,19 @@
+{
+  "name": "enquiry-checker",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node --env-file ../../.env ./dist/index.js",
+    "build": "tsc --build --clean && tsc --build",
+    "test": "jest"
+  },
+  "dependencies": {
+    "equalizer": "workspace:^",
+    "linkedin": "workspace:^",
+    "openai-analyzer": "workspace:^",
+    "puppeteer": "^21.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^20.7.1",
+    "typescript": "^5.2.2"
+  }
+}

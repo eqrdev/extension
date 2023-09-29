@@ -1,0 +1,14 @@
+{
+  "name": "equalizer",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc --build --clean && tsc --build"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "openai-analyzer": "workspace:^"
+  }
+}

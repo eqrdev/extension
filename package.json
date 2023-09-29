@@ -18,5 +18,9 @@
     "lint": "yarn workspace eslint run lint",
     "ui-sb": "yarn workspace ui-library run storybook",
     "serve": "yarn workspace enquiry-checker run start"
+  },
+  "volta": {
+    "node": "20.6.1",
+    "yarn": "4.0.0-rc.51"
   }
 }

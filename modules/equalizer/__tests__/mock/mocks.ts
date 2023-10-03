@@ -15,4 +15,5 @@ export const groupMessage = {
   createdAt: 1695888754994,
   lastActivityAt: 1695888754994,
   url: 'urn:li:msg_message:(urn:li:fsd_profile:ACoAABBVe30B0tKzB9504vnHyJNPIb9IU-jl7dg,2-MTY5NDc4MDg2MDgwNGIyNDEyOC0wMDQmMjg3NGNlZTgtNzA0Ni00YjMzLWFiNjQtMDliM2JmN2Q4NDM5XzAxMw==)',
+  urn: 'urn:li:msg_conversation:(urn:li:fsd_profile:ACoAABBVe30B0tKzB9504vnHyJNPIb9IU-jl7dg,2-MWVlMGUwNWYtNjQ4YS00NjI0LWI0YWMtOTk2OWUzMzNkYTRjXzAxMg==)',
 }

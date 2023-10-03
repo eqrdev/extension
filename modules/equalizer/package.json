@@ -6,6 +6,7 @@
     "build": "tsc --build --clean && tsc --build"
   },
   "devDependencies": {
+    "@types/jest": "^29.5.5",
     "typescript": "^5.2.2"
   },
   "dependencies": {

@@ -4,7 +4,8 @@
   "main": "dist/index.js",
   "module": "index.ts",
   "scripts": {
-    "build": "tsc --build --clean && tsc --build"
+    "build": "tsc --build --clean && tsc --build",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "uuid": "^9.0.1"

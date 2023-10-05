@@ -4,13 +4,13 @@ import {
 } from '../Equalizer/EqualizerRepository'
 import { Observable } from '../Shared/Observable'
 import { InvitationCheckerPresenter } from '../LinkedIn/Invitations/InvitationChecker/InvitationCheckerPresenter'
-import { invitationsStub } from '../LinkedIn/Invitations/InvitationChecker/__tests__/__stubs__/stubs'
+import { invitationsStub } from '../LinkedIn/Invitations/InvitationChecker/__stubs__/stubs'
 import { MessageCheckerPresenter } from '../LinkedIn/Messaging/MessageChecker/MessageCheckerPresenter'
 import { PopupPresenter } from '../Popup/PopupPresenter'
 import {
   conversationsStub,
   conversationStub,
-} from '../LinkedIn/Messaging/MessageChecker/__tests__/__stubs__/stubs'
+} from '../LinkedIn/Messaging/MessageChecker/__stubs__/stubs'
 import { SettingsPresenter } from '../Settings/SettingsPresenter'
 import { Invitation } from 'linkedin'
 

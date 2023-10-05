@@ -1,4 +1,4 @@
-import { ConversationData } from '../../../../../Shared/Gateways/LinkedInAPIGateway'
+import { ConversationData } from '../../../../Shared/Gateways/LinkedInAPIGateway'
 
 export const conversationsStub: ConversationData[] = [
   {

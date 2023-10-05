@@ -1,4 +1,4 @@
-import { EqualizerTestHarness } from '../../TestUtils/EqualizerTestHarness'
+import { EqualizerTestHarness } from '../TestUtils/EqualizerTestHarness'
 
 describe('when we click on settings button', () => {
   let testHarness = null

@@ -1,7 +1,7 @@
-import { EqualizerTestHarness } from '../../TestUtils/EqualizerTestHarness'
+import { EqualizerTestHarness } from '../TestUtils/EqualizerTestHarness'
 
-jest.mock('../../Shared/Gateways/CrossThreadGateway')
-jest.mock('../../Shared/Gateways/StorageGateway')
+jest.mock('../Shared/Gateways/CrossThreadGateway')
+jest.mock('../Shared/Gateways/StorageGateway')
 
 describe('when no profileName provided', () => {
   let viewModel

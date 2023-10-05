@@ -13,8 +13,8 @@
   "scripts": {
     "build": "yarn workspaces foreach -At run build",
     "dev": "yarn workspace chrome run dev",
-    "test": "yarn workspace test-runner initialize",
-    "type-check": "yarn workspace chrome run type-check",
+    "test": "yarn workspaces foreach -A run test",
+    "type-check": "yarn workspaces foreach -A run type-check",
     "lint": "yarn workspace eslint run lint",
     "ui-sb": "yarn workspace ui-library run storybook",
     "serve": "yarn workspace enquiry-checker run start"

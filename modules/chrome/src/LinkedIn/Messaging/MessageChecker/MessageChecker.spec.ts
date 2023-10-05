@@ -1,4 +1,4 @@
-import { EqualizerTestHarness } from '../../../../TestUtils/EqualizerTestHarness'
+import { EqualizerTestHarness } from '../../../TestUtils/EqualizerTestHarness'
 
 describe('When profile url is not provided by the user', () => {
   let testHarness = null

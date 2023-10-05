@@ -1,4 +1,4 @@
-import { ProfileUrl } from '../ProfileUrl'
+import { ProfileUrl } from './ProfileUrl'
 
 describe('when profileName given properly', () => {
   const myProfileUrl = new ProfileUrl('michael-scott')

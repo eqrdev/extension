@@ -1,4 +1,4 @@
-import { EqualizerTestHarness } from '../../../../TestUtils/EqualizerTestHarness'
+import { EqualizerTestHarness } from '../../../TestUtils/EqualizerTestHarness'
 
 describe('when we have a last checked date', () => {
   let viewModel

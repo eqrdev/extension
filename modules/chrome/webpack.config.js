@@ -37,6 +37,9 @@ module.exports = {
     maxEntrypointSize: 750,
     maxAssetSize: 750,
   },
+  stats: {
+    preset: 'none',
+  },
   plugins: [
     new HtmlWebpackPlugin({
       filename: resolve(dist, 'html/popup.html'),

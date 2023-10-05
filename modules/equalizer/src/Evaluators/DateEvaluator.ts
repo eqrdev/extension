@@ -11,6 +11,15 @@ export class DateEvaluator {
 
   isInTimeRange(timestamp: number, timeRange: number) {
     const now = this.dateProvider.now()
+
+    if (timestamp > now) {
+      throw new RangeError(
+        `The given date ${new Date(
+          timestamp
+        ).toDateString()} is later than the current date. An earlier date must be provided.`
+      )
+    }
+
     return timestamp >= now - timeRange
   }
 

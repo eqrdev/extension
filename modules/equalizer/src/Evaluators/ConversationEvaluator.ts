@@ -18,7 +18,7 @@ export class ConversationEvaluator {
   private getEngagedParticipantsCount(
     conversation: GeneralConversation
   ): number {
-    return conversation.messages.map(({ sender }) => sender).length
+    return new Set(conversation.messages.map(({ sender }) => sender)).size
   }
 
   private isInInbox(conversation: GeneralConversation): boolean {

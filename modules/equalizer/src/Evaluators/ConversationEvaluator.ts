@@ -22,9 +22,9 @@ export class ConversationEvaluator {
   }
 
   private isInInbox(conversation: GeneralConversation): boolean {
-    return (
-      conversation.categories.includes('PRIMARY_INBOX') ||
-      conversation.categories.includes('INMAIL')
+    return conversation.categories.every(
+      category =>
+        !['ARCHIVED', 'CONNECTIONS', 'STARRED', 'BLOCKED'].includes(category)
     )
   }
 

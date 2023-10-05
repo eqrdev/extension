@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useState } from 'react'
+import { createContext, ReactNode, useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { Snackbars } from './Snackbars'
 import { SnackbarProps } from './Snackbar'
@@ -19,6 +19,7 @@ export const SnackbarContextProvider = ({
 }: {
   children: ReactNode
 }) => {
+  const [mounted, setMounted] = useState(false)
   const [snackbars, setSnackbars] = useState<SnackbarProps[]>([])
 
   const createDiv = () => {
@@ -29,6 +30,14 @@ export const SnackbarContextProvider = ({
   }
 
   const getMountElement = () => document.getElementById(ROOT_ID) ?? createDiv()
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) {
+    return null
+  }
 
   return (
     <SnackbarContext.Provider value={{ snackbars, setSnackbars }}>

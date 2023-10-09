@@ -16,7 +16,15 @@ export class PuppeteerBrowserService {
       return this.page
     }
 
-    this.browser = await puppeteer.launch({ headless: 'new' })
+    this.browser = await puppeteer.launch({
+      headless: 'new',
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-gpu',
+        '--disable-dev-shm-usage',
+      ],
+    })
     const page = await this.browser.newPage()
     await page.goto(this.options.baseUrl)
     await page.setCookie(...this.options.cookies)

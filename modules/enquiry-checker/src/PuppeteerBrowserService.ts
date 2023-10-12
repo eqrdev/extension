@@ -18,12 +18,14 @@ export class PuppeteerBrowserService {
 
     this.browser = await puppeteer.launch({
       headless: 'new',
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-gpu',
-        '--disable-dev-shm-usage',
-      ],
+      args: process.env.PUPPETEER_RUN_IN_DOCKER
+        ? [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-gpu',
+            '--disable-dev-shm-usage',
+          ]
+        : [],
     })
     const page = await this.browser.newPage()
     await page.goto(this.options.baseUrl)

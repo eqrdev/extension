@@ -51,9 +51,7 @@ export class LinkedInService {
     await this.browserService.page.waitForSelector(cardSelector)
     const card = await this.browserService.page.$(cardSelector)
     const button = await card.$('.artdeco-button--secondary')
-    if (process.env.NODE_ENV === 'production') {
-      await button.click()
-    }
+    await button.click()
   }
 
   async getConversations(): Promise<GeneralConversation[]> {

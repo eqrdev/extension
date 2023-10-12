@@ -1,6 +1,7 @@
 dist
 
 .env
+!.gitkeep
 
 *.log
 yarn-debug.log*

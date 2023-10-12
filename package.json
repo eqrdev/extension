@@ -22,7 +22,7 @@
     "docs": "yarn workspace docs dev"
   },
   "volta": {
-    "node": "20.6.1",
+    "node": "20.8.0",
     "yarn": "4.0.0-rc.53"
   }
 }

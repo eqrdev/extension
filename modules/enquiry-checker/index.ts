@@ -7,11 +7,10 @@ const equalizer = new Equalizer(
   process.env.OPENAI_API_KEY
 )
 
+console.log('[EQUALIZER] - monitoring started')
+
 equalizer
   .monitorEnquiries()
-  .then(() => {
-    console.log('[EQUALIZER] - monitoring started')
-  })
   .catch(e => {
     console.log(`[EQUALIZER] - monitoring ran into some error: ${e}`)
   })

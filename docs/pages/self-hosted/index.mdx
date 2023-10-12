@@ -1,0 +1,58 @@
+import { Steps } from 'nextra/components'
+
+# Self-hosted AutoConnect
+
+The AutoConnect service watch your LinkedIn account, accepts your invitations and replies your recruiter
+messages. You yan run it from your computer on every platform, or you can use a cloud based platform to
+use it.
+
+## Installation
+
+### Prerequisites
+
+You need to have [**Docker**][docker] and [**git**][git] installed on your machine. Actually, git is
+optional, but strongly recommended.
+
+- You'll need an [Equalizer][equalizer] Talent account.
+- A [LinkedIn session token](guides/get-linkedin-session)
+- Optionally you could set an [OpenAI API token.][openai-api-key] More on this later.
+
+### Getting started
+
+<Steps>
+### Clone the [repository][github-repo]
+  ```bash
+  git clone https://github.com/eqrdev/extension.git equalizer
+  ```
+### Set the environment variables
+
+  Create a `.env` file in the root of the repository.
+  ```bash
+  touch .env
+  ```
+  It has to contain the following environment variables:
+
+  ```dotenv
+  # Required variables:
+  LI_SESSION_TOKEN={your_linked_in_session_token}
+  LI_PROFILE_ID={your_equalizer_profile_id}
+  LI_AUTO_MESSAGE="your equalizer message"
+
+  # Optional:
+  OPENAI_API_KEY={your_openai_api_token}
+  ```
+### Build the Docker image
+  ```bash
+  docker build -t equalizer .
+  ```
+### Run the container
+  ```bash
+  docker run --rm --name=eq-autoconnect -d equalizer
+  ```
+</Steps>
+
+[docker]: https://www.docker.com/get-started/
+[git]: https://git-scm.com/downloads
+[equalizer]: https://equalizer.dev/talent-connect
+[github-repo]: https://github.com/eqrdev/extension
+[openai-api-key]: https://help.openai.com/en/articles/4936850-where-do-i-find-my-secret-api-key

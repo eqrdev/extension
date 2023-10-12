@@ -1,4 +1,10 @@
-import { HTMLAttributes, ReactElement, useEffect, useState } from 'react'
+import {
+  HTMLAttributes,
+  KeyboardEventHandler,
+  ReactElement,
+  useEffect,
+  useState,
+} from 'react'
 import styled from '@emotion/styled'
 
 export interface EqSwitchProps {
@@ -71,7 +77,7 @@ export const EqSwitch = ({
     onSwitch?.(!isChecked)
   }
 
-  const handleKeydown = event => {
+  const handleKeydown: KeyboardEventHandler = event => {
     if ([' ', 'Enter'].includes(event.key)) {
       event.preventDefault()
       handleClick()

@@ -14,7 +14,7 @@ const styleMap = {
   h4: [20, 25],
 }
 
-const getCss = (level: EqHeaderProps['level']) =>
+const getCss = (level: EqHeaderProps['level'] = 3) =>
   css({
     fontSize: styleMap[`h${level}`][0],
     lineHeight: styleMap[`h${level}`][1] + 'px',

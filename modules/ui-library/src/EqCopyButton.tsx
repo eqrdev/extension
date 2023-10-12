@@ -47,7 +47,7 @@ export const EqCopyButton = ({
 }: EqCopyButtonProps): ReactElement => {
   const COPIED_MESSAGE_HIDE_TIMEOUT = 3000
 
-  const [messageVisible, setMessageVisible] = useState(false)
+  const [messageVisible, setMessageVisible] = useState<boolean>(false)
   const [currentTimeout, setCurrentTimeout] = useState<number | null>(null)
 
   const toggleMessage = (copied?: boolean) => {
@@ -56,10 +56,10 @@ export const EqCopyButton = ({
       setCurrentTimeout(null)
     }
 
-    setMessageVisible(copied)
+    setMessageVisible(!!copied)
   }
 
-  const copyText = async text => {
+  const copyText = async (text: string) => {
     await navigator.clipboard.write([
       new ClipboardItem({
         'text/plain': new Blob([text], {

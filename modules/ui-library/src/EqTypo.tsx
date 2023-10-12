@@ -1,4 +1,4 @@
-import { HTMLProps, JSX, ReactNode } from 'react'
+import { JSX, ReactNode } from 'react'
 import styled from '@emotion/styled'
 
 export interface EqTypoProps {
@@ -8,6 +8,7 @@ export interface EqTypoProps {
   monospace?: boolean
   tag?: keyof JSX.IntrinsicElements
   children: ReactNode
+  href?: string
 }
 
 const Styled = {
@@ -31,7 +32,7 @@ export const EqTypo = ({
   monospace = false,
   children,
   ...props
-}: EqTypoProps & HTMLProps<typeof tag>) => (
+}: EqTypoProps) => (
   <Styled.Tag
     as={tag}
     small={small}

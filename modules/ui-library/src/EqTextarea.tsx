@@ -13,7 +13,7 @@ import {
 
 export interface EqTextareaProps {
   maxLength?: number
-  value?: string
+  value: string
   info?: string
   characterCount?: boolean
 }
@@ -53,7 +53,7 @@ export const EqTextarea = forwardRef<
   HTMLTextAreaElement,
   EqTextareaProps & TextareaHTMLAttributes<HTMLTextAreaElement>
 >(({ value, info, maxLength, characterCount, ...props }, ref) => {
-  const inputRef = useRef(null)
+  const inputRef = useRef<HTMLTextAreaElement>(null)
   const [currentValue, setCurrentValue] = useState(value)
 
   useEffect(() => {

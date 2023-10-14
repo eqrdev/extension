@@ -1,11 +1,11 @@
 import { PuppeteerBrowserService } from './PuppeteerBrowserService'
-import { GeneralInvitation, GeneralConversation } from 'equalizer'
+import { GeneralConversation, GeneralInvitation } from 'equalizer'
 import { VoyagerInvitationsProcessor } from './VoyagerInvitationsProcessor'
 import {
-  Entities,
-  VoyagerInvitations,
   ConversationMessagesResponse,
   ConversationsResponse,
+  Entities,
+  VoyagerInvitations,
 } from 'linkedin'
 
 export class LinkedInService {
@@ -94,5 +94,9 @@ export class LinkedInService {
     await page.click('.msg-form__send-button', {
       delay: Math.floor(Math.random() * (10 + 1)),
     })
+  }
+
+  async closeSession(): Promise<void> {
+    await this.browserService.browser.close()
   }
 }

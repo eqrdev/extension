@@ -1,77 +1,87 @@
-import { PuppeteerBrowserService } from './PuppeteerBrowserService'
 import { LinkedInService } from './LinkedInService'
-import {
-  DateEvaluator,
-  ConversationEvaluator,
-  InvitationEvaluator,
-  OpenAIEvaluator,
-  ProfileUrl,
-} from 'equalizer'
+import { ConversationEvaluator, InvitationEvaluator } from 'equalizer'
 import { PersistentStorage } from './PersistentStorage'
+import { Logger } from './Types/Logger'
 
 export class AutoConnect {
   constructor(
-    private sessionToken: string,
-    private profileId: string,
-    private automaticMessage?: string,
-    private openAiApiKey?: string
+    private persistentStorage: PersistentStorage,
+    private linkedInService: LinkedInService,
+    private invitationEvaluator: InvitationEvaluator,
+    private conversationEvaluator: ConversationEvaluator,
+    private logger: Logger,
+    private message: string
   ) {}
 
-  private get message() {
-    const profileUrl = new ProfileUrl(this.profileId)
-    return profileUrl.replaceInText(this.automaticMessage)
+  async monitorEnquiries() {
+    this.logger.log('We check for pending invitations...')
+    await this.monitorInvitations()
+    this.logger.log('Invitations monitoring done.')
+    await new Promise(r => setTimeout(r, 5000))
+    this.logger.log('We check for pending conversations...')
+    await this.monitorConversations()
+    this.logger.log('Conversations monitoring done.')
   }
 
-  async monitorEnquiries() {
-    const persistentStorage = new PersistentStorage(Date)
+  async monitorInvitations() {
+    const invitations = await this.linkedInService.getInvitations()
 
-    const browserService = new PuppeteerBrowserService({
-      baseUrl: 'https://www.linkedin.com/',
-      cookies: [
-        {
-          name: 'li_at',
-          value: this.sessionToken,
-          domain: '.www.linkedin.com',
-        },
-      ],
-    })
-    const openAiEvaluator = new OpenAIEvaluator(this.openAiApiKey)
-    const dateEvaluator = new DateEvaluator(Date)
-    const invitationEvaluator = new InvitationEvaluator(openAiEvaluator)
-    const conversationEvaluator = new ConversationEvaluator(
-      dateEvaluator,
-      openAiEvaluator
-    )
-    const linkedInService = new LinkedInService(browserService)
-    const invitations = await linkedInService.getInvitations()
+    this.logger.log(`Pending invitations count: ${invitations.length}`)
 
-    for (const invitation of invitations) {
-      if (persistentStorage.isChecked(invitation.urn)) {
-        continue
+    try {
+      for (const invitation of invitations) {
+        this.logger.log(
+          `Invitation from a ${invitation.inviterTitle} ${
+            this.persistentStorage.isChecked(invitation.urn)
+              ? 'is already checked.'
+              : 'not checked yet.'
+          }`
+        )
+
+        if (this.persistentStorage.isChecked(invitation.urn)) {
+          continue
+        }
+
+        const shouldAccept =
+          await this.invitationEvaluator.shouldAccept(invitation)
+
+        if (shouldAccept) {
+          await this.linkedInService.acceptInvitation(invitation)
+          this.logger.log(
+            `Invitation from a ${invitation.inviterTitle} is accepted.`
+          )
+        }
+        await this.persistentStorage.markInvitationChecked(invitation.urn)
       }
-
-      if (await invitationEvaluator.shouldAccept(invitation)) {
-        await linkedInService.acceptInvitation(invitation)
-      }
-      await persistentStorage.markInvitationChecked(invitation.urn)
+    } catch (error) {
+      this.logger.log(`Monitoring ran into some error: ${error}`)
     }
+  }
 
-    await new Promise(r => setTimeout(r, 5000))
+  async monitorConversations(): Promise<void> {
+    try {
+      const conversations = await this.linkedInService.getConversations()
 
-    const conversations = await linkedInService.getConversations()
+      this.logger.log(`Pending conversations: ${conversations.length}`)
 
-    for (const conversation of conversations) {
-      if (persistentStorage.isChecked(conversation.urn)) {
-        continue
+      for (const conversation of conversations) {
+        if (this.persistentStorage.isChecked(conversation.urn)) {
+          continue
+        }
+
+        if (await this.conversationEvaluator.shouldReply(conversation)) {
+          await this.linkedInService.replyMessage(
+            conversation.url,
+            this.message
+          )
+        }
+        await this.persistentStorage.markMessageChecked(conversation.urn)
       }
 
-      if (await conversationEvaluator.shouldReply(conversation)) {
-        await linkedInService.replyMessage(conversation.url, this.message)
-      }
-      await persistentStorage.markMessageChecked(conversation.urn)
+      await this.persistentStorage.markMonitoringComplete()
+      await this.linkedInService.closeSession()
+    } catch (error) {
+      this.logger.log(`Monitoring conversations was unsuccessful: ${error}`)
     }
-
-    await persistentStorage.markMonitoringComplete()
-    await browserService.browser.close()
   }
 }

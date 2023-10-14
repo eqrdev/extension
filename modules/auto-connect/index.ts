@@ -1,6 +1,6 @@
-import { Equalizer } from './src/Equalizer'
+import { AutoConnect } from './src/AutoConnect'
 
-const equalizer = new Equalizer(
+const equalizer = new AutoConnect(
   process.env.LI_SESSION_TOKEN,
   process.env.LI_PROFILE_ID,
   process.env.LI_AUTO_MESSAGE,

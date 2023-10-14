@@ -9,7 +9,7 @@ import {
 } from 'equalizer'
 import { PersistentStorage } from './PersistentStorage'
 
-export class Equalizer {
+export class AutoConnect {
   constructor(
     private sessionToken: string,
     private profileId: string,

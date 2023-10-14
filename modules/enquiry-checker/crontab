@@ -1,1 +1,1 @@
-* * * * * root cd /app/ && /usr/local/bin/node ./.yarn/releases/yarn-4.0.0-rc.53.cjs run serve >> /var/log/cron.log 2>&1
+* * * * * root cd /app/ && /usr/local/bin/node ./.yarn/releases/yarn-4.0.0-rc.53.cjs run serve >> /var/log/cron.log >> /proc/1/fd/1

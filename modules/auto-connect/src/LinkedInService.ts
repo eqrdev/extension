@@ -11,28 +11,6 @@ import {
 export class LinkedInService {
   constructor(private browserService: PuppeteerBrowserService) {}
 
-  async getCsrfToken(): Promise<string> {
-    return this.browserService.getCookie('JSESSIONID')
-  }
-
-  async reload() {
-    await this.browserService.page.reload()
-  }
-
-  async runInContext(method: () => unknown) {
-    await this.browserService.runInSession(method)
-  }
-
-  async getUserId(): Promise<string> {
-    const URL_PATTERN = /\/profiles\/([^/]+)\/versionTag/
-    const request = await this.browserService.interceptRequest({
-      pathName: '',
-      urlPattern: URL_PATTERN,
-    })
-    await this.browserService.page.reload()
-    return request.url().match(URL_PATTERN)[1]
-  }
-
   async getInvitations(): Promise<GeneralInvitation[]> {
     const response =
       await this.browserService.interceptResponse<VoyagerInvitations>({

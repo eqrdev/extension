@@ -47,7 +47,9 @@ export class LinkedInService {
     await this.browserService.goToPathName(
       '/mynetwork/invitation-manager/?invitationType=CONNECTION'
     )
-    const cardSelector = `.invitation-card:has([href="https://www.linkedin.com/in/${inviterId}"])`
+    const cardSelector = `.invitation-card:has([href="https://www.linkedin.com/in/${encodeURIComponent(
+      inviterId
+    )}"])`
     await this.browserService.page.waitForSelector(cardSelector)
     const card = await this.browserService.page.$(cardSelector)
     const button = await card.$('.artdeco-button--secondary')

@@ -18,7 +18,7 @@
     "type-check": "yarn workspaces foreach -A run type-check",
     "lint": "yarn workspace eslint run lint",
     "ui-sb": "yarn workspace ui-library run storybook",
-    "serve": "yarn workspace enquiry-checker run start",
+    "serve": "yarn workspace auto-connect run start",
     "docs": "yarn workspace docs dev"
   },
   "volta": {

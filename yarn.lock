@@ -5881,6 +5881,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"auto-connect@workspace:modules/auto-connect":
+  version: 0.0.0-use.local
+  resolution: "auto-connect@workspace:modules/auto-connect"
+  dependencies:
+    "@types/node": "npm:^20.8.2"
+    equalizer: "workspace:^"
+    linkedin: "workspace:^"
+    openai-analyzer: "workspace:^"
+    puppeteer: "npm:^21.3.6"
+    typescript: "npm:^5.2.2"
+  languageName: unknown
+  linkType: soft
+
 "available-typed-arrays@npm:^1.0.5":
   version: 1.0.5
   resolution: "available-typed-arrays@npm:1.0.5"
@@ -8065,19 +8078,6 @@ __metadata:
   checksum: 180c3f2706f9117bf4dc7982e1df811dad83a8db075723f299245ef4488e0cad7e96859c5f0e410682d28a4ecd4da021ec7d06265f7e4eb6eed30c69ca5f7d3e
   languageName: node
   linkType: hard
-
-"enquiry-checker@workspace:modules/enquiry-checker":
-  version: 0.0.0-use.local
-  resolution: "enquiry-checker@workspace:modules/enquiry-checker"
-  dependencies:
-    "@types/node": "npm:^20.8.2"
-    equalizer: "workspace:^"
-    linkedin: "workspace:^"
-    openai-analyzer: "workspace:^"
-    puppeteer: "npm:^21.3.6"
-    typescript: "npm:^5.2.2"
-  languageName: unknown
-  linkType: soft
 
 "entities@npm:^2.0.0":
   version: 2.2.0

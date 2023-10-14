@@ -1,6 +1,6 @@
 {
   "references": [
-    { "path": "./modules/enquiry-checker" },
+    { "path": "./modules/auto-connect" },
     { "path": "./modules/openai-analyzer" },
     { "path": "./modules/linkedin" },
     { "path": "./modules/equalizer" }

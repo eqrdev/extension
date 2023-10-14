@@ -10,7 +10,7 @@
 2. Though, you need to update manually the `volta.yarn` field of `package.json`. 
 3. Open Settings → Languages and Frameworks → Node.js in WebStorm and set the `Package manager` field to the absolute 
    path of the `.yarn/releases/yarn-<version>.cjs` file.
-4. Unfortunately we have to upgrade the `modules/enquiry-checker/crontab` file too, which contains
+4. Unfortunately we have to upgrade the `modules/auto-connect/crontab` file too, which contains
    the exact release of yarn.
 
 

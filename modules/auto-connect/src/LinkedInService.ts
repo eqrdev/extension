@@ -1,37 +1,15 @@
 import { PuppeteerBrowserService } from './PuppeteerBrowserService'
-import { GeneralInvitation, GeneralConversation } from 'equalizer'
+import { GeneralConversation, GeneralInvitation } from 'equalizer'
 import { VoyagerInvitationsProcessor } from './VoyagerInvitationsProcessor'
 import {
-  Entities,
-  VoyagerInvitations,
   ConversationMessagesResponse,
   ConversationsResponse,
+  Entities,
+  VoyagerInvitations,
 } from 'linkedin'
 
 export class LinkedInService {
   constructor(private browserService: PuppeteerBrowserService) {}
-
-  async getCsrfToken(): Promise<string> {
-    return this.browserService.getCookie('JSESSIONID')
-  }
-
-  async reload() {
-    await this.browserService.page.reload()
-  }
-
-  async runInContext(method: () => unknown) {
-    await this.browserService.runInSession(method)
-  }
-
-  async getUserId(): Promise<string> {
-    const URL_PATTERN = /\/profiles\/([^/]+)\/versionTag/
-    const request = await this.browserService.interceptRequest({
-      pathName: '',
-      urlPattern: URL_PATTERN,
-    })
-    await this.browserService.page.reload()
-    return request.url().match(URL_PATTERN)[1]
-  }
 
   async getInvitations(): Promise<GeneralInvitation[]> {
     const response =
@@ -47,7 +25,9 @@ export class LinkedInService {
     await this.browserService.goToPathName(
       '/mynetwork/invitation-manager/?invitationType=CONNECTION'
     )
-    const cardSelector = `.invitation-card:has([href="https://www.linkedin.com/in/${inviterId}"])`
+    const cardSelector = `.invitation-card:has([href="https://www.linkedin.com/in/${encodeURIComponent(
+      inviterId
+    )}"])`
     await this.browserService.page.waitForSelector(cardSelector)
     const card = await this.browserService.page.$(cardSelector)
     const button = await card.$('.artdeco-button--secondary')
@@ -114,5 +94,9 @@ export class LinkedInService {
     await page.click('.msg-form__send-button', {
       delay: Math.floor(Math.random() * (10 + 1)),
     })
+  }
+
+  async closeSession(): Promise<void> {
+    await this.browserService.browser.close()
   }
 }

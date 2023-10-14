@@ -1,1 +1,0 @@
-* * * * * root cd /app/ && /usr/local/bin/node ./.yarn/releases/yarn-4.0.0-rc.53.cjs run serve >> /var/log/cron.log 2>&1

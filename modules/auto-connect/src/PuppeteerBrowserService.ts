@@ -1,11 +1,15 @@
 import puppeteer, { Browser, HTTPRequest, Page, Protocol } from 'puppeteer'
+import { BrowserService } from './Types/BrowserService'
 
 interface PuppeteerBrowserOptions {
   baseUrl?: string
   cookies?: Protocol.Network.CookieParam[]
+  runInContainer?: boolean
 }
 
-export class PuppeteerBrowserService {
+export class PuppeteerBrowserService
+  implements BrowserService<Page, HTTPRequest>
+{
   page: Page = null
   browser: Browser
 
@@ -18,7 +22,7 @@ export class PuppeteerBrowserService {
 
     this.browser = await puppeteer.launch({
       headless: 'new',
-      args: process.env.PUPPETEER_RUN_IN_DOCKER
+      args: this.options.runInContainer
         ? [
             '--no-sandbox',
             '--disable-setuid-sandbox',

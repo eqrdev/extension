@@ -1,7 +1,7 @@
 dist
 
 .env
-!.gitkeep
+!**/.gitkeep
 
 *.log
 yarn-debug.log*

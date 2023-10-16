@@ -9,7 +9,7 @@ import {
   OpenAIEvaluator,
   ProfileUrl,
 } from 'equalizer'
-import { LinkedInService } from './src/LinkedInService'
+import { PuppeteerLinkedInService } from './src/PuppeteerLinkedInService'
 import * as process from 'process'
 
 const persistentStorage = new PersistentStorage(Date)
@@ -31,7 +31,7 @@ const conversationEvaluator = new ConversationEvaluator(
   dateEvaluator,
   openAiEvaluator
 )
-const linkedInService = new LinkedInService(browserService)
+const linkedInService = new PuppeteerLinkedInService(browserService)
 const logger = new EqualizerLogger()
 
 const profileUrl = new ProfileUrl(process.env.LI_PROFILE_ID)

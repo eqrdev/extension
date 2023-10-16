@@ -1,10 +1,9 @@
 import { v4 as uuid } from 'uuid'
-import { Invitations } from './types/Invitations'
 import {
   ConversationMessagesResponse,
   ConversationsResponse,
 } from './types/Conversation'
-import { Conversation, InvitationView, Message } from './types/common/Entities'
+import { VoyagerInvitations } from './types/VoyagerInvitations'
 
 export interface LinkedInClientOptions {
   csrfToken: string
@@ -87,31 +86,33 @@ export class LinkedInClient {
     )
   }
 
-  public async getConversation(conversationUrnId: string): Promise<Message[]> {
-    const response: ConversationMessagesResponse = await this.requestGraphQL(
+  public async getConversation(
+    conversationUrnId: string
+  ): Promise<ConversationMessagesResponse> {
+    return this.requestGraphQL(
       'messengerMessages.8d15783c080e392b337ba57fc576ad21',
       `(conversationUrn:urn%3Ali%3Amsg_conversation%3A%28urn%3Ali%3Afsd_profile%3A${encodeURIComponent(
         conversationUrnId
       )}%29)`
     )
-    return response.data.messengerMessagesBySyncToken.elements
   }
 
-  public async getConversations(mailboxUrnId: string): Promise<Conversation[]> {
-    const response: ConversationsResponse = await this.requestGraphQL(
+  public async getConversations(
+    mailboxUrnId: string
+  ): Promise<ConversationsResponse> {
+    return this.requestGraphQL(
       'messengerConversations.a5975e28c61274a917663e133c323f0f',
-      `(mailboxUrn:urn%3Ali%3Afsd_profile%3A${mailboxUrnId})`
+      `(mailboxUrn:urn%3Ali%3Afsd_profile%3A${encodeURIComponent(
+        mailboxUrnId
+      )})`
     )
-    return response.data.messengerConversationsBySyncToken.elements
   }
 
-  public async getInvites(): Promise<InvitationView[]> {
-    const response: Invitations = await this.requestGraphQL(
+  public async getInvitations(): Promise<VoyagerInvitations> {
+    return this.requestGraphQL(
       'voyagerRelationshipsDashInvitationViews.92f52706ef5898d18d9f60d184f01de9',
       `(invitationTypes:List(),filterCriteria:List(),includeInsights:true,start:0,count:3)`
     )
-
-    return response.data.relationshipsDashInvitationViewsByReceived.elements
   }
 
   public async acceptInvitation(

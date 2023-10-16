@@ -11,6 +11,7 @@ export class VoyagerInvitationsProcessor {
       sentTimeLabel: this.getViewByEntityUrn(entityUrn).sentTimeLabel,
       inviterTitle: this.getViewByEntityUrn(entityUrn).subtitle.text,
       inviterId: this.getProfileIncludeByEntityUrn(entityUrn).publicIdentifier,
+      sharedSecret: this.getIncludeByEntityUrn(entityUrn).sharedSecret,
     }))
   }
 
@@ -25,10 +26,12 @@ export class VoyagerInvitationsProcessor {
     )
   }
 
-  private getIncludeByEntityUrn(urn: string): VoyagerEntities.InviteInclude {
+  private getIncludeByEntityUrn(
+    urn: string
+  ): VoyagerEntities.InvitationInclude {
     return this.response.included.find(
       ({ entityUrn }) => entityUrn === urn
-    ) as VoyagerEntities.InviteInclude
+    ) as VoyagerEntities.InvitationInclude
   }
 
   private getViewByEntityUrn(urn: string): VoyagerEntities.InvitationView {

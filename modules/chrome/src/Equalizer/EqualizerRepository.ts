@@ -1,14 +1,18 @@
 import { Observable } from '../Shared/Observable'
 import { OpenAIGateway } from '../Shared/Gateways/OpenAIGateway'
-import {
-  ConversationData,
-  LinkedInAPIGateway,
-} from '../Shared/Gateways/LinkedInAPIGateway'
+import { LinkedInAPIGateway } from '../Shared/Gateways/LinkedInAPIGateway'
 import { CrossThreadGateway } from '../Shared/Gateways/CrossThreadGateway'
 import { StorageGateway } from '../Shared/Gateways/StorageGateway'
 import { DateTimeGateway } from '../Shared/Gateways/DateTimeGateway'
 import { ProfileUrl } from '../Shared/ProfileUrl'
 import { DOMGateway } from '../Shared/Gateways/DOMGateway'
+import {
+  ConversationEvaluator,
+  DateEvaluator,
+  GeneralConversation,
+  InvitationEvaluator,
+} from 'equalizer'
+import { ConversationMonitor } from './ConversationMonitor'
 
 export interface EqualizerSyncedData {
   automaticMessage: string
@@ -114,6 +118,19 @@ export class EqualizerRepository {
     await this.updateModel()
   }
 
+  private getConversationEvaluator() {
+    return new ConversationEvaluator(
+      new DateEvaluator(Date),
+      new OpenAIGateway(this.programmersModel.value.openAiKey)
+    )
+  }
+
+  private getInvitationEvaluator() {
+    return new InvitationEvaluator(
+      new OpenAIGateway(this.programmersModel.value.openAiKey)
+    )
+  }
+
   async getLinkedinGateway() {
     if (this.linkedInGateway !== null) {
       return this.linkedInGateway
@@ -179,39 +196,13 @@ export class EqualizerRepository {
   }
 
   async checkMessages() {
-    await this.replyMessages()
+    await this.monitorConversations()
     await this.setDate(this.dateTimeGateway.now())
   }
 
-  private isWithinTwoWeeks(timestamp: number) {
-    const now = this.dateTimeGateway.now().getTime()
-    const twoWeeksInMilliseconds = 14 * 24 * 60 * 60 * 1000
-    return timestamp >= now - twoWeeksInMilliseconds
-  }
-
-  private shouldProcessMessage({
-    categories,
-    conversationParticipantsCount,
-    lastActivityAt,
-    createdAt,
-  }: ConversationData): boolean {
+  private isConversationOutOfDate({ lastActivityAt }: GeneralConversation) {
     const hasLastCheckedDate =
       typeof this.programmersModel.value.messagesLastCheckedDate === 'number'
-
-    if (
-      !categories.includes('PRIMARY_INBOX') &&
-      !categories.includes('INMAIL')
-    ) {
-      return false
-    }
-
-    if (conversationParticipantsCount !== 2) {
-      return false
-    }
-
-    if (!this.isWithinTwoWeeks(createdAt)) {
-      return false
-    }
 
     if (hasLastCheckedDate) {
       return (
@@ -222,48 +213,46 @@ export class EqualizerRepository {
     return true
   }
 
-  private async replyMessages() {
-    const linkedin = await this.getLinkedinGateway()
+  private getMessage(): string {
+    const { profileName, automaticMessage } = this.programmersModel.value
+    const profileUrl = new ProfileUrl(profileName)
+    return profileUrl.replaceInText(automaticMessage)
+  }
 
-    const conversations = await linkedin.getConversations()
+  private async monitorInvitations(): Promise<void> {
+    const gateway = await this.getLinkedinGateway()
+    const invitations = await gateway.getInvitations()
+    const evaluator = await this.getInvitationEvaluator()
 
-    const conversationsToProcess = conversations.filter(
-      this.shouldProcessMessage.bind(this)
-    )
+    let count = 0
 
-    const getUrnId = conversation =>
-      conversation.entityUrn.match(/fsd_profile:([^)]+)/)[1]
-
-    const conversationUrnIds = conversationsToProcess.map(conversation =>
-      getUrnId(conversation)
-    )
-
-    let responsesCount = 0
-    const profileUrl = new ProfileUrl(this.programmersModel.value.profileName)
-    const message = profileUrl.replaceInText(
-      this.programmersModel.value.automaticMessage
-    )
-
-    for (const urnId of conversationUrnIds) {
-      const { entityUrns, conversationText } =
-        await linkedin.getConversation(urnId)
-      const openAi = this.getOpenAiGateway()
-      const isOnlyOnePersonInConversation = new Set([...entityUrns]).size === 1
-      const isOpenAiValidated = openAi.hasOpenAi()
-        ? await openAi.isRecruiterMessage(conversationText)
-        : true
-
-      const shouldReply = isOnlyOnePersonInConversation && isOpenAiValidated
-
-      if (shouldReply) {
-        responsesCount++
-
-        await linkedin.sendMessage(urnId, message)
+    for (const invitation of invitations) {
+      if (await evaluator.shouldAccept(invitation)) {
+        await gateway.acceptInvitation(invitation)
+        count++
       }
     }
 
+    this.domGateway.dispatch('checked:invitation', {
+      count,
+    })
+  }
+
+  private async monitorConversations(): Promise<void> {
+    const gateway = await this.getLinkedinGateway()
+    const evaluator = await this.getConversationEvaluator()
+
+    const conversationMonitor = new ConversationMonitor(
+      gateway,
+      evaluator,
+      this.programmersModel.value.messagesLastCheckedDate,
+      this.getMessage()
+    )
+
+    const respondedConversations = await conversationMonitor.monitorEnquiries()
+
     this.domGateway.dispatch('checked:messages', {
-      count: responsesCount,
+      count: respondedConversations.length,
     })
   }
 }

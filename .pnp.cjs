@@ -9582,6 +9582,7 @@ const RAW_RUNTIME_STATE =
           ["@types/react", "npm:18.2.25"],\
           ["@types/react-dom", "npm:18.2.10"],\
           ["copy-webpack-plugin", "virtual:5786f16169769c8a1b4ad49978d8d449da06ad07bc2a16370536aad8c7277da52f87dd9371f16487fb285be3764e4aaaa02f2c80e6f3b899db0f5be24cc713f0#npm:11.0.0"],\
+          ["equalizer", "workspace:modules/equalizer"],\
           ["html-webpack-plugin", "virtual:5786f16169769c8a1b4ad49978d8d449da06ad07bc2a16370536aad8c7277da52f87dd9371f16487fb285be3764e4aaaa02f2c80e6f3b899db0f5be24cc713f0#npm:5.5.3"],\
           ["jest", "virtual:5b1c93124160990f58879d61aafec14e310efa154ab2d92960e5d2bb04cd780bb072739b0c3fab0e62efde925161e581cc527572ccc549111be66efd69df4403#npm:29.7.0"],\
           ["linkedin", "workspace:modules/linkedin"],\
@@ -11462,6 +11463,7 @@ const RAW_RUNTIME_STATE =
           ["equalizer", "workspace:modules/equalizer"],\
           ["@types/jest", "npm:29.5.5"],\
           ["jest", "virtual:5b1c93124160990f58879d61aafec14e310efa154ab2d92960e5d2bb04cd780bb072739b0c3fab0e62efde925161e581cc527572ccc549111be66efd69df4403#npm:29.7.0"],\
+          ["linkedin", "workspace:modules/linkedin"],\
           ["openai-analyzer", "workspace:modules/openai-analyzer"],\
           ["ts-jest", "virtual:5b1c93124160990f58879d61aafec14e310efa154ab2d92960e5d2bb04cd780bb072739b0c3fab0e62efde925161e581cc527572ccc549111be66efd69df4403#npm:29.1.1"],\
           ["typescript", "patch:typescript@npm%3A5.2.2#optional!builtin<compat/typescript>::version=5.2.2&hash=f3b441"]\

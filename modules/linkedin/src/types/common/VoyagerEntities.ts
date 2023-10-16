@@ -125,7 +125,7 @@ export type ProfileInclude = VoyagerTyped<{
   publicIdentifier: string
 }>
 
-export type InviteInclude = VoyagerTyped<{
+export type InvitationInclude = VoyagerTyped<{
   inviterFollowingInvitee: boolean
   '*inviteeMemberResolutionResult': string
   genericInvitationType: GenericInvitationType

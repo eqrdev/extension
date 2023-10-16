@@ -1,5 +1,8 @@
-import { LinkedInService } from './LinkedInService'
-import { ConversationEvaluator, InvitationEvaluator } from 'equalizer'
+import {
+  ConversationEvaluator,
+  InvitationEvaluator,
+  LinkedInService,
+} from 'equalizer'
 import { PersistentStorage } from './PersistentStorage'
 import { Logger } from './Types/Logger'
 
@@ -70,8 +73,8 @@ export class AutoConnect {
         }
 
         if (await this.conversationEvaluator.shouldReply(conversation)) {
-          await this.linkedInService.replyMessage(
-            conversation.url,
+          await this.linkedInService.replyConversation(
+            conversation,
             this.message
           )
         }
@@ -79,7 +82,6 @@ export class AutoConnect {
       }
 
       await this.persistentStorage.markMonitoringComplete()
-      await this.linkedInService.closeSession()
     } catch (error) {
       this.logger.log(`Monitoring conversations was unsuccessful: ${error}`)
     }

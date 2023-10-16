@@ -1,6 +1,11 @@
-import { Invitation } from 'linkedin/src/types/Invitation'
-import { Entities, LinkedInClient } from 'linkedin'
-import { InvitationView } from 'linkedin/src/types/common/Entities'
+import { ConversationMessagesResponse, LinkedInClient } from 'linkedin'
+import {
+  GeneralConversation,
+  GeneralInvitation,
+  LinkedInService,
+  VoyagerConversationProcessor,
+  VoyagerInvitationsProcessor,
+} from 'equalizer'
 
 export type ConversationData = {
   categories: string[]
@@ -10,12 +15,7 @@ export type ConversationData = {
   entityUrn: string
 }
 
-export type ConversationMessage = {
-  entityUrns: string[]
-  conversationText: string
-}
-
-export class LinkedInAPIGateway {
+export class LinkedInAPIGateway implements LinkedInService {
   client: LinkedInClient
   profileId: string
 
@@ -32,73 +32,38 @@ export class LinkedInAPIGateway {
     this.profileId = profileId
   }
 
-  static mapConversations(
-    conversations: Entities.Conversation[]
-  ): ConversationData[] {
-    return conversations.map(
-      ({
-        categories,
-        conversationParticipants,
-        lastActivityAt,
-        createdAt,
-        entityUrn,
-      }) => ({
-        categories,
-        lastActivityAt,
-        createdAt,
-        entityUrn,
-        conversationParticipantsCount: conversationParticipants.length,
-      })
-    )
+  async getInvitations(): Promise<GeneralInvitation[]> {
+    const response = await this.client.getInvitations()
+    const processor = new VoyagerInvitationsProcessor(response)
+    return processor.generalInvitations
   }
 
-  static mapInvitations(invitations: InvitationView[]): Invitation[] {
-    return invitations.map(
-      ({ invitation, subtitle, title, sentTimeLabel }) => ({
-        id: invitation.invitationId,
-        sharedSecret: invitation.sharedSecret,
-        message: invitation.message,
-        genericInvitationType: invitation.genericInvitationType,
-        invitationType: invitation.invitationType,
-        invitationState: invitation.invitationState,
-        senderTitle: subtitle.text,
-        senderName: title.text,
-        timeLabel: sentTimeLabel,
-      })
-    )
+  async acceptInvitation({
+    urn,
+    sharedSecret,
+  }: GeneralInvitation): Promise<void> {
+    return this.client.acceptInvitation(urn, sharedSecret)
   }
 
-  async getInvitations(): Promise<Invitation[]> {
-    const response = await this.client.getInvites()
-    return LinkedInAPIGateway.mapInvitations(response)
+  async replyConversation({ urn }: GeneralConversation, message) {
+    await this.client.sendMessage(urn, this.profileId, message)
   }
 
-  async getConversation(
-    conversationUrnId: string
-  ): Promise<ConversationMessage> {
-    const response = await this.client.getConversation(conversationUrnId)
-    return {
-      entityUrns: response.map(({ sender }) => sender.entityUrn),
-      conversationText: response
-        .map(message => message.body.text)
-        .reverse()
-        .join('\n'),
-    }
-  }
-
-  async getConversations(): Promise<ConversationData[]> {
+  async getConversations(): Promise<GeneralConversation[]> {
     const response = await this.client.getConversations(this.profileId)
-    return LinkedInAPIGateway.mapConversations(response)
-  }
+    const resolvedConversations: ConversationMessagesResponse[] = []
 
-  async acceptInvitation(
-    invitationId: string,
-    sharedSecret: string
-  ): Promise<void> {
-    return this.client.acceptInvitation(invitationId, sharedSecret)
-  }
+    for (const { entityUrn } of response.data.messengerConversationsBySyncToken
+      .elements) {
+      const entityUrnId = entityUrn.match(/fsd_profile:([^)]+)/)[1]
+      resolvedConversations.push(await this.client.getConversation(entityUrnId))
+    }
 
-  async sendMessage(conversationId: string, text: string): Promise<Response> {
-    return this.client.sendMessage(conversationId, this.profileId, text)
+    const processor = new VoyagerConversationProcessor(
+      response,
+      resolvedConversations
+    )
+
+    return processor.generalConversations
   }
 }

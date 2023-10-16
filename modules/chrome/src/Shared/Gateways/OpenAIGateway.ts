@@ -1,13 +1,14 @@
 import { analyzeMessage, analyzeTitle, isKeyValid } from 'openai-analyzer'
+import { AIEvaluator } from 'equalizer'
 
-export class OpenAIGateway {
+export class OpenAIGateway implements AIEvaluator {
   private readonly openAiKey: string
 
   constructor(openAiKey: string) {
     this.openAiKey = openAiKey
   }
 
-  async isRecruiterMessage(message: string): Promise<boolean> {
+  async isAboutJobOpportunity(message: string): Promise<boolean> {
     try {
       const response = await analyzeMessage(message, this.openAiKey)
       return response.is_recruiter_message
@@ -16,7 +17,7 @@ export class OpenAIGateway {
     }
   }
 
-  async isRecruiterTitle(title: string): Promise<boolean> {
+  async isInviteeRecruiter(title: string): Promise<boolean> {
     try {
       const response = await analyzeTitle(title, this.openAiKey)
       return response.is_recruiter_title

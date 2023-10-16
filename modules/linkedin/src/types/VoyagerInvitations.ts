@@ -6,7 +6,7 @@ import {
   ContentSeriesInclude,
   CompanyInclude,
   ProfileInclude,
-  InviteInclude,
+  InvitationInclude,
 } from './common/VoyagerEntities'
 import { ErrorObject } from './common/ErrorObject'
 
@@ -31,6 +31,6 @@ export type VoyagerInvitations = {
     microSchema: MicroSchema
   }
   included?: Array<
-    CompanyInclude | ContentSeriesInclude | InviteInclude | ProfileInclude
+    CompanyInclude | ContentSeriesInclude | InvitationInclude | ProfileInclude
   >
 }

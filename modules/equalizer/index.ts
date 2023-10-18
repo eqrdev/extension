@@ -4,7 +4,14 @@ export { InvitationEvaluator } from './src/Evaluators/InvitationEvaluator'
 export { OpenAIEvaluator } from './src/Evaluators/OpenAIEvaluator'
 export { DateEvaluator } from './src/Evaluators/DateEvaluator'
 
-export { EnquiryMonitor } from './src/EnquiryMonitor'
+export {
+  EnquiryMonitor,
+  EnquiryEvaluator,
+  EnquiryOperator,
+  EnquiryResultProcessor,
+} from './src/EnquiryMonitor'
+
+export { DEFAULT_AUTO_REPLY_TEXT } from './src/Constants'
 
 export { VoyagerInvitationsProcessor } from './src/Processors/VoyagerInvitationsProcessor'
 export { VoyagerConversationProcessor } from './src/Processors/VoyagerConversationProcessor'

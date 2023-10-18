@@ -1,35 +1,46 @@
-export abstract class EnquiryMonitor<Enquiry> {
-  async monitorEnquiries(): Promise<Enquiry[]> {
-    const enquiries = await this.getEnquiries()
+export interface EnquiryOperator<Enquiry> {
+  respondEnquiry(enquiry: Enquiry): Promise<void>
+  getEnquiries(): Promise<Enquiry[]>
+}
 
-    await this.enquiriesFetched(enquiries)
+export interface EnquiryEvaluator<Enquiry> {
+  shouldRespond(enquiry: Enquiry): Promise<boolean>
+  isAlreadyChecked(enquiry: Enquiry): Promise<boolean>
+}
+
+export interface EnquiryResultProcessor<Enquiry> {
+  fetched?: (enquiries: Enquiry[]) => Promise<void>
+  alreadyChecked?: (enquiry: Enquiry) => Promise<void>
+  responded?: (enquiry: Enquiry) => Promise<void>
+}
+
+export abstract class EnquiryMonitor<Enquiry> {
+  protected constructor(
+    private operator: EnquiryOperator<Enquiry>,
+    private evaluator: EnquiryEvaluator<Enquiry>,
+    private resultProcessor: EnquiryResultProcessor<Enquiry>
+  ) {}
+
+  async monitorEnquiries(): Promise<Enquiry[]> {
+    const enquiries = await this.operator.getEnquiries()
+
+    await this.resultProcessor.fetched?.(enquiries)
 
     const enquiriesToRespond: Enquiry[] = []
 
     for (const enquiry of enquiries) {
-      if (await this.isAlreadyChecked(enquiry)) {
-        await this.enquiryAlreadyChecked(enquiry)
+      if (await this.evaluator.isAlreadyChecked?.(enquiry)) {
+        await this.resultProcessor.alreadyChecked?.(enquiry)
         continue
       }
 
-      if (await this.shouldResponseEnquiry(enquiry)) {
-        await this.respondEnquiry(enquiry)
+      if (await this.evaluator.shouldRespond(enquiry)) {
+        await this.operator.respondEnquiry(enquiry)
         enquiriesToRespond.push(enquiry)
-        await this.enquiryResponded(enquiry)
+        await this.resultProcessor.responded(enquiry)
       }
     }
 
     return enquiriesToRespond
   }
-
-  protected abstract isAlreadyChecked(enquiry: Enquiry): Promise<boolean>
-  protected abstract respondEnquiry(enquiry: Enquiry): Promise<void>
-  protected abstract getEnquiries(): Promise<Enquiry[]>
-  protected abstract shouldResponseEnquiry(enquiry: Enquiry): Promise<boolean>
-
-  /* eslint-disable @typescript-eslint/no-unused-vars */
-  protected async enquiriesFetched(enquiries: Enquiry[]): Promise<void> {}
-  protected async enquiryAlreadyChecked(enquiry: Enquiry): Promise<void> {}
-  protected async enquiryResponded(enquiry: Enquiry): Promise<void> {}
-  /* eslint-enable @typescript-eslint/no-unused-vars */
 }

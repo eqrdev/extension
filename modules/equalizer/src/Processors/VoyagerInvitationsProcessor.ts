@@ -11,6 +11,7 @@ export class VoyagerInvitationsProcessor {
       sentTimeLabel: this.getViewByEntityUrn(entityUrn).sentTimeLabel,
       inviterTitle: this.getViewByEntityUrn(entityUrn).subtitle.text,
       inviterId: this.getProfileIncludeByEntityUrn(entityUrn).publicIdentifier,
+      inviterName: this.getViewByEntityUrn(entityUrn).title.text,
       sharedSecret: this.getIncludeByEntityUrn(entityUrn).sharedSecret,
     }))
   }

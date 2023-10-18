@@ -4,5 +4,6 @@ export interface GeneralInvitation {
   message?: string
   inviterTitle: string
   inviterId: string
+  inviterName: string
   sharedSecret: string
 }

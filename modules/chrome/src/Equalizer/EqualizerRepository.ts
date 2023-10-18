@@ -4,15 +4,14 @@ import { LinkedInAPIGateway } from '../Shared/Gateways/LinkedInAPIGateway'
 import { CrossThreadGateway } from '../Shared/Gateways/CrossThreadGateway'
 import { StorageGateway } from '../Shared/Gateways/StorageGateway'
 import { DateTimeGateway } from '../Shared/Gateways/DateTimeGateway'
-import { ProfileUrl } from '../Shared/ProfileUrl'
-import { DOMGateway } from '../Shared/Gateways/DOMGateway'
 import {
   ConversationEvaluator,
   DateEvaluator,
-  GeneralConversation,
+  DEFAULT_AUTO_REPLY_TEXT,
   InvitationEvaluator,
+  ProfileUrl,
 } from 'equalizer'
-import { ConversationMonitor } from './ConversationMonitor'
+import { DOMGateway } from '../Shared/Gateways/DOMGateway'
 
 export interface EqualizerSyncedData {
   automaticMessage: string
@@ -28,10 +27,6 @@ export interface EqualizerSessionData {
 }
 
 export type EqualizerModel = EqualizerSyncedData & EqualizerSessionData
-
-const DEFAULT_AUTO_REPLY_TEXT = `Hi! Thank You for contacting me.
-Please check out my Equalizer Profile page and answer a few questions about the job that you are recruiting for.
-Please follow this link: #URL#`
 
 export class EqualizerRepository {
   storageGateway = new StorageGateway()
@@ -71,7 +66,7 @@ export class EqualizerRepository {
     }
 
     if (settingKey === 'openAiKey') {
-      const openAi = await this.getOpenAiGateway()
+      const openAi = this.getOpenAiGateway()
       if (!(await openAi.isKeyValid(value))) {
         throw new Error('IncorrectValueError')
       }
@@ -118,19 +113,6 @@ export class EqualizerRepository {
     await this.updateModel()
   }
 
-  private getConversationEvaluator() {
-    return new ConversationEvaluator(
-      new DateEvaluator(Date),
-      new OpenAIGateway(this.programmersModel.value.openAiKey)
-    )
-  }
-
-  private getInvitationEvaluator() {
-    return new InvitationEvaluator(
-      new OpenAIGateway(this.programmersModel.value.openAiKey)
-    )
-  }
-
   async getLinkedinGateway() {
     if (this.linkedInGateway !== null) {
       return this.linkedInGateway
@@ -144,43 +126,33 @@ export class EqualizerRepository {
     })
   }
 
-  getOpenAiGateway() {
+  getOpenAiGateway(): OpenAIGateway | undefined {
     if (this.openAiGateway !== null) {
       return this.openAiGateway
     }
 
-    return new OpenAIGateway(this.programmersModel.value.openAiKey)
+    const apiKey = this.programmersModel.value.openAiKey
+
+    if (apiKey) {
+      this.openAiGateway = new OpenAIGateway(apiKey)
+      return this.openAiGateway
+    }
+
+    return undefined
   }
 
   async checkInvitations() {
     const linkedin = await this.getLinkedinGateway()
     const invitations = await linkedin.getInvitations()
+    const evaluator = new InvitationEvaluator(this.getOpenAiGateway())
 
     let invitationsAcceptedCount = 0
     const invitationSenderNames: string[] = []
 
     for (const invitation of invitations) {
-      if (invitation.genericInvitationType !== 'CONNECTION') {
-        continue
-      }
-
-      const hasMessage = Boolean(invitation.message)
-
-      const accept = () => {
-        invitationSenderNames.push(invitation.senderName)
+      if (await evaluator.shouldAccept(invitation)) {
+        invitationSenderNames.push(invitation.inviterName)
         invitationsAcceptedCount++
-      }
-
-      const openai = this.getOpenAiGateway()
-
-      if (!openai.hasOpenAi()) {
-        accept()
-      } else if (hasMessage) {
-        if (await openai.isRecruiterMessage(invitation.message)) {
-          accept()
-        }
-      } else if (await openai.isRecruiterTitle(invitation.senderTitle)) {
-        accept()
       }
     }
 
@@ -196,63 +168,37 @@ export class EqualizerRepository {
   }
 
   async checkMessages() {
-    await this.monitorConversations()
-    await this.setDate(this.dateTimeGateway.now())
+    await this.replyMessages()
+    await this.setDate(new Date(this.dateTimeGateway.now()))
   }
 
-  private isConversationOutOfDate({ lastActivityAt }: GeneralConversation) {
-    const hasLastCheckedDate =
-      typeof this.programmersModel.value.messagesLastCheckedDate === 'number'
+  private async replyMessages() {
+    const linkedin = await this.getLinkedinGateway()
+    const conversations = await linkedin.getConversations()
+    const openAiGateway = this.getOpenAiGateway()
+    const evaluator = new ConversationEvaluator(
+      new DateEvaluator(this.dateTimeGateway),
+      openAiGateway
+    )
 
-    if (hasLastCheckedDate) {
-      return (
-        lastActivityAt < this.programmersModel.value.messagesLastCheckedDate
-      )
-    }
+    let responsesCount = 0
+    const profileUrl = new ProfileUrl(this.programmersModel.value.profileName)
+    const message = profileUrl.replaceInText(
+      this.programmersModel.value.automaticMessage
+    )
 
-    return true
-  }
+    for (const conversation of conversations) {
+      const shouldReply = await evaluator.shouldReply(conversation)
 
-  private getMessage(): string {
-    const { profileName, automaticMessage } = this.programmersModel.value
-    const profileUrl = new ProfileUrl(profileName)
-    return profileUrl.replaceInText(automaticMessage)
-  }
+      if (shouldReply) {
+        responsesCount++
 
-  private async monitorInvitations(): Promise<void> {
-    const gateway = await this.getLinkedinGateway()
-    const invitations = await gateway.getInvitations()
-    const evaluator = await this.getInvitationEvaluator()
-
-    let count = 0
-
-    for (const invitation of invitations) {
-      if (await evaluator.shouldAccept(invitation)) {
-        await gateway.acceptInvitation(invitation)
-        count++
+        await linkedin.replyConversation(conversation, message)
       }
     }
 
-    this.domGateway.dispatch('checked:invitation', {
-      count,
-    })
-  }
-
-  private async monitorConversations(): Promise<void> {
-    const gateway = await this.getLinkedinGateway()
-    const evaluator = await this.getConversationEvaluator()
-
-    const conversationMonitor = new ConversationMonitor(
-      gateway,
-      evaluator,
-      this.programmersModel.value.messagesLastCheckedDate,
-      this.getMessage()
-    )
-
-    const respondedConversations = await conversationMonitor.monitorEnquiries()
-
     this.domGateway.dispatch('checked:messages', {
-      count: respondedConversations.length,
+      count: responsesCount,
     })
   }
 }

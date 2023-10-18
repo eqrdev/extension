@@ -1,6 +1,6 @@
 export class DateTimeGateway {
-  now(): Date {
-    return new Date(Date.now())
+  now(): number {
+    return Date.now()
   }
 
   setTimeout(callback, timeout) {

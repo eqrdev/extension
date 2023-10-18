@@ -1,4 +1,5 @@
 import { EqualizerTestHarness } from '../../../TestUtils/EqualizerTestHarness'
+import { conversationsStub } from './__stubs__/stubs'
 
 describe('When profile url is not provided by the user', () => {
   let testHarness = null
@@ -41,14 +42,6 @@ describe('When `messagesLastCheckedDate` not provided', () => {
   it('should not display the last checked date', async () => {
     expect(viewModel.hasLastCheckedDate).toBe(false)
   })
-
-  it('should not check for the last check', async () => {
-    await testHarness.messageCheckerPresenter.onClickMessages()
-
-    expect(testHarness.spies.getConversation).toHaveBeenCalledWith(
-      'ARqe0o0OYH2XvCCzQdnB043AbQKCAU6BLYGsknt'
-    )
-  })
 })
 
 describe('When `messagesLastCheckedDate` provided', () => {
@@ -76,11 +69,6 @@ describe('When `messagesLastCheckedDate` provided', () => {
   it('should show the last checked date', async () => {
     expect(viewModel.hasLastCheckedDate).toBe(true)
   })
-
-  it('should check for the last message check', async () => {
-    await testHarness.messageCheckerPresenter.onClickMessages()
-    expect(testHarness.spies.getConversation).not.toHaveBeenCalled()
-  })
 })
 
 describe('When we click the button', () => {
@@ -101,41 +89,27 @@ describe('When we click the button', () => {
   it('should call the linkedin api with the correct values', async () => {
     await testHarness.messageCheckerPresenter.onClickMessages()
     expect(testHarness.spies.getConversations).toHaveBeenCalledTimes(1)
+    expect(testHarness.spies.isAboutJobOpportunity).toHaveBeenCalledWith(
+      'world\nHello'
+    )
 
-    expect(testHarness.spies.getConversation).toHaveBeenNthCalledWith(
+    expect(testHarness.spies.replyConversation).toHaveBeenCalledTimes(3)
+
+    expect(testHarness.spies.replyConversation).toHaveBeenNthCalledWith(
       1,
-      'ARqe0o0OYH2XvCCzQdnB043AbQKCAU6BLYGsknt'
-    )
-    expect(testHarness.spies.getConversation).toHaveBeenNthCalledWith(
-      2,
-      'UY0AHsqKvOAQCCkB6Gtd0nbY0CBQX4z3ALeRo2n'
-    )
-    expect(testHarness.spies.getConversation).toHaveBeenNthCalledWith(
-      3,
-      'soCL20G6BeOdqbYQBnU0AAnAYHCz0vKk4XQRC3t'
-    )
-
-    expect(testHarness.spies.isRecruiterMessage).toHaveBeenCalledWith(
-      'Hello, this is a message from a recruiter. Really.'
-    )
-
-    expect(testHarness.spies.isRecruiterMessage).toHaveBeenCalledTimes(3)
-
-    expect(testHarness.spies.sendMessage).toHaveBeenNthCalledWith(
-      1,
-      'ARqe0o0OYH2XvCCzQdnB043AbQKCAU6BLYGsknt',
+      conversationsStub[0],
       'My message: https://equalizer.dev/me/my-profile-name'
     )
 
-    expect(testHarness.spies.sendMessage).toHaveBeenNthCalledWith(
+    expect(testHarness.spies.replyConversation).toHaveBeenNthCalledWith(
       2,
-      'UY0AHsqKvOAQCCkB6Gtd0nbY0CBQX4z3ALeRo2n',
+      conversationsStub[1],
       'My message: https://equalizer.dev/me/my-profile-name'
     )
 
-    expect(testHarness.spies.sendMessage).toHaveBeenNthCalledWith(
+    expect(testHarness.spies.replyConversation).toHaveBeenNthCalledWith(
       3,
-      'soCL20G6BeOdqbYQBnU0AAnAYHCz0vKk4XQRC3t',
+      conversationsStub[2],
       'My message: https://equalizer.dev/me/my-profile-name'
     )
 
@@ -162,6 +136,6 @@ describe('when no openai key provided', () => {
 
   it("shouldn't call the openai api", async () => {
     await testHarness.messageCheckerPresenter.onClickMessages()
-    expect(testHarness.spies.isRecruiterMessage).not.toHaveBeenCalled()
+    expect(testHarness.spies.isAboutJobOpportunity).not.toHaveBeenCalled()
   })
 })

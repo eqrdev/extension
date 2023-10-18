@@ -7,12 +7,9 @@ import { InvitationCheckerPresenter } from '../LinkedIn/Invitations/InvitationCh
 import { invitationsStub } from '../LinkedIn/Invitations/InvitationChecker/__stubs__/stubs'
 import { MessageCheckerPresenter } from '../LinkedIn/Messaging/MessageChecker/MessageCheckerPresenter'
 import { PopupPresenter } from '../Popup/PopupPresenter'
-import {
-  conversationsStub,
-  conversationStub,
-} from '../LinkedIn/Messaging/MessageChecker/__stubs__/stubs'
+import { conversationsStub } from '../LinkedIn/Messaging/MessageChecker/__stubs__/stubs'
 import { SettingsPresenter } from '../Settings/SettingsPresenter'
-import { Invitation } from 'linkedin'
+import { GeneralInvitation } from 'equalizer'
 
 type ViewModel = Partial<EqualizerModel>
 
@@ -39,13 +36,12 @@ export class EqualizerTestHarness {
   }
 
   spies: Record<string, jest.Mock> = {
-    isRecruiterMessage: jest.fn().mockResolvedValue(true),
-    isRecruiterTitle: jest.fn().mockResolvedValue(true),
+    isAboutJobOpportunity: jest.fn().mockResolvedValue(true),
+    isInviteeRecruiter: jest.fn().mockResolvedValue(true),
     hasOpenAi: jest.fn().mockReturnValue(true),
     isKeyValid: jest.fn().mockResolvedValue(true),
     getConversations: jest.fn().mockResolvedValue(conversationsStub),
-    getConversation: jest.fn().mockResolvedValue(conversationStub),
-    sendMessage: jest.fn(),
+    replyConversation: jest.fn(),
     acceptInvitation: jest.fn(),
     getInvitations: jest.fn().mockResolvedValue(invitationsStub),
     setSessionData: jest.fn(),
@@ -55,7 +51,7 @@ export class EqualizerTestHarness {
     addProfileName: jest.fn(),
     removeSyncedData: jest.fn(),
     clickAcceptButtons: jest.fn(),
-    getNow: jest.fn().mockReturnValue(new Date('2023-10-10:10:10')),
+    getNow: jest.fn().mockReturnValue(1696925400000), // 2023-10-10:10:10
     domDispatch: jest.fn(),
   }
 
@@ -66,18 +62,19 @@ export class EqualizerTestHarness {
 
     repository.programmersModel = new Observable(null)
 
-    repository.getOpenAiGateway = jest.fn().mockReturnValue({
-      isRecruiterMessage: this.spies.isRecruiterMessage,
-      isRecruiterTitle: this.spies.isRecruiterTitle,
-      hasOpenAi: this.spies.hasOpenAi,
-      isKeyValid: this.spies.isKeyValid,
-    })
+    repository.getOpenAiGateway = this.spies.hasOpenAi()
+      ? jest.fn().mockReturnValue({
+          isAboutJobOpportunity: this.spies.isAboutJobOpportunity,
+          isInviteeRecruiter: this.spies.isInviteeRecruiter,
+          hasOpenAi: this.spies.hasOpenAi,
+          isKeyValid: this.spies.isKeyValid,
+        })
+      : jest.fn().mockReturnValue(undefined)
     repository.getLinkedinGateway = jest.fn().mockResolvedValue({
       getInvitations: this.spies.getInvitations,
       acceptInvitation: this.spies.acceptInvitation,
       getConversations: this.spies.getConversations,
-      getConversation: this.spies.getConversation,
-      sendMessage: this.spies.sendMessage,
+      replyConversation: this.spies.replyConversation,
     })
     repository.storageGateway = jest.fn().mockReturnValue({
       setSessionData: this.spies.setSessionData,
@@ -121,7 +118,7 @@ export class EqualizerTestHarness {
     await this.settingsPresenter.load(callback)
   }
 
-  async receiveInvitation(invitation: Invitation, viewCallback) {
+  async receiveInvitation(invitation: GeneralInvitation, viewCallback) {
     this.spies.getInvitations = jest.fn().mockResolvedValue([invitation])
     this.initSpies()
     await this.initInvitationChecker(viewCallback)

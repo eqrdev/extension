@@ -7,14 +7,6 @@ import {
   VoyagerInvitationsProcessor,
 } from 'equalizer'
 
-export type ConversationData = {
-  categories: string[]
-  conversationParticipantsCount: number
-  lastActivityAt: number
-  createdAt: number
-  entityUrn: string
-}
-
 export class LinkedInAPIGateway implements LinkedInService {
   client: LinkedInClient
   profileId: string

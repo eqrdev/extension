@@ -1,4 +1,4 @@
-import { ProfileUrl } from '../Shared/ProfileUrl'
+import { ProfileUrl } from 'equalizer'
 import {
   EqualizerModel,
   equalizerRepository,

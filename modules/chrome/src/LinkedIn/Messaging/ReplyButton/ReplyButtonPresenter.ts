@@ -1,8 +1,8 @@
-import { ProfileUrl } from '../../../Shared/ProfileUrl'
 import {
   EqualizerModel,
   equalizerRepository,
 } from '../../../Equalizer/EqualizerRepository'
+import { ProfileUrl } from 'equalizer'
 
 export interface LinkedInModel {
   isProfileUrlProvided: boolean

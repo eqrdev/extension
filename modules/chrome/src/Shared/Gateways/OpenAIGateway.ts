@@ -2,11 +2,7 @@ import { analyzeMessage, analyzeTitle, isKeyValid } from 'openai-analyzer'
 import { AIEvaluator } from 'equalizer'
 
 export class OpenAIGateway implements AIEvaluator {
-  private readonly openAiKey: string
-
-  constructor(openAiKey: string) {
-    this.openAiKey = openAiKey
-  }
+  constructor(private readonly openAiKey: string) {}
 
   async isAboutJobOpportunity(message: string): Promise<boolean> {
     try {

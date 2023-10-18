@@ -50,16 +50,13 @@ describe('when an invitation is not a connection', () => {
     testHarness = new EqualizerTestHarness()
     await testHarness.receiveInvitation(
       {
-        id: 7086734793308078080,
-        genericInvitationType: 'CONTENT_SERIES',
+        urn: 'urn:li:fsd_invitation:7086734793308078080',
         sharedSecret: 'NifOCrk1',
-        message: null,
-        invitationType: 'RECEIVED',
-        invitationState: 'PENDING',
-        senderTitle: 'Newsletter • Biweekly',
-        senderName:
+        inviterTitle: 'Newsletter • Biweekly',
+        inviterName:
           'LinkedIn News Europe invited you to subscribe to Tech Wrap-Up Europe',
-        timeLabel: '3 days ago',
+        sentTimeLabel: '3 days ago',
+        inviterId: 'linkedinNews',
       },
       () => {}
     )
@@ -77,15 +74,13 @@ describe('when there is no openAi key', () => {
 
     await testHarness.receiveInvitation(
       {
-        id: 7086734793308078080,
-        genericInvitationType: 'CONNECTION',
-        sharedSecret: 'NifOCrk1',
+        urn: 'urn:li:fsd_invitation:7086734793308078080',
+        sentTimeLabel: '2 days ago',
         message: null,
-        invitationType: 'RECEIVED',
-        invitationState: 'PENDING',
-        senderTitle: 'Horse riding instructor at Ride Co.',
-        senderName: 'Anush Vasily',
-        timeLabel: '2 days ago',
+        sharedSecret: 'NifOCrk1',
+        inviterTitle: 'Horse riding instructor at Ride Co.',
+        inviterName: 'Anush Vasily',
+        inviterId: 'anush-the-instructor',
       },
       () => {}
     )
@@ -106,19 +101,17 @@ describe('when we have openAi key, but the invitation message is not about a job
   let testHarness
   beforeEach(async () => {
     testHarness = new EqualizerTestHarness()
-    testHarness.spies.isRecruiterMessage = jest.fn().mockResolvedValue(false)
-    testHarness.spies.isRecruiterTitle = jest.fn().mockResolvedValue(true)
+    testHarness.spies.isAboutJobOpportunity = jest.fn().mockResolvedValue(false)
+    testHarness.spies.isInviteeRecruiter = jest.fn().mockResolvedValue(true)
     await testHarness.receiveInvitation(
       {
-        id: 7086734793308078080,
-        genericInvitationType: 'CONNECTION',
-        sharedSecret: 'NifOCrk1',
+        urn: 'urn:li:fsd_invitation:7086734793308078080',
+        sentTimeLabel: 'Yesterday',
         message: 'Hey, do you remember me? I am Creed',
-        invitationType: 'RECEIVED',
-        invitationState: 'PENDING',
-        senderTitle: 'HeadHunter at Dunder Mifflin, Inc.',
-        senderName: 'Pam Beesley',
-        timeLabel: 'Yesterday',
+        sharedSecret: 'NifOCrk1',
+        inviterTitle: 'HeadHunter at Dunder Mifflin, Inc.',
+        inviterName: 'Pam Beesley',
+        inviterId: 'pambeesley',
       },
       () => {}
     )
@@ -130,7 +123,7 @@ describe('when we have openAi key, but the invitation message is not about a job
     expect(testHarness.spies.domDispatch).toHaveBeenNthCalledWith(
       1,
       'checked:invitations',
-      { count: 0 }
+      { count: 1 }
     )
     expect(testHarness.spies.domDispatch).toHaveBeenNthCalledWith(
       2,
@@ -144,27 +137,24 @@ describe('when we have openAi key, no message and the senderTitle is not about a
   let testHarness
   beforeEach(async () => {
     testHarness = new EqualizerTestHarness()
-    testHarness.spies.isRecruiterMessage = jest.fn().mockResolvedValue(false)
-    testHarness.spies.isRecruiterTitle = jest.fn().mockResolvedValue(false)
+    testHarness.spies.isAboutJobOpportunity = jest.fn().mockResolvedValue(false)
+    testHarness.spies.isInviteeRecruiter = jest.fn().mockResolvedValue(false)
     testHarness.spies.getConversations = jest.fn().mockResolvedValue([])
     await testHarness.receiveInvitation(
       {
-        id: 7086734793308078080,
-        genericInvitationType: 'CONNECTION',
+        urn: 'urn:li:fsd_invitation:7086734793308078080',
+        sentTimeLabel: '2 days ago',
         sharedSecret: 'NifOCrk1',
-        message: null,
-        invitationType: 'RECEIVED',
-        invitationState: 'PENDING',
-        senderTitle: 'Paper Sales at Dunder Mifflin, Inc.',
-        senderName: 'Jim Halpert',
-        timeLabel: '2 days ago',
+        inviterTitle: 'Paper Sales at Dunder Mifflin, Inc.',
+        inviterName: 'Jim Halpert',
+        inviterId: 'jimhalpert',
       },
       () => {}
     )
   })
 
   it('should accept no invitation', async () => {
-    expect(testHarness.spies.isRecruiterMessage).not.toHaveBeenCalled()
+    expect(testHarness.spies.isAboutJobOpportunity).not.toHaveBeenCalled()
     expect(testHarness.spies.acceptInvitation).not.toHaveBeenCalled()
     expect(testHarness.spies.domDispatch).toHaveBeenNthCalledWith(
       1,

@@ -1,5 +1,5 @@
 const NotificationStatuses = ['ACTIVE'] as const
-const Categories = ['ARCHIVE', 'INBOX', 'PRIMARY_INBOX', 'INMAIL'] as const
+const Categories = ['ARCHIVED', 'INBOX', 'PRIMARY_INBOX', 'INMAIL'] as const
 const States = ['ACCEPTED', 'PENDING'] as const
 const RenderFormats = ['RECALLED', 'DEFAULT'] as const
 const GenericInvitationTypes = ['CONNECTION', 'CONTENT_SERIES']

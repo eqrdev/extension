@@ -31,11 +31,12 @@ We use Yarn 3 as package manager and workspaces to get organized. Structure over
 .
 ├── ...
 ├── modules         
+│   ├── auto-connect   # A Node.js script to monitor enquiries
 │   ├── chrome         # The Chrome extensions source code
+│   ├── equalizer      # The core business logic of Equalizer
 │   ├── eslint         # Eslint package and related dependecies, eslint configuration
 │   ├── linkedin       # LinkedIn Client, tools and utilities to communicate with LinkedIn
 │   ├── openai         # A simple API request to analyze LinkedIn conversations with OpenAI's GPT
-│   ├── tests          # Test configuration. There are'nt any test suites here. We use colocation
 │   └── ui-library     # React components to build the UI of the extension 
 ├── package.json       # We do not hold dependencies here.
 └── ...

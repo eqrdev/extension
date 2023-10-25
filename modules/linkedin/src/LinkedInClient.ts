@@ -12,7 +12,8 @@ export interface LinkedInClientOptions {
 
 export class LinkedInClient {
   private options: LinkedInClientOptions
-  public static apiBaseUrl = 'https://www.linkedin.com/voyager/api/'
+  public static baseUrl = 'https://www.linkedin.com/'
+  public static apiBaseUrl = `${LinkedInClient.baseUrl}/voyager/api/`
 
   constructor(options: LinkedInClientOptions) {
     this.options = options
@@ -130,6 +131,20 @@ export class LinkedInClient {
           'Content-Type': 'application/json; charset=UTF-8',
         },
       }
+    )
+  }
+
+  public async isAuthenticated(): Promise<boolean> {
+    return (
+      (
+        await (
+          await fetch(`${LinkedInClient.baseUrl}/uas/authenticate`, {
+            headers: {
+              Accept: 'application/json',
+            },
+          })
+        ).json()
+      ).status === 'success'
     )
   }
 }

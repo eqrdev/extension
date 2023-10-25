@@ -1,4 +1,4 @@
-import { analyzeMessage, analyzeTitle } from 'openai-analyzer'
+import { analyzeMessage, analyzeTitle, isKeyValid } from 'openai-analyzer'
 import { AIEvaluator } from '../Types/AIEvaluator'
 
 export class OpenAIEvaluator implements AIEvaluator {
@@ -9,5 +9,9 @@ export class OpenAIEvaluator implements AIEvaluator {
   }
   async isInviteeRecruiter(title: string): Promise<boolean> {
     return (await analyzeTitle(title, this.apiKey)).is_recruiter_title
+  }
+
+  public static async isKeyValid(apiKey: string): Promise<boolean> {
+    return isKeyValid(apiKey)
   }
 }

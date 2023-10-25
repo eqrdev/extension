@@ -9,6 +9,7 @@ import { StorageGateway } from '../Shared/Gateways/StorageGateway'
 import { DateTimeGateway } from '../Shared/Gateways/DateTimeGateway'
 import { ProfileUrl } from '../Shared/ProfileUrl'
 import { DOMGateway } from '../Shared/Gateways/DOMGateway'
+import { ConfigurationValidator, DEFAULT_AUTO_REPLY_TEXT } from 'equalizer'
 
 export interface EqualizerSyncedData {
   automaticMessage: string
@@ -24,10 +25,6 @@ export interface EqualizerSessionData {
 }
 
 export type EqualizerModel = EqualizerSyncedData & EqualizerSessionData
-
-const DEFAULT_AUTO_REPLY_TEXT = `Hi! Thank You for contacting me.
-Please check out my Equalizer Profile page and answer a few questions about the job that you are recruiting for.
-Please follow this link: #URL#`
 
 export class EqualizerRepository {
   storageGateway = new StorageGateway()
@@ -53,7 +50,7 @@ export class EqualizerRepository {
     }
 
     if (settingKey === 'profileName') {
-      if (!/^[^\s/]+$/i.test(value)) {
+      if (!ConfigurationValidator.isEqualizerProfileNameValid(value)) {
         throw new Error('IncorrectFormatError')
       }
 
@@ -61,7 +58,7 @@ export class EqualizerRepository {
     }
 
     if (settingKey === 'automaticMessage') {
-      if (!value.includes('#URL#')) {
+      if (!ConfigurationValidator.isMessageValid(value)) {
         throw new Error('MissingUrlError')
       }
     }

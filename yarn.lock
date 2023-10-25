@@ -6552,6 +6552,7 @@ __metadata:
     "@types/react": "npm:^18.2.25"
     "@types/react-dom": "npm:^18.2.10"
     copy-webpack-plugin: "npm:^11.0.0"
+    equalizer: "workspace:^"
     html-webpack-plugin: "npm:^5.5.3"
     jest: "npm:^29.7.0"
     linkedin: "workspace:^"

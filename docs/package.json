@@ -6,8 +6,8 @@
     "build:docs": "next build"
   },
   "dependencies": {
-    "@types/node": "^20.8.8",
-    "next": "^13.5.6",
+    "@types/node": "^20.8.10",
+    "next": "^14.0.1",
     "nextra": "^2.13.2",
     "nextra-theme-docs": "^2.13.2",
     "react": "^18.2.0",
@@ -15,7 +15,7 @@
     "ui-library": "workspace:^"
   },
   "devDependencies": {
-    "@types/react": "^18.2.31",
+    "@types/react": "^18.2.36",
     "@types/react-dom": "^18.2.14",
     "typescript": "^5.2.2"
   }

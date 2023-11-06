@@ -5,7 +5,7 @@
 1. Run this for the latest yarn version. This will update the `.yarn/releases/yarn-<version>.cjs` file, the  
 `.yarnrc.yml` yarnPath option, and the packageManager field of the `package.json`.
     
-        $ yarn set version canary
+        $ yarn set version latest
 
 2. Though, you need to update manually the `volta.yarn` field of `package.json`. 
 3. Open Settings → Languages and Frameworks → Node.js in WebStorm and set the `Package manager` field to the absolute 

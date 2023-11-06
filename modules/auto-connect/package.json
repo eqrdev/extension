@@ -10,10 +10,10 @@
     "equalizer": "workspace:^",
     "linkedin": "workspace:^",
     "openai-analyzer": "workspace:^",
-    "puppeteer": "^21.4.1"
+    "puppeteer": "^21.5.0"
   },
   "devDependencies": {
-    "@types/node": "^20.8.8",
+    "@types/node": "^20.8.10",
     "typescript": "^5.2.2"
   }
 }

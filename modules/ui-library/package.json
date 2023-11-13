@@ -13,8 +13,8 @@
     "typescript": "^5.2.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.23.2",
-    "@babel/preset-typescript": "^7.23.2",
+    "@babel/core": "^7.23.3",
+    "@babel/preset-typescript": "^7.23.3",
     "@mdx-js/react": "^3.0.0",
     "@storybook/addon-actions": "^7.5.3",
     "@storybook/addon-docs": "^7.5.3",

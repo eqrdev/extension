@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "@types/node": "^20.9.0",
-    "next": "^14.0.1",
+    "next": "^14.0.2",
     "nextra": "^2.13.2",
     "nextra-theme-docs": "^2.13.2",
     "react": "^18.2.0",

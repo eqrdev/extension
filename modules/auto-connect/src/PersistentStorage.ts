@@ -1,4 +1,3 @@
-import { resolve } from 'path'
 import { EqualizerStoredData } from './Types/EqualizerStoredData'
 import { FileStorage } from './FileStorage'
 import { DateProvider } from 'equalizer'
@@ -9,11 +8,10 @@ export class PersistentStorage {
     checkedInvitations: [],
   }
 
-  private storage = new FileStorage<EqualizerStoredData>(
-    resolve(__dirname, '../../.storage/equalizer.json')
-  )
-
-  constructor(private dateProvider: DateProvider) {
+  constructor(
+    private dateProvider: DateProvider,
+    private storage: FileStorage<EqualizerStoredData>
+  ) {
     this.initStorage().then()
   }
 

@@ -72,11 +72,11 @@ export class PuppeteerBrowserService
     return cookies.find(({ name: cookieName }) => cookieName === name)?.value
   }
 
-  async runInSession(method: () => void): Promise<void> {
+  async runInSession<T>(method: () => T): Promise<T> {
     const page = await this.getPage()
     await page.exposeFunction('method', method)
-    await page.evaluate(async () => {
-      await method()
+    return page.evaluate(async () => {
+      return method()
     })
   }
 }

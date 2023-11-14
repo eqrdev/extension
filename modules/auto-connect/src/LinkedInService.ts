@@ -96,6 +96,21 @@ export class LinkedInService {
     })
   }
 
+  async isUserLoggedIn(): Promise<boolean> {
+    return this.browserService.runInSession<Promise<boolean>>(async () => {
+      const response = await fetch(
+        `https://www.linkedin.com/uas/authenticate`,
+        {
+          headers: {
+            Accept: 'application/json',
+          },
+        }
+      )
+      const json = await response.json()
+      return json.status === 'success'
+    })
+  }
+
   async closeSession(): Promise<void> {
     await this.browserService.browser.close()
   }

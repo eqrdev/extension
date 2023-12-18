@@ -12,11 +12,11 @@
     "linkedin": "workspace:^",
     "node-schedule": "^2.1.1",
     "openai-analyzer": "workspace:^",
-    "puppeteer": "21.5.0"
+    "puppeteer": "21.6.1"
   },
   "devDependencies": {
-    "@types/node": "^20.10.4",
-    "@types/node-schedule": "^2",
+    "@types/node": "^20.10.5",
+    "@types/node-schedule": "^2.1.5",
     "typescript": "^5.3.3"
   }
 }

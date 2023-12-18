@@ -6,7 +6,7 @@
   "author": "Péter Viola <info@violapeter.hu>",
   "license": "MIT",
   "private": true,
-  "packageManager": "yarn@4.0.1",
+  "packageManager": "yarn@4.0.2",
   "workspaces": [
     "modules/*",
     "docs"
@@ -23,6 +23,6 @@
   },
   "volta": {
     "node": "21.1.0",
-    "yarn": "4.0.1"
+    "yarn": "4.0.2"
   }
 }

@@ -1,4 +1,6 @@
 import { resolve } from 'path'
+import Bottleneck from 'bottleneck'
+import { scheduleJob } from 'node-schedule'
 import { AutoConnect } from './src/AutoConnect'
 import { EqualizerLogger } from './src/EqualizerLogger'
 import { PersistentStorage } from './src/PersistentStorage'
@@ -65,9 +67,9 @@ const linkedInService = new LinkedInService(browserService)
 
   const profileUrl = new ProfileUrl(process.env.LI_PROFILE_ID)
 
-  const isMessageValid = ConfigurationValidator.isMessageValid(
-    process.env.LI_AUTO_MESSAGE
-  )
+  const isMessageValid =
+    !!process.env.LI_AUTO_MESSAGE &&
+    ConfigurationValidator.isMessageValid(process.env.LI_AUTO_MESSAGE)
   if (!isMessageValid) {
     logger.log(
       'Provided auto message is invalid. We provided a default reply for you.'
@@ -95,5 +97,14 @@ const linkedInService = new LinkedInService(browserService)
     message
   )
 
-  await autoConnect.monitorEnquiries()
+  const limiter = new Bottleneck({
+    minTime: 60_000,
+    maxConcurrent: 1,
+  })
+
+  scheduleJob('*/10 * * * *', async () => {
+    await limiter.schedule(async () => {
+      await autoConnect.monitorEnquiries()
+    })
+  })
 })()

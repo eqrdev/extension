@@ -40,15 +40,17 @@ export class PuppeteerBrowserService
 
   async goToPathName(pathName = ''): Promise<Page> {
     const page = await this.getPage()
-    await page.goto(this.options.baseUrl + pathName)
+    await page.goto(this.options.baseUrl + pathName, {
+      timeout: 60_000,
+    })
     return page
   }
 
   async interceptRequest({ pathName = '', urlPattern }): Promise<HTTPRequest> {
-    let returnRequest
+    let returnRequest: HTTPRequest
     const page = await this.goToPathName(pathName)
     await page.setRequestInterception(true)
-    await page.on('request', async request => {
+    page.on('request', async request => {
       if (urlPattern.test(request.url())) {
         returnRequest = request
       }

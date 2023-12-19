@@ -5,6 +5,7 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "lib": ["es2021", "dom"],
+    "skipLibCheck": true,
     "target": "es6"
   },
   "exclude": ["dist"]

@@ -2,18 +2,21 @@
   "name": "auto-connect",
   "version": "1.0.0",
   "scripts": {
-    "start": "node ./dist/index.js",
+    "start": "node --env-file ../../.env ./dist/index.js",
     "build": "tsc --build --clean && tsc --build",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "bottleneck": "^2.19.5",
     "equalizer": "workspace:^",
     "linkedin": "workspace:^",
+    "node-schedule": "^2.1.1",
     "openai-analyzer": "workspace:^",
-    "puppeteer": "^21.5.1"
+    "puppeteer": "21.6.1"
   },
   "devDependencies": {
-    "@types/node": "^20.9.0",
-    "typescript": "^5.2.2"
+    "@types/node": "^20.10.5",
+    "@types/node-schedule": "^2.1.5",
+    "typescript": "^5.3.3"
   }
 }

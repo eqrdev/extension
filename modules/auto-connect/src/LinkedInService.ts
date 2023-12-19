@@ -38,7 +38,7 @@ export class LinkedInService {
     const response =
       await this.browserService.interceptResponse<ConversationsResponse>({
         pathName: '/messaging/',
-        urlPattern: /100c46ef5ba532f401dd4255b7a7509b/,
+        urlPattern: /^https:\/\/www\.linkedin\.com\/voyager\/api\/voyagerMessagingGraphQL\/graphql\?queryId=messengerConversations\.([a-f\d]+)&variables=\(mailboxUrn:urn%3Ali%3Afsd_profile%3A([A-Za-z0-9%_-]+)\)$/,
       })
     const conversations =
       response.data.messengerConversationsBySyncToken.elements

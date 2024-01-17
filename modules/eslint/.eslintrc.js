@@ -3,6 +3,7 @@
  */
 module.exports = {
   parser: '@typescript-eslint/parser',
+  ignorePatterns: ['dist/'],
   parserOptions: {
     warnOnUnsupportedTypeScriptVersion: false,
     ecmaVersion: 2018,

@@ -16,6 +16,7 @@ tsconfig.tsbuildinfo
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+node_modules
 
 .idea
 .vscode

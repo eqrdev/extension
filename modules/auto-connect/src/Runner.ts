@@ -16,28 +16,36 @@ import {
 import { LinkedInService } from './LinkedInService'
 import { AutoConnect } from './AutoConnect'
 
-const fileStorage = new FileStorage<EqualizerStoredData>(
-  resolve(__dirname, '../.storage/equalizer.json')
-)
-const persistentStorage = new PersistentStorage(Date, fileStorage)
-const browserService = new PuppeteerBrowserService({
-  baseUrl: 'https://www.linkedin.com/',
-  cookies: [
-    {
-      name: 'li_at',
-      value: process.env.LI_SESSION_TOKEN,
-      domain: '.www.linkedin.com',
-    },
-  ],
-  runInContainer: process.env.PUPPETEER_RUN_IN_DOCKER === 'true',
-})
-const logger = new EqualizerLogger()
-const dateEvaluator = new DateEvaluator(Date)
-const linkedInService = new LinkedInService(browserService)
+export type RunOptions = {
+  username: string
+  token: string
+  message?: string
+  openaiKey?: string
+  noHeadlessRun?: boolean
+  storagePath: string
+}
 
 export class Runner {
-  static async run() {
-    const hasOpenAi = OpenAIEvaluator.isKeyValid(process.env.OPENAI_API_KEY)
+  static async run(options: RunOptions) {
+    const fileStorage = new FileStorage<EqualizerStoredData>(
+      resolve(options.storagePath)
+    )
+    const persistentStorage = new PersistentStorage(Date, fileStorage)
+    const browserService = new PuppeteerBrowserService({
+      baseUrl: 'https://www.linkedin.com/',
+      cookies: [
+        {
+          name: 'li_at',
+          value: options.token,
+          domain: '.www.linkedin.com',
+        },
+      ],
+      noHeadlessRun: options.noHeadlessRun,
+    })
+    const logger = new EqualizerLogger()
+    const dateEvaluator = new DateEvaluator(Date)
+    const linkedInService = new LinkedInService(browserService)
+    const hasOpenAi = OpenAIEvaluator.isKeyValid(options.openaiKey)
 
     if (!(await linkedInService.isUserLoggedIn())) {
       logger.log(
@@ -52,33 +60,29 @@ export class Runner {
       )
     }
 
-    if (
-      !ConfigurationValidator.isEqualizerProfileNameValid(
-        process.env.LI_PROFILE_ID
-      )
-    ) {
+    if (!ConfigurationValidator.isEqualizerProfileNameValid(options.username)) {
       logger.log(
         "Provided Equalizer profile name is invalid. Monitoring hasn't started."
       )
-      return
+      throw new Error('Please provide a valid Equalizer profile name')
     }
 
-    const profileUrl = new ProfileUrl(process.env.LI_PROFILE_ID)
+    const profileUrl = new ProfileUrl(options.username)
 
     const isMessageValid =
-      !!process.env.LI_AUTO_MESSAGE &&
-      ConfigurationValidator.isMessageValid(process.env.LI_AUTO_MESSAGE)
+      !!options.message &&
+      ConfigurationValidator.isMessageValid(options.message)
     if (!isMessageValid) {
       logger.log(
         'Provided auto message is invalid. We provided a default reply for you.'
       )
     }
     const message = profileUrl.replaceInText(
-      isMessageValid ? process.env.LI_AUTO_MESSAGE : DEFAULT_AUTO_REPLY_TEXT
+      isMessageValid ? options.message : DEFAULT_AUTO_REPLY_TEXT
     )
 
     const openAiEvaluator = hasOpenAi
-      ? new OpenAIEvaluator(process.env.OPENAI_API_KEY)
+      ? new OpenAIEvaluator(options.openaiKey)
       : undefined
     const invitationEvaluator = new InvitationEvaluator(openAiEvaluator)
     const conversationEvaluator = new ConversationEvaluator(

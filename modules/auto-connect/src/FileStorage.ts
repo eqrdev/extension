@@ -1,5 +1,6 @@
 import { DataStorage } from './Types/DataStorage'
-import { writeFile, readFile } from 'fs/promises'
+import { writeFile, readFile, mkdir } from 'fs/promises'
+import { dirname } from 'path'
 
 export class FileStorage<T> implements DataStorage<T> {
   constructor(private filePath: string) {}
@@ -13,6 +14,7 @@ export class FileStorage<T> implements DataStorage<T> {
       return JSON.parse(await readFile(this.filePath, 'utf-8')) as T
     } catch (error) {
       if (error.code === 'ENOENT') {
+        await mkdir(dirname(this.filePath))
         await writeFile(this.filePath, '', 'utf-8')
       }
     }

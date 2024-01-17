@@ -74,14 +74,14 @@ const Styled = {
             padding: '16px 24px',
           }
         : size === 'small'
-        ? {
-            height: 32,
-            padding: '7px 12px',
-          }
-        : {
-            height: 48,
-            padding: '9px 16px',
-          }
+          ? {
+              height: 32,
+              padding: '7px 12px',
+            }
+          : {
+              height: 48,
+              padding: '9px 16px',
+            }
   ),
   Icon: styled(EqIcon)({
     lineHeight: '24px',

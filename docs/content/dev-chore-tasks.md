@@ -20,4 +20,3 @@
 2. Update the `volta.node` field of `package.json` to the corresponding version.
 3. Open Settings → Languages and Frameworks → Node.js in WebStorm and set the `Node interpreter` field to the absolute
    path of the node executable.
-4. Replace the version number in the Dockerfile's `FROM` line.

@@ -38,7 +38,8 @@ export class LinkedInService {
     const response =
       await this.browserService.interceptResponse<ConversationsResponse>({
         pathName: '/messaging/',
-        urlPattern: /^https:\/\/www\.linkedin\.com\/voyager\/api\/voyagerMessagingGraphQL\/graphql\?queryId=messengerConversations\.([a-f\d]+)&variables=\(mailboxUrn:urn%3Ali%3Afsd_profile%3A([A-Za-z0-9%_-]+)\)$/,
+        urlPattern:
+          /^https:\/\/www\.linkedin\.com\/voyager\/api\/voyagerMessagingGraphQL\/graphql\?queryId=messengerConversations\.([a-f\d]+)&variables=\(mailboxUrn:urn%3Ali%3Afsd_profile%3A([A-Za-z0-9%_-]+)\)$/,
       })
     const conversations =
       response.data.messengerConversationsBySyncToken.elements
@@ -112,6 +113,7 @@ export class LinkedInService {
   }
 
   async closeSession(): Promise<void> {
+    await this.browserService.page.close()
     await this.browserService.browser.close()
   }
 }

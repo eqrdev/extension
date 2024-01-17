@@ -4,7 +4,7 @@ import { BrowserService } from './Types/BrowserService'
 interface PuppeteerBrowserOptions {
   baseUrl?: string
   cookies?: Protocol.Network.CookieParam[]
-  runInContainer?: boolean
+  noHeadlessRun?: boolean
 }
 
 export class PuppeteerBrowserService
@@ -21,15 +21,15 @@ export class PuppeteerBrowserService
     }
 
     this.browser = await puppeteer.launch({
-      headless: 'new',
-      args: this.options.runInContainer
-        ? [
-            '--no-sandbox',
-            '--disable-setuid-sandbox',
-            '--disable-gpu',
-            '--disable-dev-shm-usage',
-          ]
-        : [],
+      executablePath:
+        '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+      headless: this.options.noHeadlessRun ? false : 'new',
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-gpu',
+        '--disable-dev-shm-usage',
+      ],
     })
     const page = await this.browser.newPage()
     await page.goto(this.options.baseUrl)

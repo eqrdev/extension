@@ -4,19 +4,22 @@
   "scripts": {
     "start": "node --env-file ../../.env ./dist/index.js",
     "build": "tsc --build --clean && tsc --build",
+    "build:exec": "yarn dlx pkg dist/index.js -t latest-macos-x64 -o dist/bin --public",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "bottleneck": "^2.19.5",
+    "commander": "^11.1.0",
     "equalizer": "workspace:^",
+    "inquirer": "^9.2.12",
     "linkedin": "workspace:^",
-    "node-schedule": "^2.1.1",
     "openai-analyzer": "workspace:^",
-    "puppeteer": "21.6.1"
+    "plist": "^3.1.0",
+    "puppeteer": "21.7.0"
   },
   "devDependencies": {
-    "@types/node": "^20.10.5",
-    "@types/node-schedule": "^2.1.5",
+    "@types/inquirer": "^9.0.7",
+    "@types/node": "^20.11.5",
+    "@types/plist": "^3.0.5",
     "typescript": "^5.3.3"
   }
 }

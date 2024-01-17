@@ -26,7 +26,7 @@ export class AutoConnect {
   async monitorInvitations() {
     const invitations = await this.linkedInService.getInvitations()
 
-    this.logger.log(`Pending invitations count: ${invitations.length}`)
+    this.logger.log(`Pending invitations count: ${invitations?.length}`)
 
     try {
       for (const invitation of invitations) {
@@ -62,7 +62,7 @@ export class AutoConnect {
     try {
       const conversations = await this.linkedInService.getConversations()
 
-      this.logger.log(`Pending conversations: ${conversations.length}`)
+      this.logger.log(`Pending conversations: ${conversations?.length}`)
 
       for (const conversation of conversations) {
         if (this.persistentStorage.isChecked(conversation.urn)) {
@@ -80,6 +80,7 @@ export class AutoConnect {
 
       await this.persistentStorage.markMonitoringComplete()
       await this.linkedInService.closeSession()
+      this.logger.log(`Page and session closed.`)
     } catch (error) {
       this.logger.log(`Monitoring conversations was unsuccessful: ${error}`)
     }

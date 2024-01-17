@@ -1,23 +1,27 @@
-import Bottleneck from 'bottleneck'
-import { scheduleJob } from 'node-schedule'
-
 export class Scheduler {
-  private limiter: Bottleneck
-
   constructor(
-    private intervalInMillisecond: number
-  ) {
-    this.limiter = new Bottleneck({
-      minTime: this.intervalInMillisecond,
-      maxConcurrent: 1,
-    })
-  }
+    private intervalInMillisecond: number,
+    private unsuccessfulConsecutiveRuns = 0
+  ) {}
+
+  static UNSUCCESSFUL_RUNS = 3
 
   schedule(task: () => Promise<void>): void {
-    scheduleJob('*/10 * * * *', async () => {
-      await this.limiter.schedule(async () => {
-        await task()
+    if (this.unsuccessfulConsecutiveRuns >= Scheduler.UNSUCCESSFUL_RUNS) {
+      throw new Error(
+        `We ran the monitoring ${Scheduler.UNSUCCESSFUL_RUNS} times, each time unsuccessfully, exiting.`
+      )
+    }
+
+    try {
+      task().then(() => {
+        setTimeout(() => {
+          this.schedule(task)
+        }, this.intervalInMillisecond)
+        this.unsuccessfulConsecutiveRuns = 0
       })
-    })
+    } catch (e) {
+      this.unsuccessfulConsecutiveRuns++
+    }
   }
 }

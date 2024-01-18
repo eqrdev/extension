@@ -13,8 +13,8 @@ import {
   OpenAIEvaluator,
   ProfileUrl,
 } from 'equalizer'
-import { LinkedInService } from './LinkedInService'
-import { AutoConnect } from './AutoConnect'
+import { LinkedInService } from './LinkedInService.js'
+import { AutoConnect } from './AutoConnect.js'
 
 export type RunOptions = {
   username: string

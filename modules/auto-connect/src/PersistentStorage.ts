@@ -12,10 +12,17 @@ export class PersistentStorage {
     private dateProvider: DateProvider,
     private storage: FileStorage<EqualizerStoredData>
   ) {
-    this.initStorage().then()
+    void this.initStorage()
   }
 
   private async initStorage() {
+    const hasFile = await this.storage.hasFile()
+
+    if (!hasFile) {
+      await this.storage.save(this.data)
+      return
+    }
+
     const persisted = await this.storage.read()
     if (persisted) {
       this.data = persisted

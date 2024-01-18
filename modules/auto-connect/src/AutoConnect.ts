@@ -82,6 +82,7 @@ export class AutoConnect {
       await this.linkedInService.closeSession()
       this.logger.log(`Page and session closed.`)
     } catch (error) {
+      await this.linkedInService.closeSession()
       this.logger.log(`Monitoring conversations was unsuccessful: ${error}`)
     }
   }

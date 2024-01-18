@@ -1,12 +1,12 @@
 {
   "compilerOptions": {
     "composite": true,
-    "module": "commonjs",
+    "module": "Node16",
     "lib": [
-      "es2021",
+      "es2022",
       "dom"
     ],
-    "target": "es2017",
+    "target": "es2022",
     "outDir": "dist",
     "skipLibCheck": true,
     "allowJs": true,

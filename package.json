@@ -20,6 +20,7 @@
     "lint": "yarn workspace eslint run lint",
     "ui-sb": "yarn workspace ui-library run storybook",
     "serve": "yarn workspace auto-connect run start",
+    "run": "yarn workspace auto-connect run run",
     "docs": "yarn workspace docs dev"
   },
   "volta": {

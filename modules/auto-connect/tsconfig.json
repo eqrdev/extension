@@ -1,23 +1,33 @@
 {
   "compilerOptions": {
     "composite": true,
-    "module": "Node16",
-    "lib": [
-      "es2022",
-      "dom"
-    ],
-    "target": "es2022",
-    "outDir": "dist",
-    "skipLibCheck": true,
+    "target": "ES6",
     "allowJs": true,
-    "esModuleInterop": true
+    "module": "commonjs",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "noImplicitAny": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "outDir": "dist",
+    "strict": false,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "jsx": "react-jsx",
+    "paths": {
+      "*": ["node_modules/*"]
+    }
   },
+  "include": ["src/**/*"],
   "references": [
     {
       "path": "../linkedin/"
     },
     {
       "path": "../openai-analyzer/"
+    },
+    {
+      "path": "../equalizer/"
     }
   ]
 }

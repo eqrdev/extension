@@ -46,7 +46,7 @@ export class PuppeteerBrowserService
     return page
   }
 
-  async interceptRequest({ pathName = '', urlPattern }): Promise<HTTPRequest> {
+  async interceptRequest({ pathName = '', urlPattern }: { pathName: string, urlPattern: RegExp }): Promise<HTTPRequest> {
     let returnRequest: HTTPRequest
     const page = await this.goToPathName(pathName)
     await page.setRequestInterception(true)
@@ -60,7 +60,7 @@ export class PuppeteerBrowserService
     return returnRequest
   }
 
-  async interceptResponse<T>({ pathName = '', urlPattern }): Promise<T> {
+  async interceptResponse<T>({ pathName = '', urlPattern }: { pathName: string, urlPattern: RegExp }): Promise<T> {
     const page = await this.goToPathName(pathName)
     const response = await page.waitForResponse(response =>
       urlPattern.test(response.url())

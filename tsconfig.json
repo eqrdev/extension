@@ -4,5 +4,8 @@
     { "path": "./modules/openai-analyzer" },
     { "path": "./modules/linkedin" },
     { "path": "./modules/equalizer" }
-  ]
+  ],
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true
+  }
 }

@@ -1,5 +1,6 @@
 export class ConsoleIO {
   headline(message: string) {
+    console.clear()
     console.log(`\x1b[36m\x1b[4m${message}\x1b[0m`)
   }
 

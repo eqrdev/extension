@@ -5,7 +5,7 @@ export class VoyagerInvitationsProcessor {
   constructor(private response: VoyagerInvitations) {}
 
   get generalInvitations(): GeneralInvitation[] {
-    return this.getInvitationUrns().map(entityUrn => ({
+    return this.getInvitationUrns().map((entityUrn) => ({
       urn: entityUrn,
       message: this.getIncludeByEntityUrn(entityUrn).message,
       sentTimeLabel: this.getViewByEntityUrn(entityUrn).sentTimeLabel,
@@ -21,29 +21,29 @@ export class VoyagerInvitationsProcessor {
         'com.linkedin.voyager.dash.relationships.invitation.Invitation'
           ? allUrns.concat([entityUrn])
           : allUrns,
-      []
+      [],
     )
   }
 
   private getIncludeByEntityUrn(urn: string): VoyagerEntities.InviteInclude {
     return this.response.included.find(
-      ({ entityUrn }) => entityUrn === urn
+      ({ entityUrn }) => entityUrn === urn,
     ) as VoyagerEntities.InviteInclude
   }
 
   private getViewByEntityUrn(urn: string): VoyagerEntities.InvitationView {
     return this.response.data.data.relationshipsDashInvitationViewsByReceived.elements.find(
-      ({ '*invitation': entityUrn }) => entityUrn === urn
+      ({ '*invitation': entityUrn }) => entityUrn === urn,
     )
   }
 
   private getProfileIncludeByEntityUrn(
-    urn: string
+    urn: string,
   ): VoyagerEntities.ProfileInclude {
     const memberUrn =
       this.getIncludeByEntityUrn(urn).genericInviter['*memberProfileUrn']
     return this.response.included.find(
-      include => include.entityUrn === memberUrn
+      (include) => include.entityUrn === memberUrn,
     ) as VoyagerEntities.ProfileInclude
   }
 }

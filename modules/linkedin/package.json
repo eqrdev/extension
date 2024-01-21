@@ -12,6 +12,12 @@
   },
   "devDependencies": {
     "@types/uuid": "^9.0.7",
+    "prettier": "^3.2.4",
     "typescript": "^5.3.3"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "all",
+    "semi": false
   }
 }

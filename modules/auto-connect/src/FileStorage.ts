@@ -31,7 +31,7 @@ export class FileStorage<T> implements DataStorage<T> {
     await this.checkAndCreateFile(data)
     await writeFile(
       this.filePath,
-      raw ? (data as string) : JSON.stringify(data),
+      raw ? (data as unknown as string) : JSON.stringify(data),
       {
         encoding: 'utf-8',
       }

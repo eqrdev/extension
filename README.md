@@ -34,7 +34,6 @@ We use Yarn 3 as package manager and workspaces to get organized. Structure over
 │   ├── auto-connect   # A Node.js script to monitor enquiries
 │   ├── chrome         # The Chrome extensions source code
 │   ├── equalizer      # The core business logic of Equalizer
-│   ├── eslint         # Eslint package and related dependecies, eslint configuration
 │   ├── linkedin       # LinkedIn Client, tools and utilities to communicate with LinkedIn
 │   ├── openai         # A simple API request to analyze LinkedIn conversations with OpenAI's GPT
 │   └── ui-library     # React components to build the UI of the extension 
@@ -42,15 +41,9 @@ We use Yarn 3 as package manager and workspaces to get organized. Structure over
 └── ...
 ```
 
-Note, that we commit the `.yarn/cache` folder, which contains all the dependencies, and we use 
-[Yarn Plug'n'Play,][yarn-pnp] so basically you don't need to run install after you cloned the
-repository. 
-
 ## License
 
 [MIT](https://github.com/eqrdev/extension/blob/master/LICENSE)
 
 [chrome-extension]: https://equalizer.dev/
 [chrome-page]: chrome://extensions/
-[yarn-pnp]: https://yarnpkg.com/features/pnp
-

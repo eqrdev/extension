@@ -27,6 +27,7 @@
     "copy-webpack-plugin": "^12.0.2",
     "html-webpack-plugin": "^5.6.0",
     "jest": "^29.7.0",
+    "prettier": "^3.2.4",
     "ts-jest": "^29.1.1",
     "ts-loader": "^9.5.1",
     "webpack": "^5.89.0",
@@ -34,5 +35,10 @@
   },
   "jest": {
     "preset": "ts-jest"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "all",
+    "semi": false
   }
 }

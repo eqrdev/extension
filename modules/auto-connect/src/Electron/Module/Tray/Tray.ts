@@ -18,6 +18,7 @@ export class Tray {
         {
           label: 'Open Settings',
           click: () => {
+            this.clickHandler()
             void app.dock.show()
           },
         },
@@ -25,7 +26,5 @@ export class Tray {
         { role: 'quit', accelerator: 'Cmd+Q' },
       ]),
     )
-
-    tray.addListener('mouse-up', this.clickHandler)
   }
 }

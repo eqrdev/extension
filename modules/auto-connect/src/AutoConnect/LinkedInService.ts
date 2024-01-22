@@ -9,7 +9,20 @@ import {
 } from 'linkedin'
 
 export class LinkedInService {
-  constructor(private browserService: PuppeteerBrowserService) {}
+  private browserService: PuppeteerBrowserService
+  constructor(token: string, noHeadlessRun = false) {
+    this.browserService = new PuppeteerBrowserService({
+      baseUrl: 'https://www.linkedin.com/',
+      cookies: [
+        {
+          name: 'li_at',
+          value: token,
+          domain: '.www.linkedin.com',
+        },
+      ],
+      noHeadlessRun,
+    })
+  }
 
   async getInvitations(): Promise<GeneralInvitation[]> {
     const response =
@@ -23,10 +36,10 @@ export class LinkedInService {
 
   async acceptInvitation({ inviterId }: GeneralInvitation): Promise<void> {
     await this.browserService.goToPathName(
-      '/mynetwork/invitation-manager/?invitationType=CONNECTION'
+      '/mynetwork/invitation-manager/?invitationType=CONNECTION',
     )
     const cardSelector = `.invitation-card:has([href="https://www.linkedin.com/in/${encodeURIComponent(
-      inviterId
+      inviterId,
     )}"])`
     await this.browserService.page.waitForSelector(cardSelector)
     const card = await this.browserService.page.$(cardSelector)
@@ -62,7 +75,7 @@ export class LinkedInService {
           sender: sender.entityUrn,
         })),
         participants: conversationParticipants.map(
-          ({ entityUrn }) => entityUrn
+          ({ entityUrn }) => entityUrn,
         ),
         categories,
         createdAt,
@@ -80,7 +93,7 @@ export class LinkedInService {
         {
           pathName: new URL(fullUrl).pathname,
           urlPattern: /messengerMessages/,
-        }
+        },
       )
     return response.data.messengerMessagesBySyncToken.elements
   }
@@ -105,7 +118,7 @@ export class LinkedInService {
           headers: {
             Accept: 'application/json',
           },
-        }
+        },
       )
       const json = await response.json()
       return json.status === 'success'

@@ -1,8 +1,4 @@
-import { FileStorage } from './FileStorage'
-import { EqualizerStoredData } from './Types/EqualizerStoredData'
-import { resolve } from 'path'
 import { PersistentStorage } from './PersistentStorage'
-import { PuppeteerBrowserService } from './PuppeteerBrowserService'
 import { EqualizerLogger } from './EqualizerLogger'
 import {
   ConfigurationValidator,
@@ -13,8 +9,9 @@ import {
   OpenAIEvaluator,
   ProfileUrl,
 } from 'equalizer'
-import { LinkedInService } from './LinkedInService.js'
-import { AutoConnect } from './AutoConnect.js'
+import { LinkedInService } from './LinkedInService'
+import { AutoConnect } from './AutoConnect'
+import { BrowserWindow } from 'electron'
 
 export type RunOptions = {
   username: string
@@ -22,47 +19,32 @@ export type RunOptions = {
   message?: string
   openaiKey?: string
   noHeadlessRun?: boolean
-  storagePath: string
 }
 
 export class Runner {
-  static async run(options: RunOptions) {
-    const fileStorage = new FileStorage<EqualizerStoredData>(
-      resolve(options.storagePath)
-    )
-    const persistentStorage = new PersistentStorage(Date, fileStorage)
-    const browserService = new PuppeteerBrowserService({
-      baseUrl: 'https://www.linkedin.com/',
-      cookies: [
-        {
-          name: 'li_at',
-          value: options.token,
-          domain: '.www.linkedin.com',
-        },
-      ],
-      noHeadlessRun: options.noHeadlessRun,
-    })
-    const logger = new EqualizerLogger()
+  static async run(options: RunOptions, browserWindow: BrowserWindow) {
+    const persistentStorage = new PersistentStorage(Date)
+    const logger = new EqualizerLogger(browserWindow)
     const dateEvaluator = new DateEvaluator(Date)
-    const linkedInService = new LinkedInService(browserService)
+    const linkedInService = new LinkedInService(options.token)
     const hasOpenAi = OpenAIEvaluator.isKeyValid(options.openaiKey)
 
     if (!(await linkedInService.isUserLoggedIn())) {
       logger.log(
-        "We haven't managed to login to your LinkedIn account with the provided session token. Monitoring hasn't started."
+        "We haven't managed to login to your LinkedIn account with the provided session token. Monitoring hasn't started.",
       )
       return
     }
 
     if (!hasOpenAi) {
       logger.log(
-        'OpenAI API key is not valid. We do not evaluate the messages automatically.'
+        'OpenAI API key is not valid. We do not evaluate the messages automatically.',
       )
     }
 
     if (!ConfigurationValidator.isEqualizerProfileNameValid(options.username)) {
       logger.log(
-        "Provided Equalizer profile name is invalid. Monitoring hasn't started."
+        "Provided Equalizer profile name is invalid. Monitoring hasn't started.",
       )
       throw new Error('Please provide a valid Equalizer profile name')
     }
@@ -74,11 +56,11 @@ export class Runner {
       ConfigurationValidator.isMessageValid(options.message)
     if (!isMessageValid) {
       logger.log(
-        'Provided auto message is invalid. We provided a default reply for you.'
+        'Provided auto message is invalid. We provided a default reply for you.',
       )
     }
     const message = profileUrl.replaceInText(
-      isMessageValid ? options.message : DEFAULT_AUTO_REPLY_TEXT
+      isMessageValid ? options.message : DEFAULT_AUTO_REPLY_TEXT,
     )
 
     const openAiEvaluator = hasOpenAi
@@ -87,7 +69,7 @@ export class Runner {
     const invitationEvaluator = new InvitationEvaluator(openAiEvaluator)
     const conversationEvaluator = new ConversationEvaluator(
       dateEvaluator,
-      openAiEvaluator
+      openAiEvaluator,
     )
 
     const autoConnect = new AutoConnect(
@@ -96,7 +78,7 @@ export class Runner {
       invitationEvaluator,
       conversationEvaluator,
       logger,
-      message
+      message,
     )
 
     await autoConnect.monitorEnquiries()

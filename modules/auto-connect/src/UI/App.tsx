@@ -1,38 +1,41 @@
-import { ConfigurationValidator } from 'equalizer'
-import { FocusEventHandler, useState } from 'react'
-import { AutoConnectSettings } from '../Types/AutoConnectStoredData'
+import { Logo } from './FirstRun/Logo'
+import styled from '@emotion/styled'
+import { Layout } from './Layout/Layout'
+import { Button } from './MacOSUI/Button'
+import { useState } from 'react'
+import { Settings } from './Settings/Settings'
+import { Logger } from './Logger/Logger'
 
+const Styled = {
+  FirstRun: styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+  `,
+}
 export const App = () => {
-  const [errors, setErrors] = useState([])
-  const [config, setConfig] = useState<AutoConnectSettings>()
-
-  const handleBlurName: FocusEventHandler<HTMLInputElement> = (event) => {
-    if (
-      !ConfigurationValidator.isEqualizerProfileNameValid(event.target.value)
-    ) {
-      setErrors(['invalidUser'])
-      return
-    }
-
-    setErrors([])
-
-    setConfig({
-      ...config,
-      username: event.target.value,
-    })
-  }
+  const [isFirstRun, setIsFirstRun] = useState(true)
 
   return (
-    <form>
-      <input
-        type="text"
-        placeholder="Your Equalizer username"
-        onBlur={handleBlurName}
-      />
-      {errors.includes('invalidUser') && <div>invalid user</div>}
-      <input type="text" placeholder="Active LinkedIn session token" />
-      <textarea placeholder="Message to the recruiters" />
-      <input type="text" placeholder="OpenAI API key" />
-    </form>
+    <Layout>
+      {isFirstRun ? (
+        <Styled.FirstRun>
+          <Logo />
+          <div>Hey awesome dev!</div>
+          <Button onClick={() => setIsFirstRun(false)}>
+            Let's begin the setup
+          </Button>
+        </Styled.FirstRun>
+      ) : (
+        <div>
+          <Settings />
+        </div>
+      )}
+
+      <Logger />
+    </Layout>
   )
 }

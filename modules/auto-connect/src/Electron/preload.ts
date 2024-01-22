@@ -1,7 +1,23 @@
 import { contextBridge, ipcRenderer } from 'electron'
-// See the Electron documentation for details on how to use preload scripts:
-// https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
-contextBridge.exposeInMainWorld('electronAPI', {
-  onPuppeteer: (callback: (value: string) => void) =>
-    ipcRenderer.on('from-puppeteer', (_event, value) => callback(value)),
+import { exposeStateIPC } from 'electron-state-ipc'
+import { AutoConnectSettings } from '../Types/AutoConnectStoredData'
+
+exposeStateIPC()
+
+declare global {
+  interface Window {
+    autoConnect: {
+      getSettings: () => Promise<AutoConnectSettings>
+      saveSettings: (settings: AutoConnectSettings) => Promise<void>
+      onLogEntry: (callback: (entry: string) => void) => void
+    }
+  }
+}
+
+contextBridge.exposeInMainWorld('autoConnect', {
+  getSettings: async () => ipcRenderer.invoke('settings:get'),
+  saveSettings: async (settings: AutoConnectSettings) =>
+    ipcRenderer.invoke('settings:set', settings),
+  onLogEntry: async (callback: (log: string) => void) =>
+    ipcRenderer.on('log', (_event, value) => callback(value)),
 })

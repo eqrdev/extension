@@ -1,5 +1,7 @@
-import puppeteer, { Browser, HTTPRequest, Page, Protocol } from 'puppeteer'
-import { BrowserService } from './Types/BrowserService'
+import puppeteer, { Page, Browser, HTTPRequest, Protocol } from 'puppeteer-core'
+import { BrowserService } from '../Types/BrowserService'
+import pie from 'puppeteer-in-electron'
+import { app, BrowserWindow } from 'electron'
 
 interface PuppeteerBrowserOptions {
   baseUrl?: string
@@ -20,18 +22,25 @@ export class PuppeteerBrowserService
       return this.page
     }
 
-    this.browser = await puppeteer.launch({
-      executablePath:
-        '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-      headless: this.options.noHeadlessRun ? false : 'new',
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-gpu',
-        '--disable-dev-shm-usage',
-      ],
-    })
-    const page = await this.browser.newPage()
+    // @ts-ignore
+    this.browser = await pie.connect(app, puppeteer)
+
+    const window = new BrowserWindow({ show: false })
+    const url = 'https://example.com/'
+    await window.loadURL(url)
+
+    // this.browser = await puppeteer.launch({
+    //   executablePath:
+    //     '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+    //   headless: this.options.noHeadlessRun ? false : 'new',
+    //   args: [
+    //     '--no-sandbox',
+    //     '--disable-setuid-sandbox',
+    //     '--disable-gpu',
+    //     '--disable-dev-shm-usage',
+    //   ],
+    // })
+    const page = await pie.getPage(this.browser, window)
     await page.goto(this.options.baseUrl)
     await page.setCookie(...this.options.cookies)
     this.page = page
@@ -46,11 +55,17 @@ export class PuppeteerBrowserService
     return page
   }
 
-  async interceptRequest({ pathName = '', urlPattern }: { pathName: string, urlPattern: RegExp }): Promise<HTTPRequest> {
+  async interceptRequest({
+    pathName = '',
+    urlPattern,
+  }: {
+    pathName: string
+    urlPattern: RegExp
+  }): Promise<HTTPRequest> {
     let returnRequest: HTTPRequest
     const page = await this.goToPathName(pathName)
     await page.setRequestInterception(true)
-    page.on('request', async request => {
+    page.on('request', async (request) => {
       if (urlPattern.test(request.url())) {
         returnRequest = request
       }
@@ -60,10 +75,16 @@ export class PuppeteerBrowserService
     return returnRequest
   }
 
-  async interceptResponse<T>({ pathName = '', urlPattern }: { pathName: string, urlPattern: RegExp }): Promise<T> {
+  async interceptResponse<T>({
+    pathName = '',
+    urlPattern,
+  }: {
+    pathName: string
+    urlPattern: RegExp
+  }): Promise<T> {
     const page = await this.goToPathName(pathName)
-    const response = await page.waitForResponse(response =>
-      urlPattern.test(response.url())
+    const response = await page.waitForResponse((response) =>
+      urlPattern.test(response.url()),
     )
     return await response.json()
   }

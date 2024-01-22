@@ -2,7 +2,7 @@ export type AutoConnectSettings = {
   username: string
   token: string
   message?: string
-  openaiKey?: string
+  openAiKey?: string
 }
 
 export type MonitoringData = {

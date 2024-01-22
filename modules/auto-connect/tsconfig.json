@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "composite": true,
-    "target": "ES6",
+    "target": "ESNext",
     "allowJs": true,
     "module": "commonjs",
     "skipLibCheck": true,
@@ -13,6 +13,7 @@
     "strict": false,
     "moduleResolution": "node",
     "resolveJsonModule": true,
+    "noEmitHelpers": false,
     "jsx": "react-jsx",
     "paths": {
       "*": ["node_modules/*"]

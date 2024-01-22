@@ -11,14 +11,23 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@emotion/cache": "^11.11.0",
+    "@emotion/css": "^11.11.2",
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
     "@inquirer/prompts": "^3.3.0",
+    "electron-shared-state": "^1.1.0",
     "electron-squirrel-startup": "^1.0.0",
+    "electron-state-ipc": "^1.2.3",
     "electron-store": "^8.1.0",
     "equalizer": "workspace:^",
     "linkedin": "workspace:^",
+    "node-fetch": "^3.3.2",
     "openai-analyzer": "workspace:^",
     "plist": "^3.1.0",
     "puppeteer": "21.7.0",
+    "puppeteer-core": "^21.7.0",
+    "puppeteer-in-electron": "^3.0.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "ui-library": "workspace:^"

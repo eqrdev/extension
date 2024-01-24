@@ -1,9 +1,12 @@
 {
   "references": [
     { "path": "./modules/auto-connect" },
-    { "path": "./modules/openai-analyzer" },
+    { "path": "./modules/chrome" },
+    { "path": "./modules/desktop" },
+    { "path": "./modules/equalizer" },
     { "path": "./modules/linkedin" },
-    { "path": "./modules/equalizer" }
+    { "path": "./modules/openai-analyzer" },
+    { "path": "./modules/ui-library" },
   ],
   "compilerOptions": {
     "allowSyntheticDefaultImports": true

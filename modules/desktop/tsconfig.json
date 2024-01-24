@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "target": "ESNext",
+    "allowJs": true,
+    "module": "commonjs",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "noImplicitAny": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "outDir": "dist",
+    "strict": false,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "noEmitHelpers": false,
+    "jsx": "react-jsx",
+    "paths": {
+      "*": ["node_modules/*"]
+    }
+  },
+  "include": ["src/**/*"],
+  "references": [
+    {
+      "path": "../linkedin/"
+    },
+    {
+      "path": "../openai-analyzer/"
+    },
+    {
+      "path": "../equalizer/"
+    },
+    {
+      "path": "../ui-library/"
+    }
+  ]
+}

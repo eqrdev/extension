@@ -1,34 +1,10 @@
 {
   "compilerOptions": {
     "composite": true,
-    "target": "ESNext",
-    "allowJs": true,
-    "module": "commonjs",
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "noImplicitAny": true,
-    "sourceMap": true,
-    "baseUrl": ".",
     "outDir": "dist",
-    "strict": false,
+    "lib": ["es2021", "dom"],
+    "module": "commonjs",
     "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "noEmitHelpers": false,
-    "jsx": "react-jsx",
-    "paths": {
-      "*": ["node_modules/*"]
-    }
-  },
-  "include": ["src/**/*"],
-  "references": [
-    {
-      "path": "../linkedin/"
-    },
-    {
-      "path": "../openai-analyzer/"
-    },
-    {
-      "path": "../equalizer/"
-    }
-  ]
+    "skipLibCheck": true
+  }
 }

@@ -5,6 +5,8 @@
     "lib": ["es2021", "dom"],
     "target": "es6",
     "skipLibCheck": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "declaration": true,
+    "allowSyntheticDefaultImports": true
   }
 }

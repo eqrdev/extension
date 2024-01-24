@@ -1,0 +1,57 @@
+{
+  "name": "desktop",
+  "version": "1.0.0",
+  "main": ".webpack/main",
+  "scripts": {
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make --arch=x64",
+    "build": "tsc --build --clean && tsc --build",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@emotion/cache": "^11.11.0",
+    "@emotion/css": "^11.11.2",
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
+    "auto-connect": "workspace:^",
+    "electron-squirrel-startup": "^1.0.0",
+    "electron-store": "^8.1.0",
+    "equalizer": "workspace:^",
+    "node-fetch": "^3.3.2",
+    "puppeteer": "21.7.0",
+    "puppeteer-core": "^21.7.0",
+    "puppeteer-in-electron": "^3.0.5",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "ui-library": "workspace:^"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^7.2.0",
+    "@electron-forge/maker-deb": "^7.2.0",
+    "@electron-forge/maker-rpm": "^7.2.0",
+    "@electron-forge/maker-squirrel": "^7.2.0",
+    "@electron-forge/maker-zip": "^7.2.0",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.2.0",
+    "@electron-forge/plugin-webpack": "^7.2.0",
+    "@types/electron-squirrel-startup": "^1.0.2",
+    "@types/node": "^20.11.6",
+    "@types/react": "^18.2.48",
+    "@types/react-dom": "^18.2.18",
+    "@vercel/webpack-asset-relocator-loader": "1.7.3",
+    "copy-webpack-plugin": "^12.0.2",
+    "electron": "28.1.4",
+    "fork-ts-checker-webpack-plugin": "^9.0.2",
+    "node-loader": "^2.0.0",
+    "prettier": "^3.2.4",
+    "ts-loader": "^9.5.1",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.3.3"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "all",
+    "semi": false,
+    "tabWidth": 2
+  }
+}

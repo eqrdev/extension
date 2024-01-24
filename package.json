@@ -18,8 +18,8 @@
     "type-check": "yarn workspaces foreach -A run type-check",
     "ui-sb": "yarn workspace ui-library run storybook",
     "docs": "yarn workspace docs dev",
-    "autoconnect:start": "yarn workspace auto-connect start",
-    "autoconnect:build": "yarn workspace auto-connect make"
+    "app:start": "yarn workspace desktop start",
+    "app:build": "yarn workspace desktop make"
   },
   "volta": {
     "node": "21.5.0",
